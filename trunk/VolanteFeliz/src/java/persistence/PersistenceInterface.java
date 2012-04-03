@@ -22,9 +22,11 @@ public interface PersistenceInterface {
     
     public boolean deleteClient (String codCliente);
     
-    public boolean isAnyAdmin ();
-    
     public HashMap <String, Cliente> getClients ();
+    
+    public boolean addEmpleado (Empleado empl);
+    
+    public Integer numAdmin ();
     
     public HashMap <String, Empleado> getEmpleados ();
     

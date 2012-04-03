@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import model.Empleado;
 import persistence.PersistenceFactory;
 import persistence.PersistenceInterface;
 
@@ -31,6 +32,10 @@ public class StartListener implements ServletContextListener {
         persistence = PersistenceFactory.getInstance(persistenceMethod);
         boolean exito = persistence.init (recurso, nameBD);
         
+        if (persistence.numAdmin() <= 1){
+            Empleado empl = new Empleado
+        }
+        
     }
 
     @Override
@@ -42,6 +47,10 @@ public class StartListener implements ServletContextListener {
     }
     
     private boolean validateStart (ServletContext context){
-        return true;
+        boolean ok = false;
+        if (context.getInitParameter("resource") != null || context.getInitParameter("nameBD") != null){
+            if (context.getInitParameter("persistenceMethod").equals("MySQL")) ok = true;
+        }
+        return ok;
     }
 }
