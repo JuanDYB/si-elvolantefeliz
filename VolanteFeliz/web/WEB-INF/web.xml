@@ -6,11 +6,11 @@
     </context-param>
     <context-param>
         <param-name>resourceName</param-name>
-        <param-value></param-value>
+        <param-value>jdbc/VolanteFeliz</param-value>
     </context-param>
     <context-param>
         <param-name>nameBD</param-name>
-        <param-value></param-value>
+        <param-value>???</param-value>
     </context-param>
     <listener>
         <description>ServletContextListener</description>
@@ -37,4 +37,10 @@
             30
         </session-timeout>
     </session-config>
+    <resource-ref>
+        <res-ref-name>jdbc/VolanteFeliz</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
 </web-app>

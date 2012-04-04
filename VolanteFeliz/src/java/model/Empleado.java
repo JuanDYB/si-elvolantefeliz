@@ -7,6 +7,7 @@ package model;
 public class Empleado {
     private String codEmpleado;
     private String userName;
+    private String pass;
     private String name;
     private String dni;
     private String telephone;
@@ -14,9 +15,10 @@ public class Empleado {
     private String codSucursal;
     private char permisos;  //'a': Administrador   'e': Empleado normal
 
-    public Empleado(String codEmpleado, String userName, String name, String dni, String telephone, String address, String codSucursal, char permisos) {
+    public Empleado(String codEmpleado, String userName, String pass, String name, String dni, String telephone, String address, String codSucursal, char permisos) {
         this.codEmpleado = codEmpleado;
         this.userName = userName;
+        this.pass = pass;
         this.name = name;
         this.dni = dni;
         this.telephone = telephone;
@@ -55,6 +57,10 @@ public class Empleado {
 
     public String getUserName() {
         return userName;
+    }
+    
+    public String getPass() {
+        return this.pass;
     }
     
 }
