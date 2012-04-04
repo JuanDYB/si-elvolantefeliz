@@ -3,6 +3,7 @@ package persistence;
 import java.util.HashMap;
 import model.Cliente;
 import model.Empleado;
+import model.Sucursal;
 
 /**
  *
@@ -14,21 +15,25 @@ public interface PersistenceInterface {
     
     public boolean exit ();
     
+    public int numAdmin ();
+    
+    public int numCentrales ();
+    
     public boolean addClient (Cliente client);
     
+    public boolean addEmpleado (Empleado empl);
+    
+    public Boolean addSucursal (Sucursal suc);
+    
     public Cliente getClient (String codCliente);
+    
+    public Empleado getEmployee (String codEmpleado);
+    
+    public HashMap <String, Cliente> getClients ();
+    
+    public HashMap <String, Empleado> getEmpleados ();
     
     public boolean editClient (String codCliente, Cliente client);
     
     public boolean deleteClient (String codCliente);
-    
-    public HashMap <String, Cliente> getClients ();
-    
-    public boolean addEmpleado (Empleado empl);
-    
-    public Integer numAdmin ();
-    
-    public HashMap <String, Empleado> getEmpleados ();
-    
-    public Empleado getEmployee (String codEmpleado);
 }

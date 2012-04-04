@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import model.Cliente;
 import model.Empleado;
+import model.Sucursal;
 
 /**
  *
@@ -123,14 +124,36 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Integer numAdmin() {
+    public int numAdmin() {
         Connection conexion = null;
         PreparedStatement count = null;
         ResultSet rs = null;
-        Integer numAdmin = null;
+        int numAdmin = -1;
         try{
             conexion = pool.getConnection();
             count = conexion.prepareStatement("SELECT COUNT(Permisos) AS num FROM " + nameBD + ".Empleado WHERE Permisos = 'a'");
+            rs = count.executeQuery();
+            while (rs.next()) {
+                numAdmin = rs.getInt("num");
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo numero de administradores", ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, count);
+        }
+        return numAdmin;
+    }
+    
+    @Override
+    public int numCentrales() {
+        Connection conexion = null;
+        PreparedStatement count = null;
+        ResultSet rs = null;
+        int numAdmin = -1;
+        try{
+            conexion = pool.getConnection();
+            count = conexion.prepareStatement("SELECT COUNT(Central) AS num FROM " + nameBD + ".Empleado WHERE Central=true");
             rs = count.executeQuery();
             while (rs.next()) {
                 numAdmin = rs.getInt("num");
@@ -155,8 +178,8 @@ public class PersistenceMySQL implements PersistenceInterface {
             select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Clientes");
             rs = select.executeQuery();
             while (rs != null) {
-                Cliente cl = new Cliente();
-                clientes.put(cl.getCodCliente(), cl);
+                //Cliente cl = new Cliente();
+                //clientes.put(cl.getCodCliente(), cl);
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error en la obtencion de clientes", ex);
@@ -220,6 +243,35 @@ public class PersistenceMySQL implements PersistenceInterface {
             insert.setString(6, empl.getAddress());
             insert.setString(7, empl.getCodSucursal());
             insert.setObject(8, empl.getPermisos(), java.sql.Types.CHAR, 1);
+            if (insert.executeUpdate() == 1){
+                ok = true;
+            }
+        }catch (SQLException ex){
+            logger.log (Level.SEVERE, "Ha ocurrido un error insertando un empleado", ex);
+        }finally{
+            cerrarConexionesYStatementsm(conexion, insert);
+        }
+        return ok;
+    }
+
+    @Override
+    public Boolean addSucursal(Sucursal suc) {
+        Connection conexion = null;
+        PreparedStatement insert = null;
+        Boolean ok = false;
+        if (suc.isCentral() && this.numCentrales() >= 1){
+            logger.log(Level.SEVERE, "No se puede añadir la sucursal porque ha sido marcada como central y ya existe una");
+            return null;
+        }
+        try{
+            conexion = pool.getConnection();
+            insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Sucursal VALUES (?,?,?,?,?,?)");
+            insert.setString(1, suc.getCodSucursal());
+            insert.setString(2, suc.getNombre());
+            insert.setString(3, suc.getDir());
+            insert.setString(4, suc.getTelefono());
+            insert.setString(5, suc.getFax());
+            insert.setBoolean(6, suc.isCentral());
             if (insert.executeUpdate() == 1){
                 ok = true;
             }
