@@ -27,13 +27,13 @@ public class ConfigLoader {
         Properties prop = null;
         boolean ok = false;
         try{
-            is = ConfigLoader.class.getResourceAsStream("/" + this.nombreFichero);
+            is = ConfigLoader.class.getResourceAsStream(this.nombreFichero);
             prop = new Properties();
             prop.load(is);
             Enumeration <String> propNames = (Enumeration <String>) prop.propertyNames();
             propiedades = new HashMap <String, String> ();
-            String key = propNames.nextElement();
             while (propNames.hasMoreElements()){
+                String key = propNames.nextElement();
                 propiedades.put(key, prop.getProperty(key));
             }
             ok = true;
@@ -58,6 +58,7 @@ public class ConfigLoader {
                 Tools.validatePhone(propiedades.get("suc.Tlf"));
                 Tools.validatePhone(propiedades.get("suc.Fax"));
                 Tools.validateBool(propiedades.get("suc.central"));
+                return true;
             }   catch (ValidationException ex){
                 Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
                 return false;
@@ -72,10 +73,11 @@ public class ConfigLoader {
             try{
                 Tools.validateName(propiedades.get("empl.Name"), 100);
                 Tools.validateUserName(propiedades.get("empl.userName"));
-                Tools.validatePass(propiedades.get("empl.Pass"));
+                Tools.validatePass(propiedades.get("empl.pass"));
                 Tools.validateDNI(propiedades.get("empl.DNI"));
                 Tools.validateAdress(propiedades.get("empl.Addr"));
                 Tools.validatePhone(propiedades.get("empl.Tlf"));
+                return true;
             }   catch (ValidationException ex){
                 Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
                 return false;
@@ -84,11 +86,24 @@ public class ConfigLoader {
         return false;
     }
     
+    private boolean processAppOptions (){
+        if (propiedades.containsKey("app.maxLoginAttempt")){
+            try{
+                Tools.validateNumber(propiedades.get("app.maxLoginAttempt"), "Maximo numero de intentos inicio sesion");
+                return true;
+            }catch (ValidationException ex){
+                Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
+                return false;
+            }
+        }
+        return false;
+    }
+    
     public HashMap <String, String> getProperties (){
         
-        if (this.loadFile() && this.processEmpl() && this.processSucursal()){
-            return null;
+        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions()){
+            return propiedades;
         }
-        return propiedades;
+        return null;
     }
 }

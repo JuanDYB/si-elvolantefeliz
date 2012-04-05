@@ -119,8 +119,30 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
     
     @Override
-    public Empleado getEmployee(String codEmpleado) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Empleado getEmployee(String campo, String valor) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        Empleado empl = null;
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Empleado WHERE ?=?");
+            select.setString(1, campo);
+            select.setString(2, valor);
+            rs = select.executeQuery();
+            while (rs.next()){
+                empl = new Empleado (rs.getString("codEmpleado"), rs.getString("UserName"), rs.getString("Pass")
+                        , rs.getString("Nombre"), rs.getString("DNI"), rs.getString("Telefono")
+                        , rs.getString("Direccion"), rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo un empleado de la base de datos", ex);
+            empl = null;
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return empl;
     }
 
     @Override
@@ -197,36 +219,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     public HashMap<String, Empleado> getEmpleados() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    private void cerrarConexionesYStatementsm(Connection conexion, Statement... st) {
-        for (Statement statement : st) {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    logger.log(Level.SEVERE, "Error al cerrar un statement", ex);
-                }
-            }
-        }
-        try {
-            conexion.close();
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error al cerrar una conexion", ex);
-        }
-    }
-
-    private void cerrarResultSets(ResultSet... result) {
-        for (ResultSet rs : result) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    logger.log(Level.SEVERE, "Error al cerrar ResultSet", ex);
-                }
-            }
-        }
-    }
-
+    
     @Override
     public boolean addEmpleado(Empleado empl) {
         Connection conexion = null;
@@ -281,5 +274,34 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarConexionesYStatementsm(conexion, insert);
         }
         return ok;
+    }
+
+    private void cerrarConexionesYStatementsm(Connection conexion, Statement... st) {
+        for (Statement statement : st) {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    logger.log(Level.SEVERE, "Error al cerrar un statement", ex);
+                }
+            }
+        }
+        try {
+            conexion.close();
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error al cerrar una conexion", ex);
+        }
+    }
+
+    private void cerrarResultSets(ResultSet... result) {
+        for (ResultSet rs : result) {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    logger.log(Level.SEVERE, "Error al cerrar ResultSet", ex);
+                }
+            }
+        }
     }
 }

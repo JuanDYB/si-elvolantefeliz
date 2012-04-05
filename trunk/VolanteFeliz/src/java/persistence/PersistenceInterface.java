@@ -27,7 +27,7 @@ public interface PersistenceInterface {
     
     public Cliente getClient (String codCliente);
     
-    public Empleado getEmployee (String codEmpleado);
+    public Empleado getEmployee (String campo, String valor);
     
     public HashMap <String, Cliente> getClients ();
     

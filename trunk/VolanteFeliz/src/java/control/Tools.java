@@ -2,10 +2,12 @@ package control;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Validator;
 import org.owasp.esapi.errors.IntrusionException;
@@ -37,6 +39,18 @@ public class Tools {
             strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
         }
         return strbuf.toString();
+    }
+    
+    public static void anadirMensaje(HttpServletRequest request, String msg) {
+        if (request.getAttribute("listaResultados") == null) {
+            ArrayList<String> lista = new ArrayList<String>();
+            lista.add(msg);
+            request.setAttribute("listaResultados", lista);
+        } else {
+            ArrayList<String> lista = (ArrayList<String>) request.getAttribute("listaResultados");
+            lista.add(msg);
+//            request.setAttribute("listaResultados", lista);
+        }
     }
     
     public static String generaUUID() {
@@ -75,7 +89,7 @@ public class Tools {
     public static int validateNumber(String input, String context)
             throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
-        return validador.getValidInteger(context, input, 0, 999999, false);
+        return validador.getValidInteger(context, input, 0, Integer.MAX_VALUE, false);
     }
 
     public static double validatePrice(String input) throws IntrusionException, ValidationException {
@@ -91,7 +105,7 @@ public class Tools {
     
     public static String validatePhone (String input) throws IntrusionException, ValidationException{
         Validator validador = ESAPI.validator();
-        return validador.getValidInput("Teléfono/Fax", input, "Tlf", 14, false);
+        return validador.getValidInput("Telefono/Fax", input, "Tlf", 14, false);
     }
     
     public static String validateUserName (String input) throws IntrusionException, ValidationException{
@@ -115,6 +129,11 @@ public class Tools {
 //        if ((Boolean)Boolean.getBoolean(input) == null){
 //            throw new ValidationException ("Cadena de entrada no convertible a booleano", "Cadena de entrada no convertible a booleano");
 //        }
+    }
+    
+    public static String passForMD5 (String pass){
+        StringBuilder passAdd = new StringBuilder (pass.toUpperCase());
+        return pass + passAdd.reverse().toString();
     }
     
     public static boolean validatePermisos(char perm) {
