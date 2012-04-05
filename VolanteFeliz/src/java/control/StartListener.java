@@ -27,6 +27,10 @@ public class StartListener implements ServletContextListener {
             throw new RuntimeException ("No se ha podido iniciar la aplicación, "
                     + "los parametros de contexto no son validos");
         }
+        HashMap <String, String> config = this.cargaConfig();
+        if (config == null){
+            throw new RuntimeException("Ocurrieron errores cargando propiedades de configuracion de la aplicacion");
+        }
         String persistenceMethod = context.getInitParameter("persistenceMethod");
         String recurso = context.getInitParameter("resourceName");
         String nameBD = context.getInitParameter("nameBD");
@@ -35,32 +39,30 @@ public class StartListener implements ServletContextListener {
         boolean exito = persistence.init (recurso, nameBD);
         int numAdmin = persistence.numAdmin();
         if (numAdmin == 0){
-            ConfigLoader config = new ConfigLoader("config.properties");
-            HashMap <String,String> propInicio = config.getProperties();
-            if (propInicio != null){
-                String md5Pass = Tools.generateMD5Signature(propInicio.get("empl.Pass") + propInicio.get("empl.Pass").toUpperCase());
+            
+                String md5Pass = Tools.generateMD5Signature(Tools.passForMD5(config.get("empl.Pass")));
                 if (md5Pass.equals("-1")){
                     throw new RuntimeException("No se ha encontrado el algoritmo MD5");
                 }
                 String codEmpl = Tools.generaUUID();
                 String codSuc = Tools.generaUUID();
                 
-                Sucursal suc = new Sucursal (codSuc, propInicio.get("suc.Name"), propInicio.get("suc.Addr"), 
-                        propInicio.get("suc.Tlf"), propInicio.get("suc.Fax"), Boolean.getBoolean(propInicio.get("suc.central")));
+                Sucursal suc = new Sucursal (codSuc, config.get("suc.Name"), config.get("suc.Addr"), 
+                        config.get("suc.Tlf"), config.get("suc.Fax"), Boolean.getBoolean(config.get("suc.central")));
                 
-                Empleado empl = new Empleado (codEmpl, propInicio.get("empl.userName"), md5Pass, propInicio.get("empl.Name"), 
-                        propInicio.get("empl.DNI"), propInicio.get("empl.Tlf"), propInicio.get("empl.Addr"), codSuc, 'a');
+                Empleado empl = new Empleado (codEmpl, config.get("empl.userName"), md5Pass, config.get("empl.Name"), 
+                        config.get("empl.DNI"), config.get("empl.Tlf"), config.get("empl.Addr"), codSuc, 'a');
                 
                 Boolean addSuc = persistence.addSucursal(suc);
                 if (addSuc == null || !addSuc && !persistence.addEmpleado(empl)){
                     throw new RuntimeException("Error introduciendo sucursal y empleado por defecto de inicio");
                 }
-            }else{
-                throw new RuntimeException("Ocurrieron errores cargando propiedades de configuracion de inicio, la aplicacion no se inciara");
-            }
+            
         }else if (numAdmin == -1){
             throw new RuntimeException("No se pudo obtener numero de empleados con permisos de administracion, la aplicación no se iniciara");
-        }  
+        }
+        sce.getServletContext().setAttribute("config", config);
+        sce.getServletContext().setAttribute("persistence", persistence);
     }
 
     @Override
@@ -80,5 +82,10 @@ public class StartListener implements ServletContextListener {
             }
         }
         return ok;
+    }
+    
+    private HashMap<String, String> cargaConfig (){
+        ConfigLoader config = new ConfigLoader("config.properties");
+        return config.getProperties();
     }
 }
