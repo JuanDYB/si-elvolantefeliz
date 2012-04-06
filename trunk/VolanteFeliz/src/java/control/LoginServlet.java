@@ -50,6 +50,11 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        if (request.getSession().getAttribute("login") != null && (Boolean) request.getSession().getAttribute("login") 
+                && request.getSession().getAttribute("empleado") != null){
+            response.sendRedirect("/index.jsp");
+            return;
+        }
         WebConfig config = (WebConfig) request.getServletContext().getAttribute("appConfig");
         Integer intentos = (Integer) request.getSession().getAttribute("intentosLogin");
         if (intentos != null && intentos <= config.getMaxLoginAttempt()) {
@@ -69,7 +74,7 @@ public class LoginServlet extends HttpServlet {
                 if (empl != null) {
                     if (md5PassIntroducida.equals(empl.getPass())) {
                         request.getSession().setAttribute("login", true);
-                        request.getSession().setAttribute("Empleado", empl);
+                        request.getSession().setAttribute("empleado", empl);
 
                         request.getSession().removeAttribute("intentosLogin");
                         response.sendRedirect("/index.jsp");

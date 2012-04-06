@@ -25,22 +25,12 @@ public class LogoutServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LogoutServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
+        if (request.getSession().getAttribute("login") != null && request.getSession().getAttribute("empleado") != null 
+                && (Boolean)request.getSession().getAttribute("login")){
+            request.getSession().invalidate();
+            request.getRequestDispatcher("/WEB-INF/staf/logout.jsp").forward(request, response); 
+        }else{
+            response.sendRedirect("/index.jsp");
         }
     }
 

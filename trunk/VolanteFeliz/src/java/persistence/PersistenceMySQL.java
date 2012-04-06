@@ -110,7 +110,29 @@ public class PersistenceMySQL implements PersistenceInterface {
 
     @Override
     public boolean editClient(String codCliente, Cliente client) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Connection conexion = null;
+        PreparedStatement update= null;
+        boolean ok = false;
+        try{
+            conexion = pool.getConnection();
+            update = conexion.prepareStatement("UPDATE " + nameBD + ".Cliente Nombre=?, Edad=?, Empresa=?, Direccion=?, "
+                    + "Telefono=?, Email=? WHERE codCliente=?");
+            update.setString(1, client.getName());
+            update.setInt(2, client.getAge());
+            update.setString(3, client.getCompany());
+            update.setString(4, client.getAddress());
+            update.setString(5, client.getTelephone());
+            update.setString(6, client.getEmail());
+            update.setString(7, codCliente);
+            if (update.executeUpdate() == 1){
+                ok = true;
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error editando cliente en la base de datos", ex);
+        }finally{
+            cerrarConexionesYStatementsm(conexion, update);
+        }
+        return ok;
     }
 
     @Override
