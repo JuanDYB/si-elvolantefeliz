@@ -10,7 +10,7 @@
     </context-param>
     <context-param>
         <param-name>nameBD</param-name>
-        <param-value>???</param-value>
+        <param-value>gnrmubyc_volantefeliz</param-value>
     </context-param>
     <filter>
         <filter-name>StafFilter</filter-name>
@@ -52,6 +52,10 @@
         <servlet-name>NewClientServlet</servlet-name>
         <servlet-class>control.staf.NewClientServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteClientServlet</servlet-name>
+        <servlet-class>control.staf.DeleteClientServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -64,6 +68,10 @@
         <servlet-name>NewClientServlet</servlet-name>
         <url-pattern>/staf/newclient</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteClientServlet</servlet-name>
+        <url-pattern>/staf/delclient</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
@@ -75,4 +83,5 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
+    
     </web-app>

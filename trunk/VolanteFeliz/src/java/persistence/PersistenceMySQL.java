@@ -137,7 +137,22 @@ public class PersistenceMySQL implements PersistenceInterface {
 
     @Override
     public boolean deleteClient(String codCliente) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Connection conexion = null;
+        PreparedStatement delete = null;
+        boolean ok = false;
+        try{
+            conexion = pool.getConnection();
+            delete = conexion.prepareStatement("DELETE FROM " + nameBD + ".Cliente WHERE codCliente=?");
+            delete.setString(1, codCliente);
+            if (delete.executeUpdate() <= 1){
+                ok = true;
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error borrando cliente de la base de datos", ex.getMessage());
+        }finally{
+            cerrarConexionesYStatementsm(conexion, delete);
+        }
+        return ok;
     }
     
     @Override
