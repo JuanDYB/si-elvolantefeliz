@@ -10,8 +10,32 @@
     </context-param>
     <context-param>
         <param-name>nameBD</param-name>
-        <param-value>???</param-value>
+        <param-value>***</param-value>
     </context-param>
+    <filter>
+        <filter-name>StafFilter</filter-name>
+        <filter-class>control.StafFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>AdministrationFilter</filter-name>
+        <filter-class>control.AdministrationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdministrationFilter</filter-name>
+        <url-pattern>/staf/administration/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>StafFilter</filter-name>
+        <url-pattern>/staf/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
     <listener>
         <description>ServletContextListener</description>
         <listener-class>control.StartListener</listener-class>

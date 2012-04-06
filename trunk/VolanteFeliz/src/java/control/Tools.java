@@ -3,6 +3,7 @@ package control;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -123,6 +124,11 @@ public class Tools {
         return validador.getValidInput("Caracter de permisos", input, "Perm", 1, false);
     }
     
+    public static String validateHost (String input) throws IntrusionException, ValidationException{
+        Validator validador = ESAPI.validator();
+        return validador.getValidInput("HOST", input, "Host", 1, false);
+    }
+    
     public static String validateBool (String input) throws ValidationException{
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Booleano", input, "Bool", 5, false);
@@ -142,6 +148,10 @@ public class Tools {
         } else {
             return false;
         }
+    }
+    
+    public static Locale getLocale() {
+        return new Locale("es", "ES");
     }
     
     public static String leerArchivoClassPath(String ruta) {

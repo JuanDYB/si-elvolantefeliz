@@ -50,10 +50,10 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        WebConfig config = (WebConfig) request.getServletContext().getAttribute("appConfig");
         Integer intentos = (Integer) request.getSession().getAttribute("intentosLogin");
-        int max = Integer.valueOf(((HashMap<String, String>) request.getServletContext().getAttribute("config")).get("app.maxLoginAttempt"));
-        if (intentos != null && intentos <= max) {
-            this.starTimer(request.getSession());
+        if (intentos != null && intentos <= config.getMaxLoginAttempt()) {
+            this.starTimer(request.getSession(), config.getLockTime());
             request.setAttribute("resultados", "Imposible inicio de sesion");
             Tools.anadirMensaje(request, "Intentos de inicio de sesión agotados");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
@@ -123,7 +123,7 @@ public class LoginServlet extends HttpServlet {
         }
     }
     
-    protected void starTimer(final HttpSession sesion) {
+    protected void starTimer(final HttpSession sesion, int time) {
         TimerTask timerTask = new TimerTask() {
 
             @Override
@@ -133,7 +133,6 @@ public class LoginServlet extends HttpServlet {
         };
 
         Timer timer = new Timer();
-        //10 minutos ---> 600.000 milisegundos
-        timer.schedule(timerTask, 600000);
+        timer.schedule(timerTask, time);
     }
 }
