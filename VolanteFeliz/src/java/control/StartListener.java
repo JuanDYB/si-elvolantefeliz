@@ -3,6 +3,7 @@ package control;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.Authenticator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -31,6 +32,7 @@ public class StartListener implements ServletContextListener {
         if (config == null){
             throw new RuntimeException("Ocurrieron errores cargando propiedades de configuracion de la aplicacion");
         }
+        WebConfig appConfig = new WebConfig(config.get("app.maxLoginAttempt"), config.get("app.lockTime"));
         String persistenceMethod = context.getInitParameter("persistenceMethod");
         String recurso = context.getInitParameter("resourceName");
         String nameBD = context.getInitParameter("nameBD");
@@ -61,8 +63,14 @@ public class StartListener implements ServletContextListener {
         }else if (numAdmin == -1){
             throw new RuntimeException("No se pudo obtener numero de empleados con permisos de administracion, la aplicación no se iniciara");
         }
-        sce.getServletContext().setAttribute("config", config);
+        MailSender mail = new MailSender(config);
+        Authenticator autorizacionMail = mail.getAuth();
+        sce.getServletContext().setAttribute("EmailSend", mail);
+        sce.getServletContext().setAttribute("autorizacionMail", autorizacionMail);
         sce.getServletContext().setAttribute("persistence", persistence);
+        sce.getServletContext().setAttribute("appConfig", appConfig);
+        sce.getServletContext().setAttribute("persistence", persistence);
+        
     }
 
     @Override

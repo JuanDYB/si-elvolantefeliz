@@ -87,9 +87,30 @@ public class ConfigLoader {
     }
     
     private boolean processAppOptions (){
-        if (propiedades.containsKey("app.maxLoginAttempt")){
+        if (propiedades.containsKey("app.maxLoginAttempt") && propiedades.containsKey("app.lockTime")){
             try{
                 Tools.validateNumber(propiedades.get("app.maxLoginAttempt"), "Maximo numero de intentos inicio sesion");
+                Tools.validateNumber(propiedades.get("app.lockTime"), "Tiempo de bloqueo de inicio sesion");
+                return true;
+            }catch (ValidationException ex){
+                Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    private boolean processMailConfig(){
+        if (propiedades.containsKey("smtp.host") && propiedades.containsKey("smtp.port") && propiedades.containsKey("smtp.user") 
+                && propiedades.containsKey("smtp.tsl") && propiedades.containsKey("smtp.auth") 
+                && propiedades.containsKey("smtp.pass") && propiedades.containsKey("from")){
+            try{
+                Tools.validateHost(propiedades.get("smtp.host"));
+                Tools.validateNumber(propiedades.get("smtp.port"), "Puerto SMTP");
+                Tools.validateUserName(propiedades.get("smtp.user"));
+                Tools.validateBool(propiedades.get("smtp.tsl"));
+                Tools.validateBool(propiedades.get("smtp.auth"));
+                Tools.validateEmail(propiedades.get("smtp.from"));
                 return true;
             }catch (ValidationException ex){
                 Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
@@ -101,7 +122,7 @@ public class ConfigLoader {
     
     public HashMap <String, String> getProperties (){
         
-        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions()){
+        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions() && this.processMailConfig()){
             return propiedades;
         }
         return null;
