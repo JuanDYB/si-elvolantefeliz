@@ -8,6 +8,9 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.Authenticator;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Validator;
@@ -168,5 +171,27 @@ public class Tools {
 
 
         return texto.toString();
+    }
+    
+    public static boolean emailSend (HttpServletRequest request, String subject, String destination, String contenido){
+        MailSender mailConfig = (MailSender) request.getServletContext().getAttribute("emailSender");
+        Session mailSession = mailConfig.startSession((Authenticator) request.getServletContext().getAttribute("mailAuth"));
+        MimeMessage mensaje = mailConfig.newMail(subject, destination, contenido, mailSession);
+        
+        if (mensaje == null) {
+            request.setAttribute("resultados", "Error enviando mensaje");
+            Tools.anadirMensaje(request, "No se pudo enviar su email, disculpe las molestias");
+            return false;
+        } else {
+            boolean ok = mailConfig.sendEmail(mensaje, mailSession);
+
+            if (ok == true) {
+                Tools.anadirMensaje(request, "Se le ha enviado un email con los datos del registro");
+                return true;
+            } else {
+                Tools.anadirMensaje(request, "No se puedo enviar el email con los datos del registro");
+                return false;
+            }
+        }
     }
 }

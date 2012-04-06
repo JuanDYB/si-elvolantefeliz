@@ -1,8 +1,12 @@
 package control.staf;
 
+import control.MailSender;
 import control.Tools;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.mail.Authenticator;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +68,11 @@ public class NewClientServlet extends HttpServlet {
                 request.setAttribute("resultados", "Resultados de la operación");
                 if (ok) {
                     Tools.anadirMensaje(request, "El cliente ha sido dado de alta correctamente");
+                    if (this.sendMail(request, client)){
+                        Tools.anadirMensaje(request, "Email de registro enviado correctamente");
+                    }else{
+                        Tools.anadirMensaje(request, "Ocurrio un error al mandar email de registro al cliente");
+                    }
                     request.getRequestDispatcher("/staf/index.jsp").forward(request, response);
                     return;
                 } else {
@@ -102,5 +111,10 @@ public class NewClientServlet extends HttpServlet {
             return true;
         }
         return false;
+    }
+    
+    private boolean sendMail (HttpServletRequest request, Cliente client){
+        String contenido = Tools.leerArchivoClassPath("/plantillaRegistro.html");
+        return Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido);
     }
 }

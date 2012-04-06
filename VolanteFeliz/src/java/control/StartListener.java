@@ -65,9 +65,9 @@ public class StartListener implements ServletContextListener {
         }
         MailSender mail = new MailSender(config);
         Authenticator autorizacionMail = mail.getAuth();
-        sce.getServletContext().setAttribute("EmailSend", mail);
-        sce.getServletContext().setAttribute("autorizacionMail", autorizacionMail);
-        sce.getServletContext().setAttribute("persistence", persistence);
+        sce.getServletContext().setAttribute("emailSender", mail);
+        sce.getServletContext().setAttribute("mailAuth", autorizacionMail);
+
         sce.getServletContext().setAttribute("appConfig", appConfig);
         sce.getServletContext().setAttribute("persistence", persistence);
         
