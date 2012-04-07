@@ -13,7 +13,7 @@
     <!-- Nombre de la Base de datos -->
     <context-param>
         <param-name>nameBD</param-name>
-        <param-value>****</param-value>
+        <param-value>***</param-value>
     </context-param>
     <filter>
         <filter-name>StafFilter</filter-name>
