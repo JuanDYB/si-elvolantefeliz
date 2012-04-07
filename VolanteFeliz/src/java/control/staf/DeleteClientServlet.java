@@ -1,6 +1,6 @@
 package control.staf;
 
-import control.Tools;
+import tools.Tools;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;

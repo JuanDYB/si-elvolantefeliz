@@ -1,5 +1,7 @@
 package control;
 
+import tools.WebConfig;
+import tools.Tools;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -75,8 +77,14 @@ public class LoginServlet extends HttpServlet {
                     if (md5PassIntroducida.equals(empl.getPass())) {
                         request.getSession().setAttribute("login", true);
                         request.getSession().setAttribute("empleado", empl);
-
+                        
                         request.getSession().removeAttribute("intentosLogin");
+                        if (request.getSession().getAttribute("requestedPage") != null){
+                            String destination = (String) request.getSession().getAttribute("requestedPage");
+                            request.getSession().removeAttribute("requestedPage");
+                            response.sendRedirect(destination);
+                            return;
+                        }
                         response.sendRedirect("/index.jsp");
                         return;
                     } else {
@@ -133,7 +141,7 @@ public class LoginServlet extends HttpServlet {
 
             @Override
             public void run() {
-                sesion.invalidate();
+                sesion.removeAttribute("intentosLogin");
             }
         };
 

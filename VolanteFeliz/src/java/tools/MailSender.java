@@ -1,5 +1,6 @@
-package control;
+package tools;
 
+import tools.Tools;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Properties;
