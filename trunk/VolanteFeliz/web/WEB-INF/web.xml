@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <!-- Metodo de persistencia -->
     <context-param>
         <param-name>persistenceMethod</param-name>
         <param-value>MySQL</param-value>
     </context-param>
+    <!-- Nombre del recurso JNDI -->
     <context-param>
         <param-name>resourceName</param-name>
         <param-value>jdbc/VolanteFeliz</param-value>
     </context-param>
+    <!-- Nombre de la Base de datos -->
     <context-param>
         <param-name>nameBD</param-name>
         <param-value>***</param-value>
