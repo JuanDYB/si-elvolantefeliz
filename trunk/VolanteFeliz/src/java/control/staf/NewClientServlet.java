@@ -1,7 +1,7 @@
 package control.staf;
 
-import control.MailSender;
-import control.Tools;
+import tools.MailSender;
+import tools.Tools;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.mail.Authenticator;

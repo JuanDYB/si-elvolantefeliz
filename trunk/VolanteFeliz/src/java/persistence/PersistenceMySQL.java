@@ -8,9 +8,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import model.Cliente;
-import model.Empleado;
-import model.Sucursal;
+import model.*;
 
 /**
  *
@@ -107,6 +105,113 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return client;
     }
+    
+    @Override
+    public Empleado getEmployee(String campo, String valor) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        Empleado empl = null;
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Empleado WHERE ?=?");
+            select.setString(1, campo);
+            select.setString(2, valor);
+            rs = select.executeQuery();
+            while (rs.next()){
+                empl = new Empleado (rs.getString("codEmpleado"), rs.getString("UserName"), rs.getString("Pass")
+                        , rs.getString("Nombre"), rs.getString("DNI"), rs.getString("Telefono")
+                        , rs.getString("Direccion"), rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo un empleado de la base de datos", ex);
+            empl = null;
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return empl;
+    }
+    
+    @Override
+    public Incidencia getIncidencia (String codInciencia){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        Incidencia incidencia = null;
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Incidencia WHERE codIncidencia=?");
+            select.setString(1, codInciencia);
+            rs = select.executeQuery();
+            while (rs.next()){
+                TipoIncidencia tipoIncidencia = this.getTipoInciencia(rs.getString("codTipoIncidencia"));
+                if (tipoIncidencia != null){
+                    incidencia = new Incidencia(codInciencia, tipoIncidencia, rs.getDate("Fecha"), rs.getString("Observaciones"), rs.getString("codAlquiler"), rs.getDouble("Precio"));
+                }
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo una incidencia", ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return incidencia;
+    }
+    
+    @Override
+    public TipoIncidencia getTipoInciencia (String codTipoIncidencia){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        TipoIncidencia tipoIncidencia = null;
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".TipoIncidencia WHERE codTipoIncidencia=?");
+            select.setString(1, codTipoIncidencia);
+            rs = select.executeQuery();
+            while (rs.next()){
+                tipoIncidencia = new TipoIncidencia(codTipoIncidencia, rs.getString("Nombre"), rs.getString("Descripcion"), rs.getBoolean("AbonaCliente")); 
+           }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo el tipo de incidencia: " + codTipoIncidencia, ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return tipoIncidencia;
+    }
+    
+    @Override
+    public HashMap <String, Incidencia> getIncidenciasAlquiler(String codAlquiler){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap <String, Incidencia> incidencias = null;
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codAlquiler=?");
+            select.setString(1, codAlquiler);
+            rs = select.executeQuery();
+            incidencias = new HashMap <String, Incidencia> ();
+            while (rs.next()){
+                String codIncidencia = rs.getString("codIncidencia");
+                Incidencia incidencia = this.getIncidencia(codIncidencia);
+                if (incidencia != null){
+                    incidencias.put(codIncidencia, incidencia);
+                }else{
+                    incidencias = null;
+                    break;
+                }
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo incidencias del alquiler: " + codAlquiler, ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return null;
+    }
 
     @Override
     public boolean editClient(String codCliente, Cliente client) {
@@ -153,33 +258,6 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarConexionesYStatementsm(conexion, delete);
         }
         return ok;
-    }
-    
-    @Override
-    public Empleado getEmployee(String campo, String valor) {
-        Connection conexion = null;
-        PreparedStatement select = null;
-        ResultSet rs = null;
-        Empleado empl = null;
-        try{
-            conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Empleado WHERE ?=?");
-            select.setString(1, campo);
-            select.setString(2, valor);
-            rs = select.executeQuery();
-            while (rs.next()){
-                empl = new Empleado (rs.getString("codEmpleado"), rs.getString("UserName"), rs.getString("Pass")
-                        , rs.getString("Nombre"), rs.getString("DNI"), rs.getString("Telefono")
-                        , rs.getString("Direccion"), rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
-            }
-        }catch (SQLException ex){
-            logger.log(Level.SEVERE, "Error obteniendo un empleado de la base de datos", ex);
-            empl = null;
-        }finally{
-            cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
-        }
-        return empl;
     }
 
     @Override

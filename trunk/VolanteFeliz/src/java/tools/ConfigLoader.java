@@ -1,5 +1,6 @@
-package control;
+package tools;
 
+import tools.Tools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;

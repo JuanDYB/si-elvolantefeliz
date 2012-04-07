@@ -10,7 +10,7 @@
     </context-param>
     <context-param>
         <param-name>nameBD</param-name>
-        <param-value>gnrmubyc_volantefeliz</param-value>
+        <param-value>***</param-value>
     </context-param>
     <filter>
         <filter-name>StafFilter</filter-name>
@@ -83,5 +83,4 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-    
-    </web-app>
+</web-app>

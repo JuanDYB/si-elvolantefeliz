@@ -33,4 +33,50 @@ public class Factura {
         this.fechaPago = fechaPago;
         this.pagado = pagado;
     }
+
+    public int getIVA() {
+        return IVA;
+    }
+
+    public ArrayList<String> getCodAlquiler() {
+        return codAlquiler;
+    }
+
+    public String getCodCliente() {
+        return codCliente;
+    }
+
+    public String getCodFactura() {
+        return codFactura;
+    }
+
+    public ArrayList<String> getCodIncidencia() {
+        return codIncidencia;
+    }
+
+    public Date getFechaEmision() {
+        return fechaEmision;
+    }
+
+    public Date getFechaPago() {
+        return fechaPago;
+    }
+
+    public String getFormaPago() {
+        return formaPago;
+    }
+
+    public double getImporte() {
+        return importe;
+    }
+
+    public double getImporteSinIVA() {
+        return importeSinIVA;
+    }
+
+    public boolean isPagado() {
+        return pagado;
+    }
+    
+    
 }
