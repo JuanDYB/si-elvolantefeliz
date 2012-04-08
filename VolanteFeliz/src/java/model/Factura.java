@@ -10,21 +10,21 @@ import java.util.Date;
 public class Factura {
     private String codFactura;
     private String codCliente;
-    private ArrayList <String> codAlquiler;
-    private ArrayList <String> codIncidencia;
+    private ArrayList <Alquiler> Alquileres;
+    private ArrayList <Incidencia> Incidencias;
     private int IVA;
     private double importeSinIVA;
     private double importe;
-    private Date fechaEmision;
+    private String fechaEmision;
     private String formaPago;
-    private Date fechaPago;
+    private String fechaPago;
     private boolean pagado;
 
-    public Factura(String codFactura, String codCliente, ArrayList<String> codAlquiler, ArrayList<String> codIncidencia, int IVA, double importeSinIVA, double importe, Date fechaEmision, String formaPago, Date fechaPago, boolean pagado) {
+    public Factura(String codFactura, String codCliente, ArrayList<Alquiler> codAlquiler, ArrayList<Incidencia> codIncidencia, int IVA, double importeSinIVA, double importe, String fechaEmision, String formaPago, String fechaPago, boolean pagado) {
         this.codFactura = codFactura;
         this.codCliente = codCliente;
-        this.codAlquiler = codAlquiler;
-        this.codIncidencia = codIncidencia;
+        this.Alquileres = codAlquiler;
+        this.Incidencias = codIncidencia;
         this.IVA = IVA;
         this.importeSinIVA = importeSinIVA;
         this.importe = importe;
@@ -38,8 +38,8 @@ public class Factura {
         return IVA;
     }
 
-    public ArrayList<String> getCodAlquiler() {
-        return codAlquiler;
+    public ArrayList<Alquiler> getAlquileres() {
+        return Alquileres;
     }
 
     public String getCodCliente() {
@@ -50,15 +50,15 @@ public class Factura {
         return codFactura;
     }
 
-    public ArrayList<String> getCodIncidencia() {
-        return codIncidencia;
+    public ArrayList<Incidencia> getIncidencias() {
+        return Incidencias;
     }
 
-    public Date getFechaEmision() {
+    public String getFechaEmision() {
         return fechaEmision;
     }
 
-    public Date getFechaPago() {
+    public String getFechaPago() {
         return fechaPago;
     }
 

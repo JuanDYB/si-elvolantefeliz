@@ -20,5 +20,28 @@ public class Tarifa {
         this.precioHora = precioHora;
         this.precioExtra = precioExtra;
     }
-    
+
+    public String getCodTarifa() {
+        return codTarifa;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecioBase() {
+        return precioBase;
+    }
+
+    public double getPrecioExtra() {
+        return precioExtra;
+    }
+
+    public double getPrecioHora() {
+        return precioHora;
+    }
 }

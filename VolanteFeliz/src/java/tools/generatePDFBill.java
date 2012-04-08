@@ -8,17 +8,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Cliente;
-import model.Factura;
-import model.Sucursal;
+import model.*;
 
 /**
  *
  * @author Juan Díez-Yanguas Barber
  */
 public class generatePDFBill {
+
     Factura factura;
     Sucursal suc;
     Cliente cli;
@@ -33,45 +33,63 @@ public class generatePDFBill {
         this.rutaRaizWeb = rutaRaizWeb;
     }
 
-    private void newPDF (){
+    private void newPDF() {
         doc = new Document(PageSize.A4);
-        try{
+        try {
             writer = PdfWriter.getInstance(doc, new FileOutputStream(rutaRaizWeb + "/staf/billFolder/prueba.pdf"));
             doc.open();
-        }catch(FileNotFoundException ex){
-            
-        }catch(DocumentException ex){
-            
+        } catch (FileNotFoundException ex) {
+        } catch (DocumentException ex) {
         }
     }
-    
-    private void setHeaderAndMetadata (){
+
+    private void setHeaderAndMetadata() {
         writer.setPdfVersion(PdfWriter.VERSION_1_7);
         doc.addTitle("Factura El Volante Feliz");
         doc.addSubject("Factura Cliente");
         doc.addCreator("Sistema Gestion El Volante Feliz");
         doc.addAuthor("Eiffel&Cibeles Software");
     }
-    
-    private void closePDF (){
+
+    private void closePDF() {
         doc.close();
     }
-    
-    private boolean doCabecera (){
+
+    private PdfPTable generateTable(float widthPercentage, float[] columns, boolean border) {
+        PdfPTable tabla = new PdfPTable(columns);
+        tabla.setWidthPercentage(100);
+        if (!border) {
+            tabla.getDefaultCell().disableBorderSide(PdfPCell.LEFT);
+            tabla.getDefaultCell().disableBorderSide(PdfPCell.RIGHT);
+            tabla.getDefaultCell().disableBorderSide(PdfPCell.TOP);
+            tabla.getDefaultCell().disableBorderSide(PdfPCell.BOTTOM);
+        }
+        return tabla;
+    }
+
+    private void eliminarBordeCelda(PdfPCell celda) {
+        celda.disableBorderSide(PdfPCell.LEFT);
+        celda.disableBorderSide(PdfPCell.RIGHT);
+        celda.disableBorderSide(PdfPCell.TOP);
+        celda.disableBorderSide(PdfPCell.BOTTOM);
+    }
+
+    private boolean doBillHeader() {
         try {
-            //Logo, Fecha y codigo
-            
+            //Logo
             Image logo = Image.getInstance(rutaRaizWeb + "/images/logo.png");
             logo.setAlignment(Image.ALIGN_LEFT);
             logo.scalePercent(90);
             PdfPCell celdaLogo = new PdfPCell(logo, true);
-            
+            celdaLogo.setRowspan(2);
+
             //Datos Empresa
+            PdfPCell tituloDatosEmpresa = new PdfPCell(new Phrase("Datos Empresa\n", new Font(Font.FontFamily.TIMES_ROMAN, 20)));
+            tituloDatosEmpresa.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            this.eliminarBordeCelda(tituloDatosEmpresa);
+
             PdfPCell celdaDatosEmpresa = new PdfPCell();
             Paragraph datosEmpresa = new Paragraph();
-            Phrase tituloDatosEmpresa = new Phrase("Datos Empresa\n");
-            tituloDatosEmpresa.setFont(new Font(Font.FontFamily.TIMES_ROMAN, 20));
-            celdaDatosEmpresa.addElement(tituloDatosEmpresa);
             Phrase nombreEmpresa = new Phrase("El Volante Feliz S.A\n");
             datosEmpresa.add(nombreEmpresa);
             Phrase nombreSucursalEmpresa = new Phrase("Sucursal: " + suc.getNombre() + "\n");
@@ -80,17 +98,18 @@ public class generatePDFBill {
             datosEmpresa.add(dirEmpresa);
             Phrase telefonoEmpresa = new Phrase("Teléfono: " + suc.getTelefono() + "\n");
             datosEmpresa.add(telefonoEmpresa);
-            Phrase faxEmpresa = new Phrase("Fax: " + suc.getFax() +"\n");
+            Phrase faxEmpresa = new Phrase("Fax: " + suc.getFax() + "\n");
             datosEmpresa.add(faxEmpresa);
-            
+
             celdaDatosEmpresa.addElement(datosEmpresa);
-            
+
             //Datos Cliente
+            PdfPCell tituloDatosCliente = new PdfPCell(new Phrase("Datos Cliente\n", new Font(Font.FontFamily.TIMES_ROMAN, 20)));
+            tituloDatosCliente.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            this.eliminarBordeCelda(tituloDatosCliente);
+
             PdfPCell celdaDatosCliente = new PdfPCell();
             Paragraph datosCliente = new Paragraph();
-            Phrase tituloDatosCliente = new Phrase("Datos Cliente\n");
-            tituloDatosCliente.setFont(new Font(Font.FontFamily.TIMES_ROMAN, 20));
-            celdaDatosCliente.addElement(tituloDatosCliente);
             Phrase nombreCliente = new Phrase("Nombre: " + cli.getName() + "\n");
             celdaDatosCliente.addElement(nombreCliente);
             Phrase dniCliente = new Phrase("DNI: " + cli.getDni() + "\n");
@@ -99,44 +118,164 @@ public class generatePDFBill {
             celdaDatosCliente.addElement(dirCliente);
             Phrase telefonoCliente = new Phrase("Teléfono: " + cli.getTelephone() + "\n");
             celdaDatosCliente.addElement(telefonoCliente);
-            
-            celdaDatosCliente.addElement(datosCliente);
-            
-            //Añadir elementos de tabla
-            float [] columnas = {(float)25, (float)10, (float)50, (float)50};
-            PdfPTable tablaCabecera = new PdfPTable(columnas);
-            tablaCabecera.addCell(celdaLogo);
-            PdfPCell hueco = new PdfPCell();
-            hueco.disableBorderSide(PdfPCell.TOP);
-            hueco.disableBorderSide(PdfPCell.BOTTOM);
-            tablaCabecera.addCell(hueco);
-            tablaCabecera.addCell(celdaDatosEmpresa);
-            tablaCabecera.addCell(celdaDatosCliente);
-            
-            doc.add(tablaCabecera);
-            doc.add(logo);
-            
-            if (cli.getCompany() != null){
+            if (cli.getCompany() != null) {
                 Phrase nombreEmpresaCliente = new Phrase("Empresa: " + cli.getCompany());
                 celdaDatosCliente.addElement(nombreEmpresaCliente);
             }
-                
+
+            celdaDatosCliente.addElement(datosCliente);
+
+            //Codigo y Fecha
+            PdfPCell celdaInfoExtra = new PdfPCell();
+            Phrase codFactura = new Phrase("Codigo Factura: " + factura.getCodFactura() + "\n");
+            celdaInfoExtra.addElement(codFactura);
+            Phrase fecha = new Phrase("Fecha: " + factura.getFechaEmision() + "\n");
+            celdaInfoExtra.addElement(fecha);
+            celdaInfoExtra.setColspan(4);
+
+            //Añadir elementos de tabla
+            float[] columnas = {(float) 25, (float) 10, (float) 50, (float) 50};
+            PdfPTable tablaCabecera = this.generateTable(100, columnas, false);
+            tablaCabecera.addCell(celdaLogo);
+            PdfPCell hueco = new PdfPCell();
+            hueco.setRowspan(2);
+
+            this.eliminarBordeCelda(celdaLogo);
+            this.eliminarBordeCelda(hueco);
+            this.eliminarBordeCelda(celdaDatosEmpresa);
+            this.eliminarBordeCelda(celdaDatosCliente);
+            this.eliminarBordeCelda(celdaInfoExtra);
+
+            tablaCabecera.addCell(hueco);
+            tablaCabecera.addCell(tituloDatosEmpresa);
+            tablaCabecera.addCell(tituloDatosCliente);
+            tablaCabecera.addCell(celdaDatosEmpresa);
+            tablaCabecera.addCell(celdaDatosCliente);
+            tablaCabecera.addCell(celdaInfoExtra);
+
+            doc.add(tablaCabecera);
+
+
+
         } catch (BadElementException ex) {
             Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Medio no válido para generacion pdf", ex);
         } catch (MalformedURLException ex) {
             Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Error obteniendo medio para generacion pdf", ex);
         } catch (IOException ex) {
             Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Error de escritura en PDF", ex);
-        } catch (DocumentException ex){
+        } catch (DocumentException ex) {
             Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Error en documento PDF", ex);
         }
         return false;
     }
-    
-    public void generateBill (){
+
+    private void doBillContent() {
+        //Crear Tabla
+        float[] columnas = {80, 10, 10};
+        PdfPTable tablaContenido = this.generateTable(100, columnas, true);
+
+        //Contenido
+        ArrayList<Alquiler> alquileres = factura.getAlquileres();
+        ArrayList<Incidencia> incidencias = factura.getIncidencias();
+        if (factura.getAlquileres() != null) {
+            //Titulo Alquileres
+            PdfPCell tituloAlquileres = new PdfPCell(new Phrase("Alquileres"));
+            tituloAlquileres.setColspan(3);
+            tituloAlquileres.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            this.eliminarBordeCelda(tituloAlquileres);
+            tablaContenido.addCell(tituloAlquileres);
+
+            //Cabecera Alquileres
+            PdfPCell celdaTitulo1 = new PdfPCell(new Phrase("Descripcion"));
+            PdfPCell celdaTitulo2 = new PdfPCell(new Phrase("Tarifa"));
+            PdfPCell celdaTitulo3 = new PdfPCell(new Phrase("Precio (sin IVA)"));
+            tablaContenido.addCell(celdaTitulo1);
+            tablaContenido.addCell(celdaTitulo2);
+            tablaContenido.addCell(celdaTitulo3);
+
+            //Bucle Alquileres
+            for (int i = 0; i < alquileres.size(); i++) {
+                PdfPCell celdaDescripcion = new PdfPCell();
+                Phrase descripcion = new Phrase("Alquiler: " + alquileres.get(i).getCodAlquiler() + "\n"
+                        + "Marca: " + "Modelo: " + "\n"
+                        + "Fecha Salida: " + "Fecha Fin Alquiler: " + "Fecha Entrega: ");
+                Phrase tarifa = new Phrase(alquileres.get(i).getTarifa().getNombre());
+                Phrase precio = new Phrase(Tools.roundDouble(alquileres.get(i).getPrecio()));
+                tablaContenido.addCell(celdaDescripcion);
+                tablaContenido.addCell(tarifa);
+                tablaContenido.addCell(precio);
+            }
+        }
+        if (factura.getIncidencias() != null) {
+            //Titulo Incidencias
+            PdfPCell tituloIncidencias = new PdfPCell(new Phrase("Alquileres"));
+            tituloIncidencias.setColspan(3);
+            tituloIncidencias.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            this.eliminarBordeCelda(tituloIncidencias);
+            tablaContenido.addCell(tituloIncidencias);
+            
+            //Cabecera Incidencias
+            PdfPCell celdaTitulo1 = new PdfPCell(new Phrase("Descripcion"));
+            celdaTitulo1.setColspan(2);
+            PdfPCell celdaTitulo2 = new PdfPCell(new Phrase("Precio (sin IVA)"));
+            tablaContenido.addCell(celdaTitulo1);
+            tablaContenido.addCell(celdaTitulo2);
+
+
+            //Bucle incidencias
+            for (int i = 0; i < alquileres.size(); i++) {
+                PdfPCell celdaDescripcion = new PdfPCell();
+                Phrase descripcion = new Phrase("Incidencia: " + alquileres.get(i).getCodAlquiler() + "\n"
+                        + "Tipo Incidencia: " + "\n"
+                        + "Fecha Incidencia: " + "\n"
+                        + "Observaciones: ");
+                celdaDescripcion.setColspan(2);
+                Phrase precio = new Phrase(Tools.roundDouble(alquileres.get(i).getPrecio()));
+                tablaContenido.addCell(celdaDescripcion);
+                tablaContenido.addCell(precio);
+            }
+        }
+        
+        //Total de la factura
+        if (alquileres != null || incidencias != null){
+            //Total sin IVA
+            PdfPCell tituloTotalSinIVA = new PdfPCell(new Phrase("Total Sin IVA"));
+            tituloTotalSinIVA.setColspan(2);
+            tituloTotalSinIVA.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            tablaContenido.addCell(tituloTotalSinIVA);
+            
+            PdfPCell totalSinIVA = new PdfPCell(new Phrase(Tools.roundDouble(factura.getImporteSinIVA()) + " €"));
+            totalSinIVA.setColspan(2);
+            tablaContenido.addCell(totalSinIVA);
+            
+            //IVA
+            PdfPCell tituloIVA = new PdfPCell(new Phrase("IVA"));
+            tituloIVA.setColspan(2);
+            tituloIVA.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            tablaContenido.addCell(tituloIVA);
+            
+            PdfPCell IVA = new PdfPCell(new Phrase(factura.getIVA() + " %"));
+            IVA.setColspan(2);
+            tablaContenido.addCell(IVA);
+            
+            //Total con IVA
+            PdfPCell tituloTotalConIVA = new PdfPCell(new Phrase("Total Con IVA"));
+            tituloTotalConIVA.setColspan(2);
+            tituloTotalConIVA.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            tablaContenido.addCell(tituloTotalConIVA);
+            
+            PdfPCell totalConIVA = new PdfPCell(new Phrase(Tools.roundDouble(factura.getImporte()) + " €"));
+            totalConIVA.setColspan(2);
+            tablaContenido.addCell(totalConIVA);
+        }
+
+
+    }
+
+    public void generateBill() {
         this.newPDF();
         this.setHeaderAndMetadata();
-        this.doCabecera();
+        this.doBillHeader();
         this.closePDF();
     }
 }
