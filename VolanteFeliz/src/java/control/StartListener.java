@@ -46,7 +46,7 @@ public class StartListener implements ServletContextListener {
         int numAdmin = persistence.numAdmin();
         if (numAdmin == 0){
             
-                String md5Pass = Tools.generateMD5Signature(Tools.passForMD5(config.get("empl.Pass")));
+                String md5Pass = Tools.generateMD5Signature(Tools.passForMD5(config.get("empl.pass")));
                 if (md5Pass.equals("-1")){
                     throw new RuntimeException("No se ha encontrado el algoritmo MD5");
                 }
@@ -67,10 +67,10 @@ public class StartListener implements ServletContextListener {
         }else if (numAdmin == -1){
             throw new RuntimeException("No se pudo obtener numero de empleados con permisos de administracion, la aplicación no se iniciara");
         }
-        MailSender mail = new MailSender(config);
-        Authenticator autorizacionMail = mail.getAuth();
-        sce.getServletContext().setAttribute("emailSender", mail);
-        sce.getServletContext().setAttribute("mailAuth", autorizacionMail);
+//        MailSender mail = new MailSender(config);
+//        Authenticator autorizacionMail = mail.getAuth();
+//        sce.getServletContext().setAttribute("emailSender", mail);
+//        sce.getServletContext().setAttribute("mailAuth", autorizacionMail);
 
         sce.getServletContext().setAttribute("appConfig", appConfig);
         sce.getServletContext().setAttribute("persistence", persistence);
