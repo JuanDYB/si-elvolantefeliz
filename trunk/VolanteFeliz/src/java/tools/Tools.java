@@ -2,10 +2,9 @@ package tools;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
-import java.util.UUID;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Authenticator;
@@ -155,6 +154,30 @@ public class Tools {
     
     public static Locale getLocale() {
         return new Locale("es", "ES");
+    }
+    
+    public static String getDate() {
+        Calendar cal = Calendar.getInstance(Tools.getLocale());
+        String[] fecha = cal.getTime().toString().split(" ");
+        String[] hora = fecha[3].split(":");
+
+        return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH) + " "
+                + hora[0] + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+    }
+    
+    public static String printDate(String fechaString) {
+        String[] fechaSeparada = fechaString.split("-");
+        Calendar cal = Calendar.getInstance(Tools.getLocale());
+        cal.set(Integer.valueOf(fechaSeparada[0]), Integer.valueOf(fechaSeparada[1]) -1, Integer.valueOf(fechaSeparada[2]));
+        String[] date = cal.getTime().toString().split(" ");
+        return date[2] + "-" + date[1] + "-" + date[5];
+    }
+    
+    public static String roundDouble(double input) {
+        NumberFormat format = DecimalFormat.getNumberInstance();
+        format.setMaximumFractionDigits(2);
+        format.setMinimumFractionDigits(2);
+        return format.format(input);
     }
     
     public static String leerArchivoClassPath(String ruta) {
