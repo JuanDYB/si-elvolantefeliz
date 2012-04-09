@@ -11,8 +11,8 @@ import java.util.Date;
 public class Factura {
     private String codFactura;
     private Cliente codCliente;
-    private ArrayList <Alquiler> Alquileres;
-    private ArrayList <Incidencia> Incidencias;
+    private ArrayList <Alquiler> alquileres;
+    private ArrayList <Incidencia> incidencias;
     private int IVA;
     private BigDecimal importeSinIVA;
     private BigDecimal importe;
@@ -21,4 +21,47 @@ public class Factura {
     private String fechaPago;
     private boolean pagado;
 
+    public int getIVA() {
+        return IVA;
+    }
+
+    public ArrayList<Alquiler> getAlquileres() {
+        return alquileres;
+    }
+
+    public Cliente getCodCliente() {
+        return codCliente;
+    }
+
+    public String getCodFactura() {
+        return codFactura;
+    }
+
+    public String getFechaEmision() {
+        return fechaEmision;
+    }
+
+    public String getFechaPago() {
+        return fechaPago;
+    }
+
+    public String getFormaPago() {
+        return formaPago;
+    }
+
+    public BigDecimal getImporte() {
+        return importe;
+    }
+
+    public BigDecimal getImporteSinIVA() {
+        return importeSinIVA;
+    }
+
+    public ArrayList<Incidencia> getIncidencias() {
+        return incidencias;
+    }
+
+    public boolean isPagado() {
+        return pagado;
+    }
 }

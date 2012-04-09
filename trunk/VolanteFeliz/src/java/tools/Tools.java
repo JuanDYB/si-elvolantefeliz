@@ -1,5 +1,6 @@
 package tools;
 
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -89,8 +90,7 @@ public class Tools {
         return validador.getValidInput("Dirección", input, "Adress", 400, false);
     }
 
-    public static int validateNumber(String input, String context)
-            throws IntrusionException, ValidationException {
+    public static int validateNumber(String input, String context) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInteger(context, input, 0, Integer.MAX_VALUE, false);
     }
@@ -100,8 +100,7 @@ public class Tools {
         return validador.getValidDouble("Precio", input, 0, Double.MAX_VALUE, false);
     }
 
-    public static String validateText(String input, int length, String context)
-            throws IntrusionException, ValidationException {
+    public static String validateText(String input, int length, String context) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput(context, input, "NameDescProd", length, false);
     }
@@ -216,5 +215,10 @@ public class Tools {
                 return false;
             }
         }
+    }
+    
+    public static String printBigDecimal (BigDecimal input){
+        NumberFormat numFormat = NumberFormat.getInstance(Tools.getLocale());
+        return numFormat.format(input);
     }
 }

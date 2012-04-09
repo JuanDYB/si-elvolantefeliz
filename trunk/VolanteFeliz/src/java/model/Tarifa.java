@@ -24,6 +24,34 @@ public class Tarifa {
         this.precioDiaExtra = precioDiaExtra;
         this.precioCombustible = precioCombustible;
     }
+
+    public String getCodTarifa() {
+        return codTarifa;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public BigDecimal getPrecioBase() {
+        return precioBase;
+    }
+
+    public BigDecimal getPrecioCombustible() {
+        return precioCombustible;
+    }
+
+    public BigDecimal getPrecioDia() {
+        return precioDia;
+    }
+
+    public BigDecimal getPrecioDiaExtra() {
+        return precioDiaExtra;
+    }
     
     
 }
