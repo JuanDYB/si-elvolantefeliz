@@ -200,7 +200,7 @@ public class generatePDFBill {
                         + "Marca: " + "Modelo: " + "\n"
                         + "Fecha Salida: " + "Fecha Fin Alquiler: " + "Fecha Entrega: ");
                 Phrase tarifa = new Phrase(alquileres.get(i).getTarifa().getNombre());
-                Phrase precio = new Phrase(Tools.roundDouble(alquileres.get(i).getPrecio()));
+                Phrase precio = new Phrase(Tools.printBigDecimal(alquileres.get(i).getPrecio()));
                 tablaContenido.addCell(celdaDescripcion);
                 tablaContenido.addCell(tarifa);
                 tablaContenido.addCell(precio);
@@ -230,7 +230,7 @@ public class generatePDFBill {
                         + "Fecha Incidencia: " + "\n"
                         + "Observaciones: ");
                 celdaDescripcion.setColspan(2);
-                Phrase precio = new Phrase(Tools.roundDouble(alquileres.get(i).getPrecio()));
+                Phrase precio = new Phrase(Tools.printBigDecimal(alquileres.get(i).getPrecio()));
                 tablaContenido.addCell(celdaDescripcion);
                 tablaContenido.addCell(precio);
             }
@@ -244,7 +244,7 @@ public class generatePDFBill {
             tituloTotalSinIVA.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tablaContenido.addCell(tituloTotalSinIVA);
             
-            PdfPCell totalSinIVA = new PdfPCell(new Phrase(Tools.roundDouble(factura.getImporteSinIVA()) + " €"));
+            PdfPCell totalSinIVA = new PdfPCell(new Phrase(Tools.printBigDecimal(factura.getImporteSinIVA()) + " €"));
             totalSinIVA.setColspan(2);
             tablaContenido.addCell(totalSinIVA);
             
@@ -264,7 +264,7 @@ public class generatePDFBill {
             tituloTotalConIVA.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tablaContenido.addCell(tituloTotalConIVA);
             
-            PdfPCell totalConIVA = new PdfPCell(new Phrase(Tools.roundDouble(factura.getImporte()) + " €"));
+            PdfPCell totalConIVA = new PdfPCell(new Phrase(Tools.printBigDecimal(factura.getImporte()) + " €"));
             totalConIVA.setColspan(2);
             tablaContenido.addCell(totalConIVA);
         }

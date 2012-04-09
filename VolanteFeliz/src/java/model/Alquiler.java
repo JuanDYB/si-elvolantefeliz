@@ -35,6 +35,52 @@ public class Alquiler {
         this.combustibleFin = combustibleFin;
         this.observaciones = observaciones;
     }
-    
-    
+
+    public int getKMFin() {
+        return KMFin;
+    }
+
+    public int getKMInicio() {
+        return KMInicio;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public String getCodAlquiler() {
+        return codAlquiler;
+    }
+
+    public int getCombustibleFin() {
+        return combustibleFin;
+    }
+
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public BigDecimal getPrecio() {
+        return precio;
+    }
+
+    public Tarifa getTarifa() {
+        return tarifa;
+    }
+
+    public Vehiculo getVehiculo() {
+        return vehiculo;
+    }
 }

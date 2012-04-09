@@ -28,4 +28,44 @@ public class Vehiculo {
         this.codRevision = codRevision;
         this.codITV = codITV;
     }
+
+    public int getCapacidadCombustible() {
+        return CapacidadCombustible;
+    }
+
+    public String getCodITV() {
+        return codITV;
+    }
+
+    public String getCodRevision() {
+        return codRevision;
+    }
+
+    public String getCodSucursal() {
+        return codSucursal;
+    }
+
+    public String getCodTipoVehiculo() {
+        return codTipoVehiculo;
+    }
+
+    public String getCodVehiculo() {
+        return codVehiculo;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public String getMatricula() {
+        return matricula;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getnBastidor() {
+        return nBastidor;
+    }
 }
