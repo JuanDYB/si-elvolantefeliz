@@ -1,5 +1,6 @@
 package model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -12,9 +13,9 @@ public class Incidencia {
     private Date fecha;
     private String observaciones;
     private String codAlquiler;
-    private double precio;
+    private BigDecimal precio;
 
-    public Incidencia(String codIncidencia, TipoIncidencia tipoIncidencia, Date fecha, String observaciones, String codAlquiler, double precio) {
+    public Incidencia(String codIncidencia, TipoIncidencia tipoIncidencia, Date fecha, String observaciones, String codAlquiler, BigDecimal precio) {
         this.codIncidencia = codIncidencia;
         this.tipoIncidencia = tipoIncidencia;
         this.fecha = fecha;
@@ -22,4 +23,5 @@ public class Incidencia {
         this.codAlquiler = codAlquiler;
         this.precio = precio;
     }
+
 }

@@ -60,7 +60,7 @@ public class StartListener implements ServletContextListener {
                         config.get("empl.DNI"), config.get("empl.Tlf"), config.get("empl.Addr"), codSuc, 'a');
                 
                 Boolean addSuc = persistence.addSucursal(suc);
-                if (addSuc == null || !addSuc && !persistence.addEmpleado(empl)){
+                if (addSuc == null || !addSuc || !persistence.addEmpleado(empl)){
                     throw new RuntimeException("Error introduciendo sucursal y empleado por defecto de inicio");
                 }
             
