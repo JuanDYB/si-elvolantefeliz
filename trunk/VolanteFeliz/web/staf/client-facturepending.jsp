@@ -4,6 +4,7 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="org.owasp.esapi.errors.ValidationException"%>
 <%@page import="model.Incidencia"%>
 <%@page import="model.Alquiler"%>
 <%@page import="java.util.HashMap"%>
@@ -96,7 +97,12 @@
         if (request.getParameterMap().size() >= 2 && request.getParameter("cli") != null && request.getParameter("type") != null) {
             if (request.getParameter("type").equals("all") || request.getParameter("type").equals("alq") 
                     || request.getParameter("type").equals("inc")){
-                return Tools.validateUUID(request.getParameter("cli"));
+                try{
+                    Tools.validateUUID(request.getParameter("cli"));
+                    return true;
+                }catch (ValidationException ex){
+                    return false;
+                }
             }
         }
         return false;
