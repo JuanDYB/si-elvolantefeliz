@@ -357,7 +357,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             while (rs.next()) {
                 tipoIncidencia = this.getTipoInciencia(rs.getString("codTipoIncidencia"));
                 if (tipoIncidencia != null) {
-                    incidencia = new Incidencia(rs.getString("codIncidencia"), tipoIncidencia, rs.getDate("Fecha"), rs.getString("Observaciones"), rs.getString("codAlquiler"), rs.getBigDecimal("Precio"));
+                    incidencia = new Incidencia(rs.getString("codIncidencia"), tipoIncidencia, rs.getString("codAlquiler"), rs.getString("codCliente"), rs.getDate("Fecha"), rs.getString("Observaciones"), rs.getBigDecimal("Precio"));
                 }
             }
         } catch (SQLException ex) {
@@ -402,7 +402,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public HashMap<String, Cliente> getClientsToFacture(String codSucursal) {
+    public HashMap<String, Cliente> getClientsToFactureRent(String codSucursal) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
@@ -414,6 +414,38 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "FROM " + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFac "
                     + "WHERE cli.codSucursal=? AND alq.codCliente=cli.codCliente AND alq.FechaEntrega IS NOT NULL "
                     + "AND alq.codAlquiler <> alqFac.codAlquiler");
+            select.setString(1, codSucursal);
+            rs = select.executeQuery();
+            clientes = new HashMap<String, Cliente>();
+            while (rs.next()) {
+                String codCliente = rs.getString("cli.codCliente");
+                Cliente cli = new Cliente(codCliente, rs.getString("cli.Nombre"), rs.getString("cli.Email"), rs.getString("cli.DNI"), rs.getString("cli.Direccion"), rs.getString("cli.Telefono"), rs.getString("cli.Empresa"), codSucursal, rs.getInt("cli.Edad"));
+                clientes.put(codCliente, cli);
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar");
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        if (clientes.isEmpty()) {
+            return null;
+        }
+        return clientes;
+    }
+    
+    @Override
+    public HashMap <String, Cliente> getClientsToFactureIncidence (String codSucursal){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Cliente> clientes = null;
+        try {
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
+                    + ", cli.Telefono, cli.Email "
+                    + "FROM " + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFac "
+                    + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND inc.codIncidencia <> incFac.codIncidencia");
             select.setString(1, codSucursal);
             rs = select.executeQuery();
             clientes = new HashMap<String, Cliente>();
@@ -474,6 +506,56 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return alquileresCliente;
 
+    }
+    
+    @Override
+    public HashMap<String, Incidencia> getIncidenciasClienteSinFacturar (Cliente cli){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Incidencia> incidenciasCliente = null;
+        HashMap<String, TipoIncidencia> tiposIncidencias = new HashMap <String, TipoIncidencia> ();
+        try {
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* "
+                    + "FROM " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFact, " + nameBD + ".TipoIncidencia tipoinc"
+                    + "WHERE inc.codCliente=? AND tipoinc.codTipoIncidencia=inc.codTipoIncidencia "
+                    + "AND tipoinc.AbonaCliente=1 AND inc.codIncidencia <> incFact.codIncidencia");
+            select.setString(1, cli.getCodCliente());
+            rs = select.executeQuery();
+            incidenciasCliente = new HashMap<String, Incidencia>();
+            while (rs.next()) {
+                String codIncidencia = rs.getString("inc.codAlquiler");
+                String codTipoIncidencia = rs.getString("inc.codTipoIncidencia");
+                ///////////EVITANDO CONSULTAS IGUALES A TIPO INCIDENCIA ///////////
+                TipoIncidencia tipoIncidencia;
+                if (tiposIncidencias.containsKey(codTipoIncidencia)){
+                    tipoIncidencia = tiposIncidencias.get(codTipoIncidencia);
+                }else{
+                    tipoIncidencia = this.getTipoInciencia(rs.getString("inc.codTipoIncidencia"));
+                    tiposIncidencias.put(codTipoIncidencia, tipoIncidencia);
+                }
+                ///////////FIN EVITACION CONSULTAS IGUALES ///////////
+                if (tipoIncidencia != null) {
+                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler")
+                            , rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"), rs.getBigDecimal("inc.Precio"));
+                    incidenciasCliente.put(codIncidencia, inc);
+                }else{
+                    incidenciasCliente.clear();
+                    break;
+                }
+
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo alquileres de un cliente pendientes de facturar", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        if (incidenciasCliente.isEmpty()) {
+            return null;
+        }
+        return incidenciasCliente;
     }
 
     @Override
