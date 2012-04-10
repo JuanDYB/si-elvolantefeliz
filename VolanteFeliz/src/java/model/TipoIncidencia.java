@@ -16,6 +16,20 @@ public class TipoIncidencia {
         this.descripcion = descripcion;
         this.abonaCliente = abonaCliente;
     }
-    
-    
+
+    public boolean isAbonaCliente() {
+        return abonaCliente;
+    }
+
+    public String getCodTipoIncidencia() {
+        return codTipoIncidencia;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
 }

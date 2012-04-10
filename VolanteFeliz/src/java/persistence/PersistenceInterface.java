@@ -39,9 +39,13 @@ public interface PersistenceInterface {
     
     public HashMap <String, Cliente> getClients (String campo, String valor);
     
-    public HashMap <String, Cliente> getClientsToFacture (String codSucursal);
+    public HashMap <String, Cliente> getClientsToFactureRent (String codSucursal);
+    
+    public HashMap <String, Cliente> getClientsToFactureIncidence (String codSucursal);
     
     public HashMap<String, Alquiler> getAlquileresClienteSinFacturar (Cliente cli);
+    
+    public HashMap<String, Incidencia> getIncidenciasClienteSinFacturar (Cliente cli);
     
     public HashMap <String, Empleado> getEmpleados ();
     

@@ -18,8 +18,17 @@
     <body>
         <h1>Clientes con alquileres sin facturar</h1>
         <% PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-        HashMap <String, Cliente> clientes = persistence.getClientsToFacture(((Empleado)session.getAttribute("empleado")).getCodSucursal());
-        if (clientes == null){ %>
+        HashMap <String, Cliente> clientes1 = persistence.getClientsToFactureRent(((Empleado)session.getAttribute("empleado")).getCodSucursal());
+        HashMap <String, Cliente> clientes2 = persistence.getClientsToFactureIncidence(((Empleado)session.getAttribute("empleado")).getCodSucursal());
+        String type = "alq";
+        if (clientes1 != null && clientes2 != null){
+            clientes1.putAll(clientes2);
+            type = "all";
+        }else if (clientes2 != null && clientes1 == null){
+            clientes1 = clientes2;
+            type = "inc";
+        }
+        if (clientes1 == null){ %>
         <p>
             No se han encontrado clientes en esta sucursal con alquileres pendientes de facturar
         </p>
@@ -27,13 +36,13 @@
         <table border="0" align="center" width="90%">
             <tr><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>Telefono</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-            <% for (Cliente cli: clientes.values()){ %>
+            <% for (Cliente cli: clientes1.values()){ %>
             <tr>
                 <td><%= cli.getName() %></td>
                 <td><%= cli.getDni() %></td>
                 <td><%= cli.getCompany() %></td>
                 <td><%= cli.getTelephone() %></td>
-                <td><a href="/staf/pend-rentingfactureclient.jsp?cli=<%= cli.getCodCliente() %>"><img src="/images/icons/selecCli.png" alt="selecCli" /></a></td>
+                <td><a href="/staf/client-facturepending.jsp?cli=<%= cli.getCodCliente() %>&type=<%= type %>"><img src="/images/icons/selecCli.png" alt="selecCli" /></a></td>
             </tr>
             <% } %>
         </table>
