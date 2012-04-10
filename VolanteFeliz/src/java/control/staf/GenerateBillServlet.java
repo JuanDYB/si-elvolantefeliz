@@ -5,8 +5,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Empleado;
+import model.Factura;
+import model.Sucursal;
 import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
+import persistence.PersistenceInterface;
+import tools.GeneratePDFBill;
 import tools.Tools;
 
 /**
@@ -51,7 +56,6 @@ public class GenerateBillServlet extends HttpServlet {
                 if (alquileres != null) {
                     for (int i = 0; i < alquileres.length; i++){
                         Tools.validateUUID(alquileres[i]);
-                        
                     }
                 }
                 if (incidencias != null) {
@@ -59,6 +63,14 @@ public class GenerateBillServlet extends HttpServlet {
                         Tools.validateUUID(incidencias[i]);
                     }
                 }
+                PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
+                Factura factura = persistence.generarFactura(alquileres, incidencias);
+                Sucursal suc = persistence.getSucursal(((Empleado)request.getSession().getAttribute("empleado")).getCodSucursal());
+                GeneratePDFBill pdfBill = new GeneratePDFBill(factura, null, request.getServletContext().getRealPath("/"));
+                pdfBill.generateBill();
+                
+                
+                
             }catch(ValidationException ex){
                 request.setAttribute("resultados", "Validacion de parametros fallida");
                 Tools.anadirMensaje(request, ex.getUserMessage());

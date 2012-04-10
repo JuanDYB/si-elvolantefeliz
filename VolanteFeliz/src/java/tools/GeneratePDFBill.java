@@ -17,7 +17,7 @@ import model.*;
  *
  * @author Juan Díez-Yanguas Barber
  */
-public class generatePDFBill {
+public class GeneratePDFBill {
 
     Factura factura;
     Sucursal suc;
@@ -26,10 +26,10 @@ public class generatePDFBill {
     Document doc;
     PdfWriter writer;
 
-    public generatePDFBill(Factura factura, Sucursal suc, Cliente cli, String rutaRaizWeb) {
+    public GeneratePDFBill(Factura factura, Sucursal suc, String rutaRaizWeb) {
         this.factura = factura;
         this.suc = suc;
-        this.cli = cli;
+        this.cli = factura.getCliente();
         this.rutaRaizWeb = rutaRaizWeb;
     }
 
@@ -158,13 +158,13 @@ public class generatePDFBill {
 
 
         } catch (BadElementException ex) {
-            Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Medio no válido para generacion pdf", ex);
+            Logger.getLogger(GeneratePDFBill.class.getName()).log(Level.SEVERE, "Medio no válido para generacion pdf", ex);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Error obteniendo medio para generacion pdf", ex);
+            Logger.getLogger(GeneratePDFBill.class.getName()).log(Level.SEVERE, "Error obteniendo medio para generacion pdf", ex);
         } catch (IOException ex) {
-            Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Error de escritura en PDF", ex);
+            Logger.getLogger(GeneratePDFBill.class.getName()).log(Level.SEVERE, "Error de escritura en PDF", ex);
         } catch (DocumentException ex) {
-            Logger.getLogger(generatePDFBill.class.getName()).log(Level.SEVERE, "Error en documento PDF", ex);
+            Logger.getLogger(GeneratePDFBill.class.getName()).log(Level.SEVERE, "Error en documento PDF", ex);
         }
         return false;
     }

@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Factura {
     private String codFactura;
-    private Cliente codCliente;
+    private Cliente cliente;
     private ArrayList <Alquiler> alquileres;
     private ArrayList <Incidencia> incidencias;
     private int IVA;
@@ -29,8 +29,8 @@ public class Factura {
         return alquileres;
     }
 
-    public Cliente getCodCliente() {
-        return codCliente;
+    public Cliente getCliente() {
+        return cliente;
     }
 
     public String getCodFactura() {

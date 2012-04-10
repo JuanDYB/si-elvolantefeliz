@@ -237,6 +237,34 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return empl;
     }
+    
+    @Override
+    public Incidencia getIncidencia(String campo, String valor) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        Incidencia incidencia = null;
+        TipoIncidencia tipoIncidencia = null;
+        try {
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Incidencia WHERE ?=?");
+            select.setString(1, campo);
+            select.setString(2, valor);
+            rs = select.executeQuery();
+            while (rs.next()) {
+                tipoIncidencia = this.getTipoInciencia(rs.getString("codTipoIncidencia"));
+                if (tipoIncidencia != null) {
+                    incidencia = new Incidencia(rs.getString("codIncidencia"), tipoIncidencia, rs.getString("codAlquiler"), rs.getString("codCliente"), rs.getDate("Fecha"), rs.getString("Observaciones"), rs.getBigDecimal("Precio"));
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo una incidencia de la base de datos", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return incidencia;
+    }
 
     @Override
     public Vehiculo getVehiculo(String campo, String valor) {
@@ -284,6 +312,11 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return tarifa;
     }
+    
+    @Override
+    public Sucursal getSucursal (String codSucursal){
+        
+    }
 
     @Override
     public HashMap<String, Incidencia> getIncidenciasAlquiler(String codAlquiler) {
@@ -312,7 +345,8 @@ public class PersistenceMySQL implements PersistenceInterface {
         } finally {
             cerrarResultSets(rs);
             cerrarConexionesYStatementsm(conexion, select);
-        }if (incidencias.isEmpty()){
+        }
+        if (incidencias.isEmpty()) {
             return null;
         }
         return incidencias;
@@ -339,34 +373,6 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarConexionesYStatementsm(conexion, select);
         }
         return tipoIncidencia;
-    }
-
-    @Override
-    public Incidencia getIncidencia(String campo, String valor) {
-        Connection conexion = null;
-        PreparedStatement select = null;
-        ResultSet rs = null;
-        Incidencia incidencia = null;
-        TipoIncidencia tipoIncidencia = null;
-        try {
-            conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Incidencia WHERE ?=?");
-            select.setString(1, campo);
-            select.setString(2, valor);
-            rs = select.executeQuery();
-            while (rs.next()) {
-                tipoIncidencia = this.getTipoInciencia(rs.getString("codTipoIncidencia"));
-                if (tipoIncidencia != null) {
-                    incidencia = new Incidencia(rs.getString("codIncidencia"), tipoIncidencia, rs.getString("codAlquiler"), rs.getString("codCliente"), rs.getDate("Fecha"), rs.getString("Observaciones"), rs.getBigDecimal("Precio"));
-                }
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error obteniendo una incidencia de la base de datos", ex);
-        } finally {
-            cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
-        }
-        return incidencia;
     }
 
     @Override
@@ -433,9 +439,9 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return clientes;
     }
-    
+
     @Override
-    public HashMap <String, Cliente> getClientsToFactureIncidence (String codSucursal){
+    public HashMap<String, Cliente> getClientsToFactureIncidence(String codSucursal) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
@@ -484,12 +490,9 @@ public class PersistenceMySQL implements PersistenceInterface {
                 Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("alq.codVehiculo"));
                 Tarifa tarif = this.getTarifa(rs.getString("alq.codTarifa"));
                 if (vehicle != null && tarif != null) {
-                    Alquiler alq = new Alquiler(codAlquiler, cli, vehicle, tarif
-                            , rs.getDate("alq.FechaInicio"), rs.getDate("alq.FechaFin"), rs.getDate("alq.FechaEntrega")
-                            , rs.getBigDecimal("alq.Importe"), rs.getInt("alq.KMInicio"), rs.getInt("alq.KMFin")
-                            , rs.getInt("alq.CombustibleFin"), rs.getString("alq.Observaciones"));
+                    Alquiler alq = new Alquiler(codAlquiler, cli, vehicle, tarif, rs.getDate("alq.FechaInicio"), rs.getDate("alq.FechaFin"), rs.getDate("alq.FechaEntrega"), rs.getBigDecimal("alq.Importe"), rs.getInt("alq.KMInicio"), rs.getInt("alq.KMFin"), rs.getInt("alq.CombustibleFin"), rs.getString("alq.Observaciones"));
                     alquileresCliente.put(codAlquiler, alq);
-                }else{
+                } else {
                     alquileresCliente.clear();
                     break;
                 }
@@ -507,14 +510,14 @@ public class PersistenceMySQL implements PersistenceInterface {
         return alquileresCliente;
 
     }
-    
+
     @Override
-    public HashMap<String, Incidencia> getIncidenciasClienteSinFacturar (Cliente cli){
+    public HashMap<String, Incidencia> getIncidenciasClienteSinFacturar(Cliente cli) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         HashMap<String, Incidencia> incidenciasCliente = null;
-        HashMap<String, TipoIncidencia> tiposIncidencias = new HashMap <String, TipoIncidencia> ();
+        HashMap<String, TipoIncidencia> tiposIncidencias = new HashMap<String, TipoIncidencia>();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT* "
@@ -529,18 +532,17 @@ public class PersistenceMySQL implements PersistenceInterface {
                 String codTipoIncidencia = rs.getString("inc.codTipoIncidencia");
                 ///////////EVITANDO CONSULTAS IGUALES A TIPO INCIDENCIA ///////////
                 TipoIncidencia tipoIncidencia;
-                if (tiposIncidencias.containsKey(codTipoIncidencia)){
+                if (tiposIncidencias.containsKey(codTipoIncidencia)) {
                     tipoIncidencia = tiposIncidencias.get(codTipoIncidencia);
-                }else{
+                } else {
                     tipoIncidencia = this.getTipoInciencia(rs.getString("inc.codTipoIncidencia"));
                     tiposIncidencias.put(codTipoIncidencia, tipoIncidencia);
                 }
                 ///////////FIN EVITACION CONSULTAS IGUALES ///////////
                 if (tipoIncidencia != null) {
-                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler")
-                            , rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"), rs.getBigDecimal("inc.Precio"));
+                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler"), rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"), rs.getBigDecimal("inc.Precio"));
                     incidenciasCliente.put(codIncidencia, inc);
-                }else{
+                } else {
                     incidenciasCliente.clear();
                     break;
                 }
@@ -598,6 +600,34 @@ public class PersistenceMySQL implements PersistenceInterface {
             return null;
         }
         return alquileres;
+    }
+
+    @Override
+    public Factura generarFactura(String[] alquileres, String[] incidencias) {
+        Connection conexion = null;
+        PreparedStatement selectAlquiler = null;
+        ResultSet rsAlquiler = null;
+        HashMap <String, Alquiler> alquileresFacturar = new HashMap <String, Alquiler> ();
+        try {
+            conexion = pool.getConnection();
+            conexion.setAutoCommit(false);
+            selectAlquiler = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFact "
+                    + "WHERE alq.codAlquiler=? AND alq.FechaEntrega IS NOT NULL AND alq.codAlquiler <> alqFact.codAlquiler");
+            if (alquileres != null) {
+                for (int i = 0; i < alquileres.length; i++) {
+                    selectAlquiler.setString(1, alquileres[i]);
+                    rsAlquiler = selectAlquiler.executeQuery();
+                    while (rsAlquiler.next()){
+                        Alquiler = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), , null, null, null, null, null, BigDecimal.ZERO, i, i, i, nameBD)
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error creando una factura en la base de datos");
+        } finally {
+            cerrarResultSets(rsAlquiler);
+            cerrarConexionesYStatementsm(conexion, selectAlquiler);
+        }
     }
 
     @Override

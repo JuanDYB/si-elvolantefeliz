@@ -35,6 +35,8 @@ public interface PersistenceInterface {
     
     public Tarifa getTarifa (String codTarifa);
     
+    public Sucursal getSucursal (String codSucursal);
+    
     public HashMap <String, Incidencia> getIncidenciasAlquiler(String codAlquiler);
     
     public HashMap <String, Cliente> getClients (String campo, String valor);
@@ -43,13 +45,16 @@ public interface PersistenceInterface {
     
     public HashMap <String, Cliente> getClientsToFactureIncidence (String codSucursal);
     
-    public HashMap<String, Alquiler> getAlquileresClienteSinFacturar (Cliente cli);
+    public HashMap <String, Alquiler> getAlquileresClienteSinFacturar (Cliente cli);
     
-    public HashMap<String, Incidencia> getIncidenciasClienteSinFacturar (Cliente cli);
+    public HashMap <String, Incidencia> getIncidenciasClienteSinFacturar (Cliente cli);
     
     public HashMap <String, Empleado> getEmpleados ();
     
     public HashMap <String, Alquiler> getAlquileres (String campo, String valor);
+    
+    //Ha de ser una operación unitaria para evitar problemas de concurrencia (otro empleado factura 
+    public Factura generarFactura (String [] alquileres, String [] incidencias);
     
     public boolean editClient (String codCliente, Cliente client);
     
