@@ -61,12 +61,11 @@ public class Tools {
         return UUID.randomUUID().toString();
     }
 
-    public static boolean validateUUID(String uuid) {
+    public static void validateUUID(String uuid) throws ValidationException {
         try {
             UUID.fromString(uuid);
-            return true;
         } catch (IllegalArgumentException ex) {
-            return false;
+            throw new ValidationException("Validacion UUID Fallida", "Validacion UUID Fallida");
         }
     }
     
@@ -130,7 +129,7 @@ public class Tools {
         return validador.getValidInput("HOST", input, "Host", 1, false);
     }
     
-    public static String validateBool (String input) throws ValidationException{
+    public static String validateBool (String input) throws IntrusionException, ValidationException{
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Booleano", input, "Bool", 5, false);
 //        if ((Boolean)Boolean.getBoolean(input) == null){

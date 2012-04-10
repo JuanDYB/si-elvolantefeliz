@@ -32,7 +32,7 @@
         <p>
             No se han encontrado clientes en esta sucursal con alquileres pendientes de facturar
         </p>
-        <% }else{ %>
+        <% }else{ %>    
         <table border="0" align="center" width="90%">
             <tr><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>Telefono</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -46,7 +46,6 @@
             </tr>
             <% } %>
         </table>
-        
-         
+        <% } %>   
     </body>
 </html>
