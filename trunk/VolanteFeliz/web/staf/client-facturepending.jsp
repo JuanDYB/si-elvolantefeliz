@@ -29,24 +29,24 @@
         <% if (cliente != null) {
             boolean empresa = false;
             if(cliente.getCompany() != null) empresa = true;
+            HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
+            HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
+            if (alqSinFacturarCliente != null || incSinFacturarCliente != null){
         %>
-        <form name="elegirAlquileresFactura" action="" >
+        <form name="elegirAlquileresFactura" action="" method="POST" >
+        <% } %>
             <% if (type.equals("all") || type.equals("alq")){ %>
-        <h1>Alquileres pendientes de facturar del cliente: <%= cliente.getName()%></h1>
-        <% HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
-            if (alqSinFacturarCliente != null) { %>
-            <table border="0" align="center" width="90%">
-                <% if (!empresa) { %>
-                <select>
-                <% } %>
+                <h1>Alquileres pendientes de facturar del cliente: <%= cliente.getName()%></h1>
+                <% if (alqSinFacturarCliente != null) { %>
+                <table border="0" align="center" width="90%">
                 <tr><td>&nbsp;</td><td>Fecha Salida</td><td>Fecha Entrada</td><td>Matricula</td><td>Marca</td><td>Importe</td></tr>
                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                 <% for (Alquiler alq: alqSinFacturarCliente.values()){ %>
                 <tr>
                     <% if (empresa) { %>
-                    <td><input type="checkbox" name="alquiler" value="<%= alq.getCodAlquiler() %>" /></td>
+                        <td><input type="checkbox" name="alquiler" value="<%= alq.getCodAlquiler() %>" /></td>
                     <% } else{ %>
-                    <td><option value="<%= alq.getCodAlquiler() %>"></option></td>
+                        <td><input type="Radio" name="alquiler" value="<%= alq.getCodAlquiler() %>"></option></td>
                     <% } %>
                     <td><%= alq.getFechaInicio() %></td>
                     <td><%= alq.getFechaEntrega() %></td>
@@ -55,35 +55,37 @@
                     <td><%= Tools.printBigDecimal(alq.getPrecio()) %></td>
                 </tr>
                 <% } %>
-            </table>
-            <% if (!empresa){ %>
-            </select>
+                </table>
+            } else{ %>
+                <p>Ha ocurrido un error obteniendo los datos de los alquileres del cliente pendientes de facturar</p>
             <% }
-                           }
+            }
             if (type.equals("all") || type.equals("inc")){ 
-                HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
                 if (incSinFacturarCliente != null){ %>
-            <h1>Incidencias pendientes de facturar</h1>
-            <table border="0" align="center" width="90%">
-                <tr><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Precio</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <% for (Incidencia inc: incSinFacturarCliente.values()){ %>
-                <tr>
-                    <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia() %>" /></td>
-                    <td><%= inc.getTipoIncidencia().getNombre() %></td>
-                    <td><%= inc.getFecha() %></td>
-                    <td><%= Tools.printBigDecimal(inc.getPrecio()) %></td>
-                </tr>
+                    <h1>Incidencias pendientes de facturar</h1>
+                    <table border="0" align="center" width="90%">
+                    <tr><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Precio</td></tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    <% for (Incidencia inc: incSinFacturarCliente.values()){ %>
+                    <tr>
+                        <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia() %>" /></td>
+                        <td><%= inc.getTipoIncidencia().getNombre() %></td>
+                        <td><%= inc.getFecha() %></td>
+                        <td><%= Tools.printBigDecimal(inc.getPrecio()) %></td>
+                    </tr>
+                    <% } %>
+                    </table>
+                <% }else{ %>
+                    <p>Ha ocurrido un error obteniendo las incidencias pendientes de facturar</p>
                 <% } %>
-            </table>
             
-            <% } %>
+        
+        <% } %>
+        <% if (alqSinFacturarCliente != null || incSinFacturarCliente != null){ %>
             <input name="genFact" type="submit" value="Generar Factura" />
-            </form>
-            <% } else {%>
-            <p>Ha ocurrido un error obteniendo los datos de los alquileres del cliente pendientes de facturar</p>
-            <% }
-        } else {%>
+        </form>
+        <% } %>
+         } else {%>
         <h1>Cliente no encontrado</h1>
         <p>El cliente seleccionado para ver los alquileres pendientes de facturar no se ha encontrado</p>
         <% }%>
