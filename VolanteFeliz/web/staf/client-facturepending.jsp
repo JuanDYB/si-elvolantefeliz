@@ -4,6 +4,7 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="model.Empleado"%>
 <%@page import="org.owasp.esapi.errors.ValidationException"%>
 <%@page import="model.Incidencia"%>
 <%@page import="model.Alquiler"%>
@@ -27,7 +28,7 @@
         <title>Alquileres pendientes de facturar</title>
     </head>
     <body>
-        <% if (cliente != null) {
+        <% if (cliente != null && cliente.getCodSucursal().equals(((Empleado)session.getAttribute("empleado")).getCodSucursal())) {
             boolean empresa = false;
             if(cliente.getCompany() != null) empresa = true;
             HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
@@ -83,10 +84,14 @@
         
         <% } %>
         <% if (alqSinFacturarCliente != null || incSinFacturarCliente != null){ %>
+            <input name="client" type="hidden" value="<%= cliente.getCodCliente() %>" />
             <input name="genFact" type="submit" value="Generar Factura" />
         </form>
-        <% } %>
-         } else {%>
+        <% }
+         } else if (cliente.getCodSucursal().equals(((Empleado)session.getAttribute("empleado")).getCodSucursal())){%>
+            <h1>Sucursal incorrecta</h1>
+            <p>El cliente seleccionado no pertenece a la sucursal que esta intentando facturar el cliente</p>
+         <% }else{ %>
         <h1>Cliente no encontrado</h1>
         <p>El cliente seleccionado para ver los alquileres pendientes de facturar no se ha encontrado</p>
         <% }%>
