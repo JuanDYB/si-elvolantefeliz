@@ -3,13 +3,14 @@ package tools;
 import tools.Tools;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
 
 /**
  *
@@ -58,6 +59,42 @@ public class MailSender {
             Logger.getLogger(MailSender.class.getName()).log(Level.WARNING, "Error creando el mensaje", ex);
             return null;
         }    
+    }
+    
+    public MimeMessage newMultipartMail (HashMap<String, String> adjuntos, String subject, String to, String content, Session sesion){  
+        Calendar cal = Calendar.getInstance(Tools.getLocale());
+        try{
+        MimeMultipart multiParte = new MimeMultipart();
+        
+//        BodyPart contenido = new MimeBodyPart();
+//        contenido.setText(content, "UTF-8", "html");
+//        multiParte.addBodyPart(contenido);
+        
+        Iterator <String> iterador = adjuntos.keySet().iterator();
+        while (iterador.hasNext()){
+            String ruta = iterador.next();
+            BodyPart adjunto = new MimeBodyPart();
+            adjunto.setDataHandler(new DataHandler(new FileDataSource(ruta)));
+            adjunto.setFileName(adjuntos.get(ruta));
+            multiParte.addBodyPart(adjunto);
+        }
+        
+        MimeMessage mensaje = new MimeMessage(sesion);
+        mensaje.setFrom(new InternetAddress(configSMTP.getProperty("mail.from")));
+        mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        mensaje.addHeader( "Content-Type", "text/html; charset=UTF-8" );
+        mensaje.setSubject(subject, "UTF-8");
+        mensaje.setContent(multiParte);
+        mensaje.setText(content, "UTF-8", "html");
+        return mensaje;
+        
+        } catch (AddressException ex){
+            Logger.getLogger(MailSender.class.getName()).log(Level.WARNING, "Dirección de destino no válida", ex);
+            return null;
+        } catch (MessagingException ex){
+            Logger.getLogger(MailSender.class.getName()).log(Level.WARNING, "Error creando el mensaje", ex);
+            return null;
+        }
     }
     
     public boolean sendEmail (Message mensaje, Session sesion){
