@@ -110,6 +110,6 @@ public class NewClientServlet extends HttpServlet {
     
     private boolean sendMail (HttpServletRequest request, Cliente client){
         String contenido = Tools.leerArchivoClassPath("/plantillaRegistro.html");
-        return Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido);
+        return Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido, null);
     }
 }

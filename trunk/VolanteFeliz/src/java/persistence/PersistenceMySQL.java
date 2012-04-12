@@ -138,15 +138,16 @@ public class PersistenceMySQL implements PersistenceInterface {
         boolean ok = false;
         try {
             conexion = pool.getConnection();
-            insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Empleado VALUES (?,?,?,?,?,?,?,?)");
+            insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Empleado VALUES (?,?,?,?,?,?,?,?,?)");
             insert.setString(1, empl.getCodEmpleado());
-            insert.setString(2, empl.getUserName());
-            insert.setString(3, empl.getName());
-            insert.setString(4, empl.getDni());
-            insert.setString(5, empl.getTelephone());
-            insert.setString(6, empl.getAddress());
-            insert.setString(7, empl.getCodSucursal());
-            insert.setObject(8, empl.getPermisos(), java.sql.Types.CHAR, 1);
+            insert.setString(2, empl.getName());
+            insert.setString(3, empl.getUserName());
+            insert.setString(4, empl.getPass());
+            insert.setString(5, empl.getDni());
+            insert.setString(6, empl.getTelephone());
+            insert.setString(7, empl.getAddress());
+            insert.setString(8, empl.getCodSucursal());
+            insert.setObject(9, empl.getPermisos(), java.sql.Types.CHAR, 1);
             if (insert.executeUpdate() == 1) {
                 ok = true;
             }
@@ -221,12 +222,11 @@ public class PersistenceMySQL implements PersistenceInterface {
         Empleado empl = null;
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Empleado WHERE ?=?");
-            select.setString(1, campo);
-            select.setString(2, valor);
+            select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Empleado WHERE " + campo + "=?");
+            select.setString(1, valor);
             rs = select.executeQuery();
             while (rs.next()) {
-                empl = new Empleado(rs.getString("codEmpleado"), rs.getString("UserName"), rs.getString("Pass"), rs.getString("Nombre"), rs.getString("DNI"), rs.getString("Telefono"), rs.getString("Direccion"), rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
+                empl = new Empleado(rs.getString("codEmpleado"), rs.getString("Nombre"), rs.getString("UserName"), rs.getString("Pass"), rs.getString("DNI"), rs.getString("Telefono"), rs.getString("Direccion"), rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un empleado de la base de datos", ex);
@@ -315,7 +315,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     
     @Override
     public Sucursal getSucursal (String codSucursal){
-        
+        return null;
     }
 
     @Override
@@ -618,7 +618,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     selectAlquiler.setString(1, alquileres[i]);
                     rsAlquiler = selectAlquiler.executeQuery();
                     while (rsAlquiler.next()){
-                        Alquiler = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), , null, null, null, null, null, BigDecimal.ZERO, i, i, i, nameBD)
+//                        Alquiler = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), , null, null, null, null, null, BigDecimal.ZERO, i, i, i, nameBD)
                     }
                 }
             }
@@ -628,6 +628,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarResultSets(rsAlquiler);
             cerrarConexionesYStatementsm(conexion, selectAlquiler);
         }
+        return null;
     }
 
     @Override

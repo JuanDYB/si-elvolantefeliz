@@ -1,6 +1,7 @@
 package control.staf;
 
 import java.io.IOException;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -78,6 +79,11 @@ public class GenerateBillServlet extends HttpServlet {
                     Sucursal suc = persistence.getSucursal(((Empleado) request.getSession().getAttribute("empleado")).getCodSucursal());
                     GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
                     pdfBill.generateBill();
+                    if (this.sendMail(request, client, factura)){
+                        Tools.anadirMensaje(request, "Email de factura enviado correctamente");
+                    }else{
+                        Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente");
+                    }
 
 
 
@@ -112,5 +118,12 @@ public class GenerateBillServlet extends HttpServlet {
 
         }
         return false;
+    }
+    
+    private boolean sendMail (HttpServletRequest request, Cliente client, Factura factura){
+        String contenido = Tools.leerArchivoClassPath("/plantillaFactura.html");
+        HashMap <String, String> adjuntos = new HashMap <String, String> ();
+        adjuntos.put(request.getServletContext().getRealPath("/staf/billFolder/" + factura.getCodFactura() + ".pdf"), "Factura_" + factura.getCodFactura() + ".pdf");
+        return Tools.emailSend(request, "El Volante Feliz: Factura", client.getEmail(), contenido, adjuntos);
     }
 }
