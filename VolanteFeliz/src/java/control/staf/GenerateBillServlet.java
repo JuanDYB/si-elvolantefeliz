@@ -75,7 +75,7 @@ public class GenerateBillServlet extends HttpServlet {
                         }
                     }
 
-                    Factura factura = persistence.generarFactura(alquileres, incidencias);
+                    Factura factura = persistence.generarFactura(client, alquileres, incidencias);
                     Sucursal suc = persistence.getSucursal(((Empleado) request.getSession().getAttribute("empleado")).getCodSucursal());
                     GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
                     pdfBill.generateBill();

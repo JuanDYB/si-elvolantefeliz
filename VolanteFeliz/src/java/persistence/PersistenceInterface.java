@@ -28,11 +28,11 @@ public interface PersistenceInterface {
     
     public Empleado getEmployee (String campo, String valor);
     
-    public TipoIncidencia getTipoInciencia (String codTipoIncidencia);
+    public TipoIncidencia getTipoInciencia (String codTipoIncidencia, Connection conExterna);
     
     public Incidencia getIncidencia (String campo, String valor);
     
-    public Vehiculo getVehiculo (String campo, String valor);
+    public Vehiculo getVehiculo (String campo, String valor, Connection conExterna);
     
     public Tarifa getTarifa (String codTarifa, Connection conExterna);
     
