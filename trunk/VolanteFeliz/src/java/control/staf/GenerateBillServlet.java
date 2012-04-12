@@ -61,7 +61,7 @@ public class GenerateBillServlet extends HttpServlet {
                     if (alquileres != null) {
                         if (client.getCompany() == null && alquileres.length > 1){
                             request.setAttribute("resultados", "Factura incorrecta");
-                            Tools.anadirMensaje(request, "No se puede facturar más de un alquiler a un cliente particular");
+                            Tools.anadirMensaje(request, "No se puede facturar más de un alquiler a un cliente particular", 'w');
                             request.getRequestDispatcher("/WEB-INF/errrorPage").forward(request, response);
                             return;
                         }
@@ -80,20 +80,20 @@ public class GenerateBillServlet extends HttpServlet {
                     GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
                     pdfBill.generateBill();
                     if (this.sendMail(request, client, factura)){
-                        Tools.anadirMensaje(request, "Email de factura enviado correctamente");
+                        Tools.anadirMensaje(request, "Email de factura enviado correctamente", 'o');
                     }else{
-                        Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente");
+                        Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente", 'w');
                     }
 
 
 
                 } catch (ValidationException ex) {
                     request.setAttribute("resultados", "Validacion de parametros fallida");
-                    Tools.anadirMensaje(request, ex.getUserMessage());
+                    Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
                 }
             } else {
                 request.setAttribute("resultados", "Sucursal incorrecta");
-                Tools.anadirMensaje(request, "Esta intentando generar la factura de un cliente que no pertenece a esta sucursal");
+                Tools.anadirMensaje(request, "Esta intentando generar la factura de un cliente que no pertenece a esta sucursal", 'w');
             }
         } else {
         }

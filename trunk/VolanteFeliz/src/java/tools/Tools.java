@@ -45,7 +45,8 @@ public class Tools {
         return strbuf.toString();
     }
     
-    public static void anadirMensaje(HttpServletRequest request, String msg) {
+    public static void anadirMensaje(HttpServletRequest request, String msg, char severity) {
+        request.setAttribute("severityResultados", severity);
         if (request.getAttribute("listaResultados") == null) {
             ArrayList<String> lista = new ArrayList<String>();
             lista.add(msg);
@@ -194,6 +195,11 @@ public class Tools {
         return texto.toString();
     }
     
+    public static String printBigDecimal (BigDecimal input){
+        NumberFormat numFormat = NumberFormat.getInstance(Tools.getLocale());
+        return numFormat.format(input);
+    }
+    
     public static boolean emailSend (HttpServletRequest request, String subject, String destination, String contenido, HashMap <String, String> adjuntos){
         MailSender mailConfig = (MailSender) request.getServletContext().getAttribute("emailSender");
         Session mailSession = mailConfig.startSession((Authenticator) request.getServletContext().getAttribute("mailAuth"));
@@ -206,24 +212,9 @@ public class Tools {
         }
         
         if (mensaje == null) {
-            request.setAttribute("resultados", "Error enviando mensaje");
-            Tools.anadirMensaje(request, "No se pudo enviar su email, disculpe las molestias");
             return false;
         } else {
-            boolean ok = mailConfig.sendEmail(mensaje, mailSession);
-
-            if (ok == true) {
-                Tools.anadirMensaje(request, "Se le ha enviado un email con los datos del registro");
-                return true;
-            } else {
-                Tools.anadirMensaje(request, "No se puedo enviar el email con los datos del registro");
-                return false;
-            }
+            return mailConfig.sendEmail(mensaje, mailSession);
         }
-    }
-    
-    public static String printBigDecimal (BigDecimal input){
-        NumberFormat numFormat = NumberFormat.getInstance(Tools.getLocale());
-        return numFormat.format(input);
     }
 }

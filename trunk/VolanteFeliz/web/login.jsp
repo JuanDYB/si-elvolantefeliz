@@ -27,23 +27,7 @@
             <div id="page">
 
                 <!-- Columna izquierda -->
-                <div class="width25 floatLeft leftColumn">
-                    <h1>Intro</h1>
-
-                    <ul class="sideMenu">
-                        <li class="here">
-                            Dynamic Template
-                            <ul>
-                                <li><a href="#fluidity" title="Jump to section">Book of Fluidity</a></li>
-                                <li><a href="#coding" title="Jump to section">Coding</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="http://fullahead.org" title="Goto Fullahead">Fullahead</a></li>
-                        <li><a href="http://threetree.net" title="Goto Threetree">ThreeTree</a></li>
-                    </ul>
-
-                </div>
-                <!-- FIN COLUMNA IZQUIERDA -->
+                <%@include file="/WEB-INF/include/menuLateral.jsp" %>
 
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
@@ -57,11 +41,11 @@
                         <form name="login" method="POST" action="/login">
                             <p>
                                 <label>Nombre de usuario</label>
-                                <input name="userName" type="text" />
+                                <input name="userName" type="text" size="50" maxlength="20" />
                             </p>
                             <p>
                                 <label>Contrase&ntilde;a</label>
-                                <input name="pass" type="password" />
+                                <input name="pass" type="password" size="50" maxlength="50" />
                             </p>
                             <p>
                                 <input name="login" type="submit" value="Iniciar Sesi&oacute;n" />
@@ -84,5 +68,6 @@
 
 <%! String menuInicio = ""; %>
 <%! String menuLogin = "class=\"here\""; %>
+<%! String menuPreferencias = ""; %>
 <%! String menuAbout = ""; %>
 <%! String menuContacto = ""; %>

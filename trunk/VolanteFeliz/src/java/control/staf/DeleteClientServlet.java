@@ -36,17 +36,17 @@ public class DeleteClientServlet extends HttpServlet {
                 boolean ok = persistence.deleteClient(codCliente);
                 request.setAttribute("resultados", "Resultado operación");
                 if (ok) {
-                    Tools.anadirMensaje(request, "Cliente eliminado satisfactoriamente");
+                    Tools.anadirMensaje(request, "Cliente eliminado satisfactoriamente", 'o');
                 } else {
-                    Tools.anadirMensaje(request, "Ocurrieron errores al eliminar el cliente");
+                    Tools.anadirMensaje(request, "Ocurrieron errores al eliminar el cliente", 'e');
                 }
             } catch (ValidationException ex) {
                 request.setAttribute("resultados", "Validacion de parámetros fallida");
-                Tools.anadirMensaje(request, ex.getUserMessage());
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             }
         } else {
             request.setAttribute("resultados", "Formulario incorrecto");
-            Tools.anadirMensaje(request, "Formulario recibido no esperado");
+            Tools.anadirMensaje(request, "Formulario recibido no esperado", 'w');
         }
         request.getRequestDispatcher("/staf/clientadministration.jsp").forward(request, response);
     }
