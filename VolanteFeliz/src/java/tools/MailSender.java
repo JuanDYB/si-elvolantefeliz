@@ -61,7 +61,7 @@ public class MailSender {
         }    
     }
     
-    public MimeMessage newMultipartMail (HashMap<String, String> adjuntos, String subject, String to, String content, Session sesion){  
+    public MimeMessage newMail (HashMap<String, String> adjuntos, String subject, String to, String content, Session sesion){  
         Calendar cal = Calendar.getInstance(Tools.getLocale());
         try{
         MimeMultipart multiParte = new MimeMultipart();
@@ -99,17 +99,19 @@ public class MailSender {
     
     public boolean sendEmail (Message mensaje, Session sesion){
         Transport transporte = null;
+        boolean ok = false;
         try {
-            transporte = sesion.getTransport("smtp");
-            transporte.connect(configSMTP.getProperty("mail.smtp.user"), pass);
-            transporte.sendMessage(mensaje, mensaje.getAllRecipients());
-            return true;
+            if (mensaje != null){
+                transporte = sesion.getTransport("smtp");
+                transporte.connect(configSMTP.getProperty("mail.smtp.user"), pass);
+                transporte.sendMessage(mensaje, mensaje.getAllRecipients());
+                ok = true;
+            }
         } catch (MessagingException ex) {
             Logger.getLogger(MailSender.class.getName()).log(Level.SEVERE, "Error conectando con SMTP", ex);
-            return false;
         }
         finally{
-            if(transporte != null)  {
+            if(transporte != null) {
                 try {
                     transporte.close();
                 } catch (MessagingException ex) {
@@ -117,6 +119,7 @@ public class MailSender {
                 }
             }
         }
+        return ok;
     }
     
     private class SMTPAuthenticator extends javax.mail.Authenticator {

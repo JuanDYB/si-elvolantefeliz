@@ -89,7 +89,7 @@ public class LoginServlet extends HttpServlet {
                         return;
                     } else {
                         request.setAttribute("resultados", "Usuario/contraseña desconocidos");
-                        Tools.anadirMensaje(request, "Inicio de sesion fallido");
+                        Tools.anadirMensaje(request, "Inicio de sesión fallido");
                     }
                 } else {
                     request.setAttribute("resultados", "Usuario/contraseña desconocidos");

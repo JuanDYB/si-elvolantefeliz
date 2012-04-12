@@ -15,7 +15,7 @@ public class Empleado {
     private String codSucursal;
     private char permisos;  //'a': Administrador   'e': Empleado normal
 
-    public Empleado(String codEmpleado, String userName, String pass, String name, String dni, String telephone, String address, String codSucursal, char permisos) {
+    public Empleado(String codEmpleado, String name, String userName, String pass, String dni, String telephone, String address, String codSucursal, char permisos) {
         this.codEmpleado = codEmpleado;
         this.userName = userName;
         this.pass = pass;

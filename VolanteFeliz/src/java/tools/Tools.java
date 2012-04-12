@@ -194,10 +194,16 @@ public class Tools {
         return texto.toString();
     }
     
-    public static boolean emailSend (HttpServletRequest request, String subject, String destination, String contenido){
+    public static boolean emailSend (HttpServletRequest request, String subject, String destination, String contenido, HashMap <String, String> adjuntos){
         MailSender mailConfig = (MailSender) request.getServletContext().getAttribute("emailSender");
         Session mailSession = mailConfig.startSession((Authenticator) request.getServletContext().getAttribute("mailAuth"));
-        MimeMessage mensaje = mailConfig.newMail(subject, destination, contenido, mailSession);
+        
+        MimeMessage mensaje = null;
+        if (adjuntos == null){
+            mensaje = mailConfig.newMail(subject, destination, contenido, mailSession);
+        } else{
+            mensaje = mailConfig.newMail(adjuntos, subject, destination, contenido, mailSession);
+        }
         
         if (mensaje == null) {
             request.setAttribute("resultados", "Error enviando mensaje");

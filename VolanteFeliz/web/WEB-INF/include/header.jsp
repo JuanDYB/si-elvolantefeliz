@@ -4,14 +4,16 @@
     Author     : JuanDYB
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
-</html>
+<!-- Cabecera: Título, subtítulo e imágenes --> 
+<div id="header">
+
+    <div id="title">
+        <h1>El Volante Feliz</h1>
+    </div>
+
+    <img src="/images/template/balloons.gif" alt="balloons" class="balloons" />
+    <img src="/images/template/header_left.jpg" alt="left slice" class="left" />
+    <img src="/images/template/header_right.jpg" alt="right slice" class="right" />
+
+</div>
+<!-- FIN CABECERA -->
