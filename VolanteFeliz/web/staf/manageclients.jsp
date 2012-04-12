@@ -1,6 +1,6 @@
 <%-- 
-    Document   : index
-    Created on : 23-mar-2012, 10:08:22
+    Document   : manageclients
+    Created on : 12-abr-2012, 11:35:09
     Author     : Juan Díez-Yanguas Barber
 --%>
 
@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
         <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
-        <title>Inicio</title>
+        <title>Gesti&oacute;n de Clientes</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -35,9 +35,29 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>El Volante Feliz</h1>
+                        <h1>Gestión de Clientes</h1>
+                        <h2>Operaciones disponibles</h2>
+                        <ul>
+                            <li><a href="/staf/newclient.jsp">Dar de alta nuevo cliente</a></li>
+                        </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
+                    
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <h1>Clientes disponibles</h1>
+                        <p>
+                            A continuación se muestra una tabla con los clientes pertenecientes a la sucursal
+                            , dentro de la tabla podrá realizar las acciones que considere necesarias con un determinado cliente
+                        </p>
+                        
+                        <table border="0" align="center" width="90%" >
+                            
+                            
+                        </table>
+                    </div>
+                    <!-- FIN BLOQUE GRADIENTE -->
+                    
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
 
@@ -51,8 +71,8 @@
     </body>
 </html>
 
-<%! String menuInicio = "class=\"here\""; %>
+<%! String menuInicio = ""; %>
 <%! String menuLogin = ""; %>
-<%! String menuPreferencias = ""; %>
+<%! String menuPreferencias = "class=\"here\""; %>
 <%! String menuAbout = ""; %>
 <%! String menuContacto = ""; %>

@@ -3,8 +3,6 @@ package control;
 import tools.WebConfig;
 import tools.Tools;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.servlet.ServletException;
@@ -62,7 +60,7 @@ public class LoginServlet extends HttpServlet {
         if (intentos != null && intentos <= config.getMaxLoginAttempt()) {
             this.starTimer(request.getSession(), config.getLockTime());
             request.setAttribute("resultados", "Imposible inicio de sesion");
-            Tools.anadirMensaje(request, "Intentos de inicio de sesión agotados");
+            Tools.anadirMensaje(request, "Intentos de inicio de sesión agotados", 'w');
             request.getRequestDispatcher("/login.jsp").forward(request, response);
             return;
         }
@@ -89,22 +87,22 @@ public class LoginServlet extends HttpServlet {
                         return;
                     } else {
                         request.setAttribute("resultados", "Usuario/contraseña desconocidos");
-                        Tools.anadirMensaje(request, "Inicio de sesión fallido");
+                        Tools.anadirMensaje(request, "Inicio de sesión fallido", 'w');
                     }
                 } else {
                     request.setAttribute("resultados", "Usuario/contraseña desconocidos");
-                    Tools.anadirMensaje(request, "Inicio de sesion fallido");
+                    Tools.anadirMensaje(request, "Inicio de sesion fallido", 'w');
                 }
             } catch (IntrusionException ex) {
                 request.setAttribute("resultados", "Detectada una intrusión");
-                Tools.anadirMensaje(request, ex.getUserMessage());
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             } catch (ValidationException ex) {
                 request.setAttribute("resultados", "Error en el formulario");
-                Tools.anadirMensaje(request, ex.getUserMessage());
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             }
         } else {
             request.setAttribute("resultados", "Formulario incorrecto");
-            Tools.anadirMensaje(request, "No se esperaba este formulario");
+            Tools.anadirMensaje(request, "No se esperaba este formulario", 'w');
         }
         this.incrementarIntentos(request.getSession());
         request.getRequestDispatcher("/login.jsp").forward(request, response);

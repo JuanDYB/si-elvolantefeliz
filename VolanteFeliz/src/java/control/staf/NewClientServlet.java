@@ -62,28 +62,28 @@ public class NewClientServlet extends HttpServlet {
                 boolean ok = persistence.addClient(client);
                 request.setAttribute("resultados", "Resultados de la operación");
                 if (ok) {
-                    Tools.anadirMensaje(request, "El cliente ha sido dado de alta correctamente");
+                    Tools.anadirMensaje(request, "El cliente ha sido dado de alta correctamente", 'o');
                     if (this.sendMail(request, client)){
-                        Tools.anadirMensaje(request, "Email de registro enviado correctamente");
+                        Tools.anadirMensaje(request, "Email de registro enviado correctamente", 'o');
                     }else{
-                        Tools.anadirMensaje(request, "Ocurrio un error al mandar email de registro al cliente");
+                        Tools.anadirMensaje(request, "Ocurrio un error al mandar email de registro al cliente", 'w');
                     }
                     request.getRequestDispatcher("/staf/index.jsp").forward(request, response);
                     return;
                 } else {
-                    Tools.anadirMensaje(request, "Ha ocurrido un error al dar de alta el nuevo cliente"); 
+                    Tools.anadirMensaje(request, "Ha ocurrido un error al dar de alta el nuevo cliente", 'e'); 
                 }
             } catch (IntrusionException ex) {
                 request.setAttribute("resultados", "Detectada una intrusión");
-                Tools.anadirMensaje(request, ex.getUserMessage());
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             } catch (ValidationException ex) {
                 request.setAttribute("resultados", "Error en el formulario");
-                Tools.anadirMensaje(request, ex.getUserMessage());
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             }
 
         } else {
             request.setAttribute("resultados", "Formulario incorrecto");
-            Tools.anadirMensaje(request, "No se esperaba este formulario");
+            Tools.anadirMensaje(request, "No se esperaba este formulario", 'w');
         }
         request.getRequestDispatcher("/staf/newclient.jsp").forward(request, response);   
     }
