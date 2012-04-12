@@ -11,7 +11,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import model.*;
-import org.hibernate.validator.util.privilegedactions.GetDeclaredField;
 
 /**
  *
@@ -291,13 +290,17 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Tarifa getTarifa(String codTarifa) {
+    public Tarifa getTarifa(String codTarifa, Connection conExterna) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         Tarifa tarifa = null;
         try {
-            conexion = pool.getConnection();
+            if (conExterna != null){
+                conexion = conExterna;
+            }else {
+                conexion = pool.getConnection();
+            }
             select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Tarifa WHERE codTarifa=?");
             select.setString(1, codTarifa);
             rs = select.executeQuery();
@@ -315,7 +318,26 @@ public class PersistenceMySQL implements PersistenceInterface {
     
     @Override
     public Sucursal getSucursal (String codSucursal){
-        return null;
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        Sucursal suc = null;
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Sucursal WHERE codSucursal=?");
+            select.setString(1, codSucursal);
+            rs = select.executeQuery();
+            while(rs.next()){
+                suc = new Sucursal (codSucursal, rs.getString("Nombre"), rs.getString("Direccion")
+                        , rs.getString("Telefono"), rs.getString("Fax"), rs.getBoolean("Central"));
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo los datos de una sucursal");
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return suc;
     }
 
     @Override
@@ -384,16 +406,17 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             if (campo != null && valor != null) {
-                select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Clientes WHERE ?=?");
-                select.setString(1, campo);
-                select.setString(2, valor);
+                select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Clientes WHERE " + campo + "=?");
+                select.setString(1, valor);
             } else {
                 select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Clientes");
             }
             rs = select.executeQuery();
             while (rs != null) {
-                //Cliente cl = new Cliente();
-                //clientes.put(cl.getCodCliente(), cl);
+                Cliente cl = new Cliente(rs.getString("codCliente"), rs.getString("Nombre"), rs.getString("Email")
+                        , rs.getString("DNI"), rs.getString("Direccion"), rs.getString("Telefono")
+                        , rs.getString("Empresa"), rs.getString("codSucursal"), rs.getInt("Edad"));
+                clientes.put(cl.getCodCliente(), cl);
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error en la obtencion de clientes", ex);
@@ -488,7 +511,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             while (rs.next()) {
                 String codAlquiler = rs.getString("alq.codAlquiler");
                 Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("alq.codVehiculo"));
-                Tarifa tarif = this.getTarifa(rs.getString("alq.codTarifa"));
+                Tarifa tarif = this.getTarifa(rs.getString("alq.codTarifa"), null);
                 if (vehicle != null && tarif != null) {
                     Alquiler alq = new Alquiler(codAlquiler, cli, vehicle, tarif, rs.getDate("alq.FechaInicio"), rs.getDate("alq.FechaFin"), rs.getDate("alq.FechaEntrega"), rs.getBigDecimal("alq.Importe"), rs.getInt("alq.KMInicio"), rs.getInt("alq.KMFin"), rs.getInt("alq.CombustibleFin"), rs.getString("alq.Observaciones"));
                     alquileresCliente.put(codAlquiler, alq);
@@ -586,7 +609,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 String codAlquiler = rs.getString("codAlquiler");
                 Cliente cliAlquiler = this.getClient(rs.getString("codCliente"));
                 Vehiculo vehiculo = this.getVehiculo("codVehiculo", rs.getString("codVehiculo"));
-                Tarifa tarifa = this.getTarifa(rs.getString("codTarifa"));
+                Tarifa tarifa = this.getTarifa(rs.getString("codTarifa"), null);
                 Alquiler alquiler = new Alquiler(codAlquiler, cliAlquiler, vehiculo, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin"), rs.getDate("FechaEntrega"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio"), rs.getInt("KMFin"), rs.getInt("combustibleFin"), rs.getString("Observaciones"));
                 alquileres.put(codAlquiler, alquiler);
             }
@@ -603,32 +626,73 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Factura generarFactura(String[] alquileres, String[] incidencias) {
+    public Factura generarFactura(Cliente cli, String[] alquileres, String[] incidencias) {
         Connection conexion = null;
         PreparedStatement selectAlquiler = null;
+        PreparedStatement selectVehiculo = null;
+        PreparedStatement selectTarifa = null;
         ResultSet rsAlquiler = null;
+        ResultSet rsVehiculo = null;
+        ResultSet rsTarifa = null;
         HashMap <String, Alquiler> alquileresFacturar = new HashMap <String, Alquiler> ();
+        HashMap <String, Incidencia> incidenciasFacturar = new HashMap <String, Incidencia> ();
+        Factura factura = null;
         try {
             conexion = pool.getConnection();
             conexion.setAutoCommit(false);
             selectAlquiler = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFact "
                     + "WHERE alq.codAlquiler=? AND alq.FechaEntrega IS NOT NULL AND alq.codAlquiler <> alqFact.codAlquiler");
+            selectVehiculo = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Vehiculo WHERE codVehiculo=?");
+            selectTarifa = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Tarifa WHERE codTarifa=?");
             if (alquileres != null) {
                 for (int i = 0; i < alquileres.length; i++) {
                     selectAlquiler.setString(1, alquileres[i]);
                     rsAlquiler = selectAlquiler.executeQuery();
+                    
                     while (rsAlquiler.next()){
-//                        Alquiler = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), , null, null, null, null, null, BigDecimal.ZERO, i, i, i, nameBD)
+                        Vehiculo vehicle = null;
+                        Tarifa tarifa = null;
+                        
+                        selectVehiculo.setString(1, rsAlquiler.getString("alq.codVehiculo"));
+                        rsVehiculo = selectVehiculo.executeQuery();
+                        
+                        selectTarifa.setString(1, rsAlquiler.getString("alq.codTarifa"));
+                        rsTarifa = selectTarifa.executeQuery();
+                        
+                        while (rsTarifa.next()){
+                            tarifa = new Tarifa(rsTarifa.getString("codTarifa"), rsTarifa.getString("Nombre")
+                                    , rsTarifa.getString("Descripcion"), rsTarifa.getBigDecimal("PrecioBase")
+                                    , rsTarifa.getBigDecimal("PrecioDia"), rsTarifa.getBigDecimal("PrecioDiaExtra")
+                                    , rsTarifa.getBigDecimal("PrecioCombustible"));
+                        }
+                        
+                        while (rsVehiculo.next()){
+                            vehicle = new Vehiculo (rsVehiculo.getString("codVehiculo"), rsVehiculo.getString("Matricula")
+                                    , rsVehiculo.getString("Marca"), rsVehiculo.getString("Modelo"), rsVehiculo.getString("nBastidor")
+                                    , rsVehiculo.getInt("CapCombustible"), rsVehiculo.getString("codSucursal")
+                                    , rsVehiculo.getString("codTipoVehiculo"), rsVehiculo.getString("codRevision"), rsVehiculo.getString("codITV"));
+                        }
+                        Alquiler alq= new Alquiler(rsAlquiler.getString("alq.codAlquiler"), cli, vehicle, tarifa
+                                , rsAlquiler.getDate("alg.FechaInicio"), rsAlquiler.getDate("FechaFin")
+                                , rsAlquiler.getDate("FechaEntrega"), rsAlquiler.getBigDecimal("Precio")
+                                , rsAlquiler.getInt("KMInicio"), rsAlquiler.getInt("KMFin")
+                                , rsAlquiler.getInt("CombustibleFin"), rsAlquiler.getString("Observaciones"));
                     }
+                    selectAlquiler.clearParameters();
+                    rsAlquiler.close();
+                    selectTarifa.clearParameters();
+                    rsTarifa.close();
+                    selectVehiculo.clearParameters();
+                    rsVehiculo.close();
                 }
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error creando una factura en la base de datos");
         } finally {
-            cerrarResultSets(rsAlquiler);
-            cerrarConexionesYStatementsm(conexion, selectAlquiler);
+            cerrarResultSets(rsAlquiler, rsVehiculo, rsTarifa);
+            cerrarConexionesYStatementsm(conexion, selectAlquiler, selectVehiculo, selectTarifa);
         }
-        return null;
+        return factura;
     }
 
     @Override
