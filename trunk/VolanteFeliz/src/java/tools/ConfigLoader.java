@@ -1,11 +1,9 @@
 package tools;
 
-import tools.Tools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +26,7 @@ public class ConfigLoader {
         Properties prop = null;
         boolean ok = false;
         try{
-            is = ConfigLoader.class.getResourceAsStream(this.nombreFichero);
+            is = ConfigLoader.class.getResourceAsStream("/" + this.nombreFichero);
             prop = new Properties();
             prop.load(is);
             Enumeration <String> propNames = (Enumeration <String>) prop.propertyNames();
@@ -88,10 +86,12 @@ public class ConfigLoader {
     }
     
     private boolean processAppOptions (){
-        if (propiedades.containsKey("app.maxLoginAttempt") && propiedades.containsKey("app.lockTime")){
+        if (propiedades.containsKey("app.maxLoginAttempt") && propiedades.containsKey("app.lockTime") 
+                && propiedades.containsKey("app.IVA")){
             try{
                 Tools.validateNumber(propiedades.get("app.maxLoginAttempt"), "Maximo numero de intentos inicio sesion");
                 Tools.validateNumber(propiedades.get("app.lockTime"), "Tiempo de bloqueo de inicio sesion");
+                Tools.validateNumber(propiedades.get("app.IVA"), "IVA");
                 return true;
             }catch (ValidationException ex){
                 Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
@@ -123,7 +123,7 @@ public class ConfigLoader {
     
     public HashMap <String, String> getProperties (){
         
-        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions() && this.processMailConfig()){
+        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions() /*&& this.processMailConfig()*/){
             return propiedades;
         }
         return null;

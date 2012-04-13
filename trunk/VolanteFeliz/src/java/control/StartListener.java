@@ -36,7 +36,7 @@ public class StartListener implements ServletContextListener {
         if (config == null){
             throw new RuntimeException("Ocurrieron errores cargando propiedades de configuracion de la aplicacion");
         }
-        WebConfig appConfig = new WebConfig(config.get("app.maxLoginAttempt"), config.get("app.lockTime"));
+        WebConfig appConfig = new WebConfig(config.get("app.maxLoginAttempt"), config.get("app.lockTime"), config.get("app.IVA"));
         String persistenceMethod = context.getInitParameter("persistenceMethod");
         String recurso = context.getInitParameter("resourceName");
         String nameBD = context.getInitParameter("nameBD");
