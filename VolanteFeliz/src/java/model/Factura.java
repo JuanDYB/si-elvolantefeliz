@@ -3,6 +3,7 @@ package model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  *
@@ -11,21 +12,35 @@ import java.util.Date;
 public class Factura {
     private String codFactura;
     private Cliente cliente;
-    private ArrayList <Alquiler> alquileres;
-    private ArrayList <Incidencia> incidencias;
+    private HashMap <String, Alquiler> alquileres;
+    private HashMap <String, Incidencia> incidencias;
     private int IVA;
     private BigDecimal importeSinIVA;
     private BigDecimal importe;
-    private String fechaEmision;
+    private Date fechaEmision;
     private String formaPago;
-    private String fechaPago;
+    private Date fechaPago;
     private boolean pagado;
+
+    public Factura(String codFactura, Cliente cliente, HashMap <String, Alquiler> alquileres, HashMap <String, Incidencia> incidencias, int IVA, BigDecimal importeSinIVA, BigDecimal importe, Date fechaEmision, String formaPago, Date fechaPago, boolean pagado) {
+        this.codFactura = codFactura;
+        this.cliente = cliente;
+        this.alquileres = alquileres;
+        this.incidencias = incidencias;
+        this.IVA = IVA;
+        this.importeSinIVA = importeSinIVA;
+        this.importe = importe;
+        this.fechaEmision = fechaEmision;
+        this.formaPago = formaPago;
+        this.fechaPago = fechaPago;
+        this.pagado = pagado;
+    }
 
     public int getIVA() {
         return IVA;
     }
 
-    public ArrayList<Alquiler> getAlquileres() {
+    public HashMap <String, Alquiler> getAlquileres() {
         return alquileres;
     }
 
@@ -37,11 +52,11 @@ public class Factura {
         return codFactura;
     }
 
-    public String getFechaEmision() {
+    public Date getFechaEmision() {
         return fechaEmision;
     }
 
-    public String getFechaPago() {
+    public Date getFechaPago() {
         return fechaPago;
     }
 
@@ -57,11 +72,12 @@ public class Factura {
         return importeSinIVA;
     }
 
-    public ArrayList<Incidencia> getIncidencias() {
+    public HashMap <String, Incidencia> getIncidencias() {
         return incidencias;
     }
 
     public boolean isPagado() {
         return pagado;
     }
+    
 }

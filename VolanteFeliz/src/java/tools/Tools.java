@@ -155,13 +155,15 @@ public class Tools {
         return new Locale("es", "ES");
     }
     
-    public static String getDate() {
-        Calendar cal = Calendar.getInstance(Tools.getLocale());
-        String[] fecha = cal.getTime().toString().split(" ");
-        String[] hora = fecha[3].split(":");
-
-        return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH) + " "
-                + hora[0] + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+    public static Date getDate() {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance(Tools.getLocale());
+        return cal.getTime();
+    }
+    
+    public static String printDate(Date fecha) {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.setTime(fecha);
+        return cal.get(GregorianCalendar.DAY_OF_MONTH) + "-" + cal.get(GregorianCalendar.MONTH) + "-" + cal.get(GregorianCalendar.YEAR);
     }
     
     public static String printDate(String fechaString) {
