@@ -1,6 +1,7 @@
 package persistence;
 
 import java.sql.Connection;
+import java.util.Date;
 import java.util.HashMap;
 import model.*;
 
@@ -38,6 +39,10 @@ public interface PersistenceInterface {
     
     public Sucursal getSucursal (String codSucursal);
     
+    public Alquiler getAlquiler (String codAlquiler);
+    
+    public Factura getFactura (String codFactura);
+    
     public HashMap <String, Incidencia> getIncidenciasAlquiler(String codAlquiler);
     
     public HashMap <String, Cliente> getClients (String campo, String valor);
@@ -56,6 +61,10 @@ public interface PersistenceInterface {
     
     //Ha de ser una operación unitaria para evitar problemas de concurrencia (otro empleado factura 
     public Factura generarFactura (Cliente cli, String [] alquileres, String [] incidencias);
+    
+    public HashMap<String, Factura> getFacturasPendientesPago(Cliente cli);
+    
+    public boolean pagarFactura (String codFactura, Date fechaPago, String formaPago);
     
     public boolean editClient (String codCliente, Cliente client);
     

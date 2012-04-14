@@ -10,7 +10,6 @@ import model.Cliente;
 import model.Empleado;
 import model.Factura;
 import model.Sucursal;
-import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
 import tools.GeneratePDFBill;
@@ -50,7 +49,6 @@ public class GenerateBillServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         if (validateForm(request)) {
             PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
             Cliente client = persistence.getClient(request.getParameter("cliente"));

@@ -46,7 +46,6 @@ public class NewClientServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         if (this.validateForm(request)) {
             try {
                 String nombre = Tools.validateName(request.getParameter("name"), 200, "Nombre cliente", false);
