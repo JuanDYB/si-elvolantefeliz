@@ -32,7 +32,6 @@ public class DeleteClientServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         if (validateForm(request)) {
             try {
                 String codCliente = request.getParameter("cli");

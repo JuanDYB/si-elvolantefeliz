@@ -1062,6 +1062,14 @@ Vanadium.setupValidatorTypes = function() {
       return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z0-9 \,\º\-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+\ [0-9]{5}-[a-zA-Z \-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
     }, 'Introduzca una direcci&oacute;n v&aacute;lida'],
     //
+    ['DNI', function (v) {
+      return Vanadium.validators_types['empty'].test(v) || /^[0-9]{8}[A-Za-z]{1}$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+    }, 'Introduzca un DNI v&aacute;lido'],
+    //
+    ['user_name', function (v) {
+      return Vanadium.validators_types['empty'].test(v) || /^[a-z][a-z0-9_]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+    }, 'Introduzca un nombre de usuario v&acute;lido'],
+    //
     ['asciialpha', function (v) {
       return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
     }, 'Please use ASCII letters only (a-z) in this field.'],

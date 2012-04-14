@@ -14,6 +14,10 @@
 %>
 <html>
     <head>
+        <script type="text/javascript" src="/scripts/jquery-1.7.2.js"></script>
+        <script type="text/javascript" src="/scripts/vanadium.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
@@ -63,11 +67,11 @@
                         <form name="login" method="POST" action="/login">
                             <p>
                                 <label>Nombre de usuario</label>
-                                <input name="userName" type="text" size="50" maxlength="20" />
+                                <input name="userName" type="text" size="50" maxlength="20" class=":required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Contrase&ntilde;a</label>
-                                <input name="pass" type="password" size="50" maxlength="50" />
+                                <input name="pass" type="password" size="50" maxlength="50" class=":password :required :only_on_blur" />
                             </p>
                             <p>
                                 <input name="login" type="submit" value="Iniciar Sesi&oacute;n" />

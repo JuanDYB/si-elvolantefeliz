@@ -344,6 +344,91 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
+    public Alquiler getAlquiler(String codAlquiler) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        Alquiler alq = null;
+        try {
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE codAlquiler=?");
+            select.setString(1, codAlquiler);
+            rs = select.executeQuery();
+            while (rs.next()) {
+                Cliente cli = this.getClient(rs.getString("codCliente"));
+                Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("codVehiculo"), null);
+                Tarifa tarifa = this.getTarifa(rs.getString("codTarifa"), null);
+                if (cli != null && vehicle != null && tarifa != null) {
+                    alq = new Alquiler(codAlquiler, cli, vehicle, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin")
+                            , rs.getDate("FechaFin"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio")
+                            , rs.getInt("KMFin"), rs.getInt("CombustibleFin"), rs.getString("Observaciones"));
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo un alquiler de la Base de Datos", rs);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatementsm(conexion, select);
+        }
+        return alq;
+    }
+
+    @Override
+    public Factura getFactura(String codFactura) {
+        Connection conexion = null;
+        PreparedStatement selectFactura = null;
+        PreparedStatement selectElementoFactura = null;
+        ResultSet rsFactura = null;
+        ResultSet rsElementoFactura = null;
+        Factura factura = null;
+        try {
+            conexion = pool.getConnection();
+            selectFactura = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Factura WHERE codFactura=?");
+            selectFactura.setString(1, codFactura);
+            rsFactura = selectFactura.executeQuery();
+            while (rsFactura.next()) {
+                HashMap<String, Alquiler> alquileresFactura = new HashMap<String, Alquiler>();
+                HashMap<String, Incidencia> incidenciasFactura = new HashMap<String, Incidencia>();
+                selectElementoFactura = conexion.prepareStatement("SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura "
+                        + "WHERE codFactura=?");
+                selectElementoFactura.setString(1, codFactura);
+                selectElementoFactura.executeQuery();
+                while (rsElementoFactura.next()) {
+                    Alquiler alq = this.getAlquiler(rsElementoFactura.getString("codAlquiler"));
+                    if (alq != null){
+                        alquileresFactura.put(alq.getCodAlquiler(), alq);
+                    }
+                }
+                selectElementoFactura = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura "
+                        + "WHERE codFactura =?");
+                selectElementoFactura.setString(1, codFactura);
+                selectElementoFactura.executeQuery();
+                while (rsElementoFactura.next()) {
+                    Incidencia inc = this.getIncidencia("codIncidencia", rsElementoFactura.getString("codIncidencia"));
+                    if (inc != null){
+                        incidenciasFactura.put(inc.getCodIncidencia(), inc);
+                    }
+                }
+                Cliente cli = this.getClient(rsFactura.getString("codCliente"));
+                if (cli != null){
+                    if (incidenciasFactura.isEmpty()) incidenciasFactura = null;
+                    if (alquileresFactura.isEmpty()) alquileresFactura = null;
+                    factura = new Factura(codFactura, cli, alquileresFactura, incidenciasFactura, rsFactura.getInt("IVA")
+                            , rsFactura.getBigDecimal("ImporteSinIVA"), rsFactura.getBigDecimal("Importe")
+                            , rsFactura.getDate("FechaEmision"), rsFactura.getString("FormaPago")
+                            , rsFactura.getDate("FechaPago"), rsFactura.getBoolean("Pagado"));
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo una factura de la Base de Datos", ex);
+        } finally {
+            cerrarResultSets(rsFactura, rsElementoFactura);
+            cerrarConexionesYStatementsm(conexion, selectFactura, selectElementoFactura);
+        }
+        return factura;
+    }
+
+    @Override
     public HashMap<String, Incidencia> getIncidenciasAlquiler(String codAlquiler) {
         Connection conexion = null;
         PreparedStatement select = null;
@@ -421,10 +506,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             rs = select.executeQuery();
             clientes = new HashMap<String, Cliente>();
             while (rs.next()) {
-                Cliente cl = new Cliente(rs.getString("codCliente"), rs.getString("Nombre"), rs.getString("Email")
-                        , rs.getString("DNI"), rs.getString("Direccion"), rs.getString("Telefono")
-                        , rs.getString("Empresa"), rs.getString("codSucursal"), rs.getInt("Edad")
-                        , rs.getBoolean("Activo"));
+                Cliente cl = new Cliente(rs.getString("codCliente"), rs.getString("Nombre"), rs.getString("Email"), rs.getString("DNI"), rs.getString("Direccion"), rs.getString("Telefono"), rs.getString("Empresa"), rs.getString("codSucursal"), rs.getInt("Edad"), rs.getBoolean("Activo"));
                 clientes.put(cl.getCodCliente(), cl);
             }
         } catch (SQLException ex) {
@@ -706,43 +788,59 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insertFactura.setNull(8, java.sql.Types.DATE);
                 insertFactura.setBoolean(9, false);
 
-                if (insertFactura.executeUpdate() == 1) {
+                int filasTablaFactura = insertFactura.executeUpdate();
+                if (filasTablaFactura == 1 && factura.getAlquileres() != null) {
                     insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + "AlquilerFactura VALUES (?,?)");
-                    for (Alquiler alq: factura.getAlquileres().values()){
+                    for (Alquiler alq : factura.getAlquileres().values()) {
                         insertElementosFactura.setString(1, factura.getCodFactura());
                         insertElementosFactura.setString(2, alq.getCodAlquiler());
-                        if (insertElementosFactura.executeUpdate() == 1){
+                        if (insertElementosFactura.executeUpdate() == 1) {
                             insertElementosFactura.clearParameters();
-                        }else{
+                        } else {
                             conexion.rollback();
                             ok = false;
                             break;
                         }
                     }
-                    
-                    if (ok){
-                        insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + "IncidenciaFactura VALUES (?,?)");
-                        for (Incidencia inc: factura.getIncidencias().values()){
-                            insertElementosFactura.setString(1, factura.getCodFactura());
-                            insertElementosFactura.setString(2, inc.getCodIncidencia());
+                } else {
+                    conexion.rollback();
+                    ok = false;
+                }
+
+                if (ok && filasTablaFactura == 1 && factura.getIncidencias() != null) {
+                    insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + "IncidenciaFactura VALUES (?,?)");
+                    for (Incidencia inc : factura.getIncidencias().values()) {
+                        insertElementosFactura.setString(1, factura.getCodFactura());
+                        insertElementosFactura.setString(2, inc.getCodIncidencia());
+                        if (insertElementosFactura.executeUpdate() == 1) {
+                            insertElementosFactura.clearParameters();
+                        } else {
+                            conexion.rollback();
+                            ok = false;
+                            break;
                         }
                     }
-                } else{
-                    conexion.rollback();
                 }
             }
-
-
-
+            conexion.commit();
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error creando una factura en la base de datos");
+            try {
+                conexion.rollback();
+            } catch (SQLException ex1) {
+                logger.log(Level.SEVERE, "Error haciendo rollback de transacción de generación de factura", ex1);
+            }
         } finally {
             cerrarResultSets(rsAlquiler);
             cerrarConexionesYStatementsm(conexion, selectAlquiler);
         }
+        if (!ok) {
+            return null;
+        }
         return factura;
     }
 
+    @Override
     public HashMap<String, Factura> getFacturasPendientesPago(Cliente cli) {
         Connection conexion = null;
         PreparedStatement select = null;
@@ -751,20 +849,18 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             if (cli != null) {
-                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Factura WHERE codCliente=? AND Pagado='0'");
+                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE codCliente=? AND Pagado='0'");
                 select.setString(1, cli.getCodCliente());
-            }else{
-                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Factura WHERE AND Pagado='0'");
+            } else {
+                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE AND Pagado='0'");
             }
             rs = select.executeQuery();
             facturas = new HashMap<String, Factura>();
-            while (rs.next()){
-                if (cli == null){
+            while (rs.next()) {
+                if (cli == null) {
                     cli = this.getClient(rs.getString("codCliente"));
                 }
-                Factura fact = new Factura(rs.getString("codFactura"), cli, null, null, rs.getInt("IVA")
-                        , rs.getBigDecimal("ImporteSinIVA"), rs.getBigDecimal("Importe")
-                        , rs.getDate("FechaEmision"), rs.getString("FormaPago"), rs.getDate("FechaPago"), rs.getBoolean("Pagado"));
+                Factura fact = this.getFactura(rs.getString("codFactura"));
                 facturas.put(fact.getCodFactura(), fact);
             }
         } catch (SQLException ex) {
@@ -773,10 +869,35 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarResultSets(rs);
             cerrarConexionesYStatementsm(conexion, select);
         }
-        if (facturas.isEmpty()){
-            return null;            
+        if (facturas.isEmpty()) {
+            return null;
         }
         return facturas;
+    }
+    @Override
+    public boolean pagarFactura (String codFactura, java.util.Date fechaPago, String formaPago){
+        Connection conexion = null;
+        PreparedStatement update = null;
+        boolean ok = false;
+        try{
+            conexion = pool.getConnection();
+            update = conexion.prepareStatement("UPDATE " + nameBD + ".Factura "
+                    + "SET FechaPago=?, FormaPago=?, Pagado=? "
+                    + "WHERE codFactura=? AND Pagado=?");
+            update.setDate(1, new java.sql.Date(fechaPago.getTime()));
+            update.setString(2, formaPago);
+            update.setBoolean(3, true);
+            update.setString(4, codFactura);
+            update.setBoolean(5, false);
+            if (update.executeUpdate() == 1){
+                ok = true;
+            }
+        } catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error al actualizar el estado de una factura a pagada en la Base de Datos", ex);
+        } finally{
+            cerrarConexionesYStatementsm(conexion, update);
+        }
+        return ok;
     }
 
     @Override
@@ -786,7 +907,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         boolean ok = false;
         try {
             conexion = pool.getConnection();
-            update = conexion.prepareStatement("UPDATE " + nameBD + ".Cliente Nombre=?, Edad=?, Empresa=?, Direccion=?, "
+            update = conexion.prepareStatement("UPDATE " + nameBD + ".Cliente SET Nombre=?, Edad=?, Empresa=?, Direccion=?, "
                     + "Telefono=?, Email=? WHERE codCliente=?");
             update.setString(1, client.getName());
             update.setInt(2, client.getAge());
