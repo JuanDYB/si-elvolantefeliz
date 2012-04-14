@@ -46,18 +46,19 @@ public class NewClientServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         if (this.validateForm(request)) {
             try {
-                String nombre = Tools.validateName(request.getParameter("name"), 200);
+                String nombre = Tools.validateName(request.getParameter("name"), 200, "Nombre cliente", false);
                 String dni = Tools.validateDNI(request.getParameter("dni"));
                 int edad = Tools.validateNumber(request.getParameter("age"), "Edad");
-                String company = Tools.validateName(request.getParameter("company"), 100);
+                String company = Tools.validateName(request.getParameter("company"), 100, "Nombre Empresa", true);
                 String address = Tools.validateAdress(request.getParameter("address"));
                 String tlf = Tools.validatePhone(request.getParameter("phone"));
                 String email = Tools.validateEmail(request.getParameter("email"));
                 String codSucursal = ((Empleado) request.getSession().getAttribute("empleado")).getCodSucursal();
                 String codCliente = Tools.generaUUID();
-                Cliente client = new Cliente(codCliente, nombre, email, dni, address, tlf, company, codSucursal, edad);
+                Cliente client = new Cliente(codCliente, nombre, email, dni, address, tlf, company, codSucursal, edad, true);
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 boolean ok = persistence.addClient(client);
                 request.setAttribute("resultados", "Resultados de la operación");

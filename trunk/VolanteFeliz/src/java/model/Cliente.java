@@ -14,8 +14,9 @@ public class Cliente {
     private String company;
     private String codSucursal;
     private int age;
+    private boolean activo;
 
-    public Cliente(String codCliente, String name, String email, String dni, String address, String telephone, String company, String codSucursal, int age) {
+    public Cliente(String codCliente, String name, String email, String dni, String address, String telephone, String company, String codSucursal, int age, boolean activo) {
         this.codCliente = codCliente;
         this.name = name;
         this.email = email;
@@ -25,6 +26,7 @@ public class Cliente {
         this.company = company;
         this.codSucursal = codSucursal;
         this.age = age;
+        this.activo = activo;
     }
     
     public String getCodCliente() {
@@ -62,5 +64,8 @@ public class Cliente {
     public String getTelephone() {
         return telephone;
     }
-    
+
+    public boolean isActivo() {
+        return activo;
+    }
 }

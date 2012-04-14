@@ -4,8 +4,14 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="tools.WebConfig"%>
+<%@page import="model.Empleado"%>
+<%@page import="persistence.PersistenceInterface"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%
+    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+%>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -38,6 +44,22 @@
                         <h1>Acceso al &Aacute;rea de Administraci&oacute;n</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Inicio de Sesi&oacute;n</h2>
+                        <% WebConfig appConfig = (WebConfig) application.getAttribute("appConfig");
+                        int intentosMax = appConfig.getMaxLoginAttempt();
+                        if (session.getAttribute("login") != null && session.getAttribute("empleado") != null 
+                        && (Boolean) session.getAttribute("login")){ %>
+                        <blockquote class="exclamation">
+                            <ul>
+                                <li>No puede inciar sesión porque ya tiene una sesión iniciada</li>
+                                <li>Si lo desea puede <a href="/logout">cerrar la sesi&oacute;n</a> para iniciar con un usuario diferente</li>
+                            </ul>
+                        </blockquote>
+                        <% } else if (session.getAttribute("intentosLogin") != null 
+                                && ((Integer)session.getAttribute("intentosLogin")) >= intentosMax){ %>
+                                <blockquote class="exclamation">
+                                    <p>Intentos de inicio de sesi&oacute;n agotados. Puede intentarlo de nuevo pasados unos minutos</p>
+                                </blockquote>
+                        <% } else{ %>
                         <form name="login" method="POST" action="/login">
                             <p>
                                 <label>Nombre de usuario</label>
@@ -51,6 +73,7 @@
                                 <input name="login" type="submit" value="Iniciar Sesi&oacute;n" />
                             </p>
                         </form>
+                        <% } %>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

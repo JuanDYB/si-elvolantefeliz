@@ -30,7 +30,7 @@
         <li class="here">
             Personal
             <ul>
-                <li><a href="/staf/index.jsp" title="Inicio">Incio</a></li>
+                <li><a href="/staf/index.jsp" title="Inicio">Inicio</a></li>
                 <li><a href="/staf/newclient.jsp" title="Inicio">Nuevo Cliente</a></li>
                 <li><a href="/staf/manageclients.jsp" title="Inicio">Gesti&oacute;n Clientes</a></li>
             </ul>
@@ -39,8 +39,9 @@
         <li class="here">
             Administraci&oacute;n
             <ul>
-                <li><a href="/staf/administration/index.jsp" title="Inicio">Incio</a></li>
+                <li><a href="/staf/administration/index.jsp" title="Inicio">Inicio</a></li>
             </ul>
+            <p>No se han implementado opciones de administrador</p>
         </li>
         <% } %>
         <% } %>
