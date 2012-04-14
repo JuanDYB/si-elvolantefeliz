@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet {
         }
         WebConfig config = (WebConfig) request.getServletContext().getAttribute("appConfig");
         Integer intentos = (Integer) request.getSession().getAttribute("intentosLogin");
-        if (intentos != null && intentos <= config.getMaxLoginAttempt()) {
+        if (intentos != null && intentos >= config.getMaxLoginAttempt()) {
             this.starTimer(request.getSession(), config.getLockTime());
             request.setAttribute("resultados", "Imposible inicio de sesion");
             Tools.anadirMensaje(request, "Intentos de inicio de sesión agotados", 'w');

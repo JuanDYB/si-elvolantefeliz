@@ -52,7 +52,7 @@ public class ConfigLoader {
         if (propiedades.containsKey("suc.Name") && propiedades.containsKey("suc.Addr") && propiedades.containsKey("suc.Tlf") 
                 && propiedades.containsKey("suc.Fax") && propiedades.containsKey("suc.central")){
             try{
-                Tools.validateName(propiedades.get("suc.Name"), 100);
+                Tools.validateName(propiedades.get("suc.Name"), 100, "Nombre Sucursal", false);
                 Tools.validateAdress(propiedades.get("suc.Addr"));
                 Tools.validatePhone(propiedades.get("suc.Tlf"));
                 Tools.validatePhone(propiedades.get("suc.Fax"));
@@ -70,7 +70,7 @@ public class ConfigLoader {
         if (propiedades.containsKey("empl.Name") && propiedades.containsKey("empl.userName") && propiedades.containsKey("empl.pass") 
                 && propiedades.containsKey("empl.DNI") && propiedades.containsKey("empl.Addr") && propiedades.containsKey("empl.Tlf")){
             try{
-                Tools.validateName(propiedades.get("empl.Name"), 100);
+                Tools.validateName(propiedades.get("empl.Name"), 100, "Nombre Empleado", false);
                 Tools.validateUserName(propiedades.get("empl.userName"));
                 Tools.validatePass(propiedades.get("empl.pass"));
                 Tools.validateDNI(propiedades.get("empl.DNI"));

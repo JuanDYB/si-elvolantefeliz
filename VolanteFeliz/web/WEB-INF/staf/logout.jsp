@@ -4,8 +4,12 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="persistence.PersistenceInterface"%>
+<%@page import="model.Empleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<% Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+%>
 <html>
     <head>
         <meta http-equiv="Refresh" content="3; url=/index.jsp" />

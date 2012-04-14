@@ -43,7 +43,7 @@ public class StafFilter implements Filter {
     }
 
     private boolean isPermited(HttpSession sesion, PersistenceInterface persistence) {
-        if (sesion.getAttribute("login") != null && sesion.getAttribute("empleado") == null && (Boolean) sesion.getAttribute("login")) {
+        if (sesion.getAttribute("login") != null && sesion.getAttribute("empleado") != null && (Boolean) sesion.getAttribute("login")) {
             Empleado empl = persistence.getEmployee("codEmpleado", ((Empleado) sesion.getAttribute("empleado")).getCodEmpleado());
             if (empl != null && (empl.getPermisos() == 'a' || empl.getPermisos() == 'e')) {
                 return true;

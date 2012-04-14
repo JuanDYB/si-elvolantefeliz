@@ -9,7 +9,7 @@
 <%@page import="model.Sucursal"%>
 <%@page import="model.Empleado"%>
 <%@page import="persistence.PersistenceInterface"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
@@ -46,9 +46,13 @@
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Gestión de Clientes</h1>
+                        <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Operaciones disponibles</h2>
                         <ul>
                             <li><a href="/staf/newclient.jsp">Dar de alta nuevo cliente</a></li>
+                            <% if (suc.isCentral()){ %>
+                            <li><a href="/staf/manageclients.jsp?all=1">Mostrar todos los clientes</a></li>
+                            <% } %>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
@@ -56,9 +60,14 @@
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Clientes disponibles</h1>
-                        <% if (suc != null) {
-                                HashMap<String, Cliente> clientes = persistence.getClients("codSucursal", suc.getCodSucursal());
-                                if (clientes != null) {
+                        <% HashMap<String, Cliente> clientes = null;
+                        if (suc != null) {
+                            if (request.getParameter("all") != null && request.getParameter("all").equals("1") && suc.isCentral()){
+                                clientes = persistence.getClients(null, null);
+                            }else{
+                                clientes = persistence.getClients("codSucursal", suc.getCodSucursal());
+                            }
+                            if (clientes != null) {
                         %>                               
                         <p>
                             A continuación se muestra una tabla con los clientes pertenecientes a la sucursal
@@ -76,7 +85,7 @@
                                 <% if (cli.getCompany() == null){ %>
                                 <td>Cliente Particular</td>
                                 <% } else{ %>
-                                <td><%= cli.getName() %></td>
+                                <td><%= cli.getCompany() %></td>
                                 <% } %>
                                 <td><a href="/staf/viewclient.jsp?cli=<%= cli.getCodCliente() %>"><img src="/images/icons/viewClient.png" alt="view" /></a></td>
                                 <td><a href="/staf/editclient.jsp?cli=<%= cli.getCodCliente() %>"><img src="/images/icons/editClient.png" alt="edit" /></td>

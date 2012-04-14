@@ -80,9 +80,9 @@ public class Tools {
         return validador.getValidInput("Contraseña", input, "Pss", 20, false);
     }
 
-    public static String validateName(String input, int longitud) throws IntrusionException, ValidationException {
+    public static String validateName(String input, int longitud, String context, boolean vacio) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
-        return validador.getValidInput("Nombre", input, "Name", longitud, false);
+        return validador.getValidInput(context, input, "Name", longitud, vacio);
     }
 
     public static String validateAdress(String input) throws IntrusionException, ValidationException {

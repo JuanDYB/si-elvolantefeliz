@@ -4,8 +4,14 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="model.Empleado"%>
+<%@page import="persistence.PersistenceInterface"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%
+    PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+%>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -53,6 +59,7 @@
                             </p>
                             <p>
                                 <label>Direcci&oacute;n</label>
+                                <label>Ejemplo: Calle, 1 28002-Madrid</label>
                                 <input name="address" type="text" size="70" maxlength="400" />
                             </p>
                             <p>
