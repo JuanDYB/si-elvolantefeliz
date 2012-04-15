@@ -31,8 +31,9 @@
             Personal
             <ul>
                 <li><a href="/staf/index.jsp" title="Inicio">Inicio</a></li>
-                <li><a href="/staf/newclient.jsp" title="Inicio">Nuevo Cliente</a></li>
-                <li><a href="/staf/manageclients.jsp" title="Inicio">Gesti&oacute;n Clientes</a></li>
+                <li><a href="/staf/newclient.jsp" title="Nuevo Cliente">Nuevo Cliente</a></li>
+                <li><a href="/staf/manageclients.jsp" title="Gestion Clientes">Gesti&oacute;n Clientes</a></li>
+                <li><a href="/staf/bill_management.jsp" title="Gestion Facturacion">Gesti&oacute;n Facturaci&oacute;n</a></li>
             </ul>
         </li>
         <% if(emplLogedIn.getPermisos() == 'a'){ %>

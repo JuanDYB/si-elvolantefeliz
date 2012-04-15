@@ -67,7 +67,7 @@
                         <form name="login" method="POST" action="/login">
                             <p>
                                 <label>Nombre de usuario</label>
-                                <input name="userName" type="text" size="50" maxlength="20" class=":required :only_on_blur" />
+                                <input name="userName" type="text" size="50" maxlength="20" class=":user_name :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Contrase&ntilde;a</label>
