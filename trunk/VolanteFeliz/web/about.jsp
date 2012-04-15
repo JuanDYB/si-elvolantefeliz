@@ -1,6 +1,6 @@
 <%-- 
-    Document   : restricted
-    Created on : 07-abr-2012, 11:25:38
+    Document   : about
+    Created on : 15-abr-2012, 12:32:32
     Author     : Juan Díez-Yanguas Barber
 --%>
 
@@ -12,12 +12,11 @@
 %>
 <html>
     <head>
-        <meta http-equiv="Refresh" content="3; url=/login.jsp" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
         <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
-        <title>&Aacute;rea Restringida</title>
+        <title>Ayuda</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -40,8 +39,7 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Intento de entrada en area restringida</h1>
-                        <p>Ser&aacute; redirigido a la <a href="/login.jsp">p&aacute;gina de login</a> autom&aacute;ticamente en 3 segundos</p>
+                        <h1>El Volante Feliz - Ayuda</h1>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>
@@ -51,14 +49,14 @@
             <!-- Fin contenido página -->
         </div>
         <!-- FIN CONTENIDO -->
-
+        
         <!-- FOOTER -->
         <%@include file="/WEB-INF/include/footer.jsp" %>
     </body>
 </html>
 
 <%! String menuInicio = ""; %>
-<%! String menuLogin = "class=\"here\""; %>
+<%! String menuLogin = ""; %>
 <%! String menuPreferencias = ""; %>
-<%! String menuAbout = ""; %>
+<%! String menuAbout = "class=\"here\""; %>
 <%! String menuContacto = ""; %>

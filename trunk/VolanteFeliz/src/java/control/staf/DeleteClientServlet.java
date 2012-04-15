@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alquiler;
 import model.Cliente;
+import model.Factura;
 import model.Incidencia;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
@@ -46,6 +47,13 @@ public class DeleteClientServlet extends HttpServlet {
                         Tools.anadirMensaje(request, "El cliente seleccionado no se puede borrar porque tiene alquileres o incidencias pendientes de facturar", 'w');
                         request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                         return; 
+                    }
+                    HashMap <String, Factura> facturasPendientes = persistence.getFacturasPendientesPago(cli);
+                    if (facturasPendientes != null){
+                        request.setAttribute("resultados", "Imposible borrar");
+                        Tools.anadirMensaje(request, "El cliente seleccionado no se puede borra debido a que tiene facturas pendientes por abonar", 'w');
+                        request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
+                        return;
                     }
                     boolean ok = persistence.deleteClient(codCliente);
                     request.setAttribute("resultados", "Resultado operación");

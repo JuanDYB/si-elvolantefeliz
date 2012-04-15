@@ -1,23 +1,22 @@
 <%-- 
-    Document   : restricted
-    Created on : 07-abr-2012, 11:25:38
+    Document   : bill_management
+    Created on : 15-abr-2012, 12:36:10
     Author     : Juan Díez-Yanguas Barber
 --%>
 
 <%@page import="model.Empleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<%
-    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+<% 
+Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
 %>
 <html>
     <head>
-        <meta http-equiv="Refresh" content="3; url=/login.jsp" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
         <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
-        <title>&Aacute;rea Restringida</title>
+        <title>Zona de empleados</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -40,8 +39,12 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Intento de entrada en area restringida</h1>
-                        <p>Ser&aacute; redirigido a la <a href="/login.jsp">p&aacute;gina de login</a> autom&aacute;ticamente en 3 segundos</p>
+                        <h1>Gesti&oacute;n Facturaci&oacute;n</h1>
+                        <h2>Acciones disponibles</h2>
+                        <ul>
+                            <li><a href="/staf/clients-pendingfacture.jsp">Nueva Factura</a></li>
+                            <li><a href="/staf/pending_paybill.jsp">Pagar Factura</a></li>
+                        </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>
@@ -57,8 +60,8 @@
     </body>
 </html>
 
-<%! String menuInicio = ""; %>
-<%! String menuLogin = "class=\"here\""; %>
-<%! String menuPreferencias = ""; %>
-<%! String menuAbout = ""; %>
-<%! String menuContacto = ""; %>
+<%! String menuInicio = "";%>
+<%! String menuLogin = "";%>
+<%! String menuPreferencias = "class=\"here\"";%>
+<%! String menuAbout = "";%>
+<%! String menuContacto = "";%>

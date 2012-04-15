@@ -49,7 +49,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         if (request.getSession().getAttribute("login") != null && (Boolean) request.getSession().getAttribute("login") 
                 && request.getSession().getAttribute("empleado") != null){
             response.sendRedirect("/index.jsp");
@@ -83,7 +82,11 @@ public class LoginServlet extends HttpServlet {
                             response.sendRedirect(destination);
                             return;
                         }
-                        response.sendRedirect("/index.jsp");
+                        if (empl.getPermisos() == 'a'){
+                            response.sendRedirect("/staf/administration/index.jsp");
+                        }else{
+                            response.sendRedirect("/staf/index.jsp");
+                        }
                         return;
                     } else {
                         request.setAttribute("resultados", "Usuario/contraseña desconocidos");

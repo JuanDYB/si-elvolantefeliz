@@ -559,7 +559,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Cliente> clientes = null;
+        HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
@@ -568,14 +568,13 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND inc.codIncidencia <> incFac.codIncidencia");
             select.setString(1, codSucursal);
             rs = select.executeQuery();
-            clientes = new HashMap<String, Cliente>();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
                 Cliente cli = new Cliente(codCliente, rs.getString("cli.Nombre"), rs.getString("cli.Email"), rs.getString("cli.DNI"), rs.getString("cli.Direccion"), rs.getString("cli.Telefono"), rs.getString("cli.Empresa"), codSucursal, rs.getInt("cli.Edad"), rs.getBoolean("cli.Activo"));
                 clientes.put(codCliente, cli);
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar");
+            logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar", ex);
         } finally {
             cerrarResultSets(rs);
             cerrarConexionesYStatementsm(conexion, select);
