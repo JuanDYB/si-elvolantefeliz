@@ -50,7 +50,7 @@ public class NewClientServlet extends HttpServlet {
             try {
                 String nombre = Tools.validateName(request.getParameter("name"), 200, "Nombre cliente", false);
                 String dni = Tools.validateDNI(request.getParameter("dni"));
-                int edad = Tools.validateNumber(request.getParameter("age"), "Edad");
+                int edad = Tools.validateNumber(request.getParameter("age"), "Edad", 150);
                 String company = Tools.validateName(request.getParameter("company"), 100, "Nombre Empresa", true);
                 String address = Tools.validateAdress(request.getParameter("address"));
                 String tlf = Tools.validatePhone(request.getParameter("phone"));
@@ -68,10 +68,10 @@ public class NewClientServlet extends HttpServlet {
                     }else{
                         Tools.anadirMensaje(request, "Ocurrio un error al mandar email de registro al cliente", 'w');
                     }
-                    request.getRequestDispatcher("/staf/index.jsp").forward(request, response);
+                    request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                     return;
                 } else {
-                    Tools.anadirMensaje(request, "Ha ocurrido un error al dar de alta el nuevo cliente", 'e'); 
+                    Tools.anadirMensaje(request, "Ha ocurrido un error al dar de alta el nuevo cliente", 'e');
                 }
             } catch (IntrusionException ex) {
                 request.setAttribute("resultados", "Detectada una intrusión");
@@ -79,8 +79,7 @@ public class NewClientServlet extends HttpServlet {
             } catch (ValidationException ex) {
                 request.setAttribute("resultados", "Error en el formulario");
                 Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
-            }
-
+            }            
         } else {
             request.setAttribute("resultados", "Formulario incorrecto");
             Tools.anadirMensaje(request, "No se esperaba este formulario", 'w');

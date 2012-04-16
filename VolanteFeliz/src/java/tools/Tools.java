@@ -90,9 +90,9 @@ public class Tools {
         return validador.getValidInput("Dirección", input, "Adress", 400, false);
     }
 
-    public static int validateNumber(String input, String context) throws IntrusionException, ValidationException {
+    public static int validateNumber(String input, String context, int max) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
-        return validador.getValidInteger(context, input, 0, Integer.MAX_VALUE, false);
+        return validador.getValidInteger(context, input, 0, max, false);
     }
 
     public static double validatePrice(String input) throws IntrusionException, ValidationException {

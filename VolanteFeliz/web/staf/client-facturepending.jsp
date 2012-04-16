@@ -4,6 +4,7 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="model.Sucursal"%>
 <%@page import="model.Empleado"%>
 <%@page import="org.owasp.esapi.errors.ValidationException"%>
 <%@page import="model.Incidencia"%>
@@ -20,6 +21,8 @@
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Cliente cliente = persistence.getClient(request.getParameter("cli"));
     String type = request.getParameter("type");
+    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 <!DOCTYPE html>
 <html>
@@ -28,7 +31,7 @@
         <title>Alquileres pendientes de facturar</title>
     </head>
     <body>
-        <% if (cliente != null && cliente.getCodSucursal().equals(((Empleado)session.getAttribute("empleado")).getCodSucursal())) {
+        <% if (cliente != null && (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral())) {
             boolean empresa = false;
             if(cliente.getCompany() != null) empresa = true;
             HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
@@ -88,7 +91,7 @@
             <input name="genFact" type="submit" value="Generar Factura" />
         </form>
         <% }
-         } else if (cliente.getCodSucursal().equals(((Empleado)session.getAttribute("empleado")).getCodSucursal())){%>
+         } else if (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal())){%>
             <h1>Sucursal incorrecta</h1>
             <p>El cliente seleccionado no pertenece a la sucursal que esta intentando facturar el cliente</p>
          <% }else{ %>
