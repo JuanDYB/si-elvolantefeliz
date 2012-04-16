@@ -1054,9 +1054,17 @@ Vanadium.setupValidatorTypes = function() {
       return Vanadium.validators_types['empty'].test(v) || !/[^\d]/.test(v);
     }, 'Introduzca un n&uacute;mero v&aacute;lido, no decimales'],
     //
-    ['alpha', function (v) {
-      return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z \-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+    ['name', function (v) {
+      return Vanadium.validators_types['empty'].test(v) || /^[A-Z][a-zA-Z \-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
     }, 'Introduzca un nombre v&aacute;lido'],
+    //
+    ['tlf', function (v) {
+      return Vanadium.validators_types['empty'].test(v) || /^[0-9]{9}$/.test(v)
+    }, 'Introduzca un tel&eacute;fono v&aacute;lido'],
+    //
+    ['age', function (v) {
+      return Vanadium.validators_types['empty'].test(v) || /^[0-9]{3}$/.test(v)
+    }, 'Introduzca una edad v&aacute;lida'],
     //
     ['dir', function (v) {
       return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z0-9 \,\º\-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+\ [0-9]{5}-[a-zA-Z \-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)

@@ -89,9 +89,9 @@ public class ConfigLoader {
         if (propiedades.containsKey("app.maxLoginAttempt") && propiedades.containsKey("app.lockTime") 
                 && propiedades.containsKey("app.IVA")){
             try{
-                Tools.validateNumber(propiedades.get("app.maxLoginAttempt"), "Maximo numero de intentos inicio sesion");
-                Tools.validateNumber(propiedades.get("app.lockTime"), "Tiempo de bloqueo de inicio sesion");
-                Tools.validateNumber(propiedades.get("app.IVA"), "IVA");
+                Tools.validateNumber(propiedades.get("app.maxLoginAttempt"), "Maximo numero de intentos inicio sesion", Integer.MAX_VALUE);
+                Tools.validateNumber(propiedades.get("app.lockTime"), "Tiempo de bloqueo de inicio sesion", Integer.MAX_VALUE);
+                Tools.validateNumber(propiedades.get("app.IVA"), "IVA", Integer.MAX_VALUE);
                 return true;
             }catch (ValidationException ex){
                 Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, ex.getLogMessage(), ex);
@@ -107,7 +107,7 @@ public class ConfigLoader {
                 && propiedades.containsKey("smtp.pass") && propiedades.containsKey("from")){
             try{
                 Tools.validateHost(propiedades.get("smtp.host"));
-                Tools.validateNumber(propiedades.get("smtp.port"), "Puerto SMTP");
+                Tools.validateNumber(propiedades.get("smtp.port"), "Puerto SMTP", Integer.MAX_VALUE);
                 Tools.validateUserName(propiedades.get("smtp.user"));
                 Tools.validateBool(propiedades.get("smtp.tsl"));
                 Tools.validateBool(propiedades.get("smtp.auth"));
