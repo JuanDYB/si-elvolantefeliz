@@ -6,7 +6,7 @@
 
 <%@page import="model.Empleado"%>
 <%@page import="persistence.PersistenceInterface"%>
-<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");

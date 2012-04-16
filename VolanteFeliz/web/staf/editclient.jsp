@@ -11,15 +11,14 @@
 <%@page import="persistence.PersistenceInterface"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<%if (!this.validateForm(request)){
-    request.setAttribute("resultados", "Formulario recibido incorecto");
-    Tools.anadirMensaje(request, "Los parámetros de la petición no son correctos", 'w');
-    request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
+<%
+PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+Cliente cli = persistence.getClient(request.getParameter("cli"));
+if (!this.validateForm(request)){
+    response.sendError(404);
     return;
 }
-    PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-    Cliente cli = persistence.getClient(request.getParameter("cli"));
 %>
 <html>
     <head>
