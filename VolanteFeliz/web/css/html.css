@@ -19,7 +19,7 @@ body {
   line-height: 170%;
 
   background: #666 url(/images/template/header.jpg) repeat-x top left;
-  color: #EEE;
+  color: #FFFFFF;
 }
 
 h1 {   
@@ -247,6 +247,42 @@ a img {
 
 a:hover img {  
   /* Fixes IE bug - IE doesn't correctly apply the style on a:hover so need to mask it */
-  border: 2px solid #FFF !important;
-  border: 2px solid #8BE6FA;
+  /*border: 2px solid #FFF !important;
+  border: 2px solid #8BE6FA;*/
+}
+
+table {
+    border:0px solid white; 
+    width:90% ;
+    margin:auto;
+}
+
+table a img{
+    border:0px;
+    width:25px;
+}
+
+table a:hover img{
+    border:0px !important;
+    text-decoration:none;
+}
+
+table tr,table td{
+    border:0px solid white;   
+    padding-left:5px;
+}
+
+table tr:hover{
+     background-color: #FAAA25; 
+}
+
+table .theader{
+    font-weight: bold;
+    font-size:18px;
+    text-align:center;
+    background-color: #F19901;
+}
+
+table .theader:hover{
+    background-color: #F19901;
 }

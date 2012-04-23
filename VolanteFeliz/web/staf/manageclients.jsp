@@ -74,9 +74,9 @@
                             , dentro de la tabla podrá realizar las acciones que considere necesarias con un determinado cliente
                         </p>
 
-                        <table border="0" align="center" width="90%" >
-                            <tr><td>Nombre</td><td>DNI</td><td>Email</td><td>Empresa</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <table>
+                            <tr class="theader"><td>Nombre</td><td>DNI</td><td>Email</td><td>Empresa</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                           
                             <% for (Cliente cli: clientes.values()){ %>
                             <tr>
                                 <td><%= cli.getName() %></td>
