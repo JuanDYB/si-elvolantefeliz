@@ -14,7 +14,7 @@
 %>
 <html>
     <head>
-        <script type="text/javascript" src="/scripts/jquery-1.6.1.js"></script>
+        <script type="text/javascript" src="/scripts/jquery-1.7.2.js"></script>
         <script type="text/javascript" src="/scripts/vanadium.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
         

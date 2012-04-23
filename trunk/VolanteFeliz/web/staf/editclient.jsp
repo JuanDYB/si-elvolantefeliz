@@ -22,7 +22,7 @@ if (!this.validateForm(request)){
 %>
 <html>
     <head>
-        <script type="text/javascript" src="/scripts/jquery-1.6.1.js"></script>
+        <script type="text/javascript" src="/scripts/jquery-1.7.2.js"></script>
         <script type="text/javascript" src="/scripts/vanadium.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
         
@@ -121,7 +121,7 @@ if (!this.validateForm(request)){
 
 <%!
 private boolean validateForm (HttpServletRequest request){
-    if (request.getParameterMap().size() >= 1  && request.getParameter("cli ") != null){
+    if (request.getParameterMap().size() >= 1  && request.getParameter("cli") != null){
         try{
             Tools.validateUUID (request.getParameter("cli"));
             return true;
