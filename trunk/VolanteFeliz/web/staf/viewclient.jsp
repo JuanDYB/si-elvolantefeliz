@@ -83,10 +83,15 @@
                         </blockquote>
                         <% }%> 
                     </div>
+                    <div class="gradient">
+                        <a href="/staf/client-facturepending.jsp?type=alq&cli=<%= cli.getCodCliente()%>">Ver Facturas pendientes de pagar</a>
+                    </div>
+
 
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
+
 
             </div>
             <!-- Fin contenido página -->
