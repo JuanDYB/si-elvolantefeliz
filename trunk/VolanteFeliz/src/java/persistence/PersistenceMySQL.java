@@ -123,7 +123,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 ok = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             logger.log(Level.SEVERE, "Error insertando un cliente en BD", ex);
         } finally {
             cerrarConexionesYStatementsm(conexion, insert);
@@ -548,7 +548,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarResultSets(rs);
             cerrarConexionesYStatementsm(conexion, select);
         }
-        if (clientes.isEmpty()) {
+        if (clientes==null||clientes.isEmpty()) {
             return null;
         }
         return clientes;
@@ -567,6 +567,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "FROM " + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFac "
                     + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND inc.codIncidencia <> incFac.codIncidencia");
             select.setString(1, codSucursal);
+            System.out.println(select);
             rs = select.executeQuery();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
@@ -635,10 +636,11 @@ public class PersistenceMySQL implements PersistenceInterface {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT* "
                     + "FROM " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFact, " + nameBD + ".TipoIncidencia tipoinc"
-                    + "WHERE inc.codCliente=? AND tipoinc.codTipoIncidencia=inc.codTipoIncidencia "
+                    + " WHERE inc.codCliente=? AND tipoinc.codTipoIncidencia=inc.codTipoIncidencia "
                     + "AND tipoinc.AbonaCliente=? AND inc.codIncidencia <> incFact.codIncidencia");
             select.setString(1, cli.getCodCliente());
             select.setBoolean(2, true);
+            System.out.println(select);
             rs = select.executeQuery();
             incidenciasCliente = new HashMap<String, Incidencia>();
             while (rs.next()) {
