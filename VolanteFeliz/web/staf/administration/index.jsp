@@ -67,9 +67,9 @@
                             <li><b>Dirección: </b><%= emplLogedIn.getAddress() %></li>
                             <li><b>Tel&eacute;fono: </b><%= emplLogedIn.getTelephone() %></li>
                             <% if (emplLogedIn.getPermisos() == 'a'){ %>
-                            <li><b>Categoría </b>Empleado</li>
+                            <li><b>Categoría </b>Administrador</li>
                             <% } else if (emplLogedIn.getPermisos() == 'e'){ %>
-                            <li><b>Categoría: </b>Administrador</li>
+                            <li><b>Categoría: </b>Empleado</li>
                             <% } %>
                         </ul>
                     </div>

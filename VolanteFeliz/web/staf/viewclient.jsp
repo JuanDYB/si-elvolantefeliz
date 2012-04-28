@@ -62,7 +62,11 @@
                             <li><b>DNI: </b><%= cli.getDni()%></li>
                             <li><b>Dirección: </b><%= cli.getAddress()%></li>
                             <li><b>Tel&eacute;fono: </b><%= cli.getTelephone()%></li>
-                            <li><b>Empresa: </b><%= cli.getCompany()%></li>
+                            <% if (cli.getCompany() == null){ %>
+                            <li><b>Empresa: </b>Cliente Particular</li>
+                            <% } else{ %>
+                            <li><b>Empresa: </b><%= cli.getCompany() %></li>
+                            <% } %>
                             <li><b>Edad: </b><%= cli.getAge()%></li>
 
                         </ul>

@@ -76,7 +76,7 @@
                             </p>
                             <p>
                                 <label>Email</label>
-                                <input name="email" type="text" size="70" maxlength="100" class=":email :required :only_on:blur"/>
+                                <input name="email" type="text" size="70" maxlength="100" class=":email :required :only_on_blur"/>
                             </p>
                             <p>
                                 <label>Edad</label>

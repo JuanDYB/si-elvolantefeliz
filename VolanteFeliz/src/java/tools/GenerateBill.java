@@ -62,7 +62,8 @@ public class GenerateBill {
                 request.setAttribute("resultados", "Componentes de factura eliminados");
                 Tools.anadirMensaje(request, "Se ha eliminado el alquiler: " + alquileres[i] + " por resultar ya facturado", 'w');
             }else{
-                precioFinal = precioFinal.add(this.calculateRentPrice(alq));
+                precioFinal = precioFinal.add(alq.getPrecio());
+//                precioFinal = precioFinal.add(this.calculateRentPrice(alq));
             }
         }
     }
