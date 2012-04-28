@@ -1,6 +1,7 @@
 package persistence;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.sun.faces.util.CollectionsUtils;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -433,7 +434,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Incidencia> incidencias = null;
+        HashMap<String, Incidencia> incidencias = new HashMap <String, Incidencia> ();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codAlquiler=?");
@@ -494,7 +495,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Cliente> clientes = null;
+        HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
         try {
             conexion = pool.getConnection();
             if (campo != null && valor != null) {
@@ -526,7 +527,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Cliente> clientes = null;
+        HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
@@ -548,7 +549,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarResultSets(rs);
             cerrarConexionesYStatementsm(conexion, select);
         }
-        if (clientes==null||clientes.isEmpty()) {
+        if (clientes.isEmpty()) {
             return null;
         }
         return clientes;
@@ -567,7 +568,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "FROM " + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFac "
                     + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND inc.codIncidencia <> incFac.codIncidencia");
             select.setString(1, codSucursal);
-            System.out.println(select);
+            logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
@@ -591,7 +592,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Alquiler> alquileresCliente = null;
+        HashMap<String, Alquiler> alquileresCliente = new HashMap<String, Alquiler> ();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFact "
@@ -630,7 +631,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Incidencia> incidenciasCliente = null;
+        HashMap<String, Incidencia> incidenciasCliente = new HashMap<String, Incidencia>();
         HashMap<String, TipoIncidencia> tiposIncidencias = new HashMap<String, TipoIncidencia>();
         try {
             conexion = pool.getConnection();
@@ -640,7 +641,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "AND tipoinc.AbonaCliente=? AND inc.codIncidencia <> incFact.codIncidencia");
             select.setString(1, cli.getCodCliente());
             select.setBoolean(2, true);
-            System.out.println(select);
+            logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
             incidenciasCliente = new HashMap<String, Incidencia>();
             while (rs.next()) {
@@ -686,7 +687,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Alquiler> alquileres = null;
+        HashMap<String, Alquiler> alquileres = new HashMap<String, Alquiler>();
         try {
             conexion = pool.getConnection();
             if (campo != null && valor != null) {
@@ -846,7 +847,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Factura> facturas = null;
+        HashMap<String, Factura> facturas = new HashMap<String, Factura>();
         try {
             conexion = pool.getConnection();
             if (cli != null) {
