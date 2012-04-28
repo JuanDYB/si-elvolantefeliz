@@ -22,6 +22,7 @@ import org.owasp.esapi.errors.ValidationException;
  * @author Juan Díez-Yanguas Barber
  */
 public class Tools {
+
     public static String generateMD5Signature(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -44,7 +45,7 @@ public class Tools {
         }
         return strbuf.toString();
     }
-    
+
     public static void anadirMensaje(HttpServletRequest request, String msg, char severity) {
         request.setAttribute("severityResultados", severity);
         if (request.getAttribute("listaResultados") == null) {
@@ -57,7 +58,7 @@ public class Tools {
 //            request.setAttribute("listaResultados", lista);
         }
     }
-    
+
     public static String generaUUID() {
         return UUID.randomUUID().toString();
     }
@@ -69,7 +70,7 @@ public class Tools {
             throw new ValidationException("Validacion UUID Fallida", "Validacion UUID Fallida");
         }
     }
-    
+
     public static String validateEmail(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Email", input, "Email", 60, false);
@@ -104,45 +105,45 @@ public class Tools {
         Validator validador = ESAPI.validator();
         return validador.getValidInput(context, input, "NameDescProd", length, false);
     }
-    
-    public static String validatePhone (String input) throws IntrusionException, ValidationException{
+
+    public static String validatePhone(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Telefono/Fax", input, "Tlf", 14, false);
     }
-    
-    public static String validateUserName (String input) throws IntrusionException, ValidationException{
+
+    public static String validateUserName(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Nombre de usuario", input, "userName", 50, false);
     }
-    
-    public static String validateDNI (String input) throws IntrusionException, ValidationException{
+
+    public static String validateDNI(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("DNI", input, "DNI", 9, false);
     }
-    
-    public static String validatePerm (String input) throws IntrusionException, ValidationException{
+
+    public static String validatePerm(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Caracter de permisos", input, "Perm", 1, false);
     }
-    
-    public static String validateHost (String input) throws IntrusionException, ValidationException{
+
+    public static String validateHost(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
-        return validador.getValidInput("HOST", input, "Host", 1, false);
+        return validador.getValidInput("HOST", input, "Host", Integer.MAX_VALUE, false);
     }
-    
-    public static String validateBool (String input) throws IntrusionException, ValidationException{
+
+    public static String validateBool(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Booleano", input, "Bool", 5, false);
 //        if ((Boolean)Boolean.getBoolean(input) == null){
 //            throw new ValidationException ("Cadena de entrada no convertible a booleano", "Cadena de entrada no convertible a booleano");
 //        }
     }
-    
-    public static String passForMD5 (String pass){
-        StringBuilder passAdd = new StringBuilder (pass.toUpperCase());
+
+    public static String passForMD5(String pass) {
+        StringBuilder passAdd = new StringBuilder(pass.toUpperCase());
         return pass + passAdd.reverse().toString();
     }
-    
+
     public static boolean validatePermisos(char perm) {
         if (perm == 'a' || perm == 'c') {
             return true;
@@ -150,69 +151,86 @@ public class Tools {
             return false;
         }
     }
-    
+
     public static Locale getLocale() {
         return new Locale("es", "ES");
     }
-    
+
     public static Date getDate() {
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance(Tools.getLocale());
         return cal.getTime();
     }
-    
+
     public static String printDate(Date fecha) {
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(fecha);
         return cal.get(GregorianCalendar.DAY_OF_MONTH) + "-" + cal.get(GregorianCalendar.MONTH) + "-" + cal.get(GregorianCalendar.YEAR);
     }
-    
+
     public static String printDate(String fechaString) {
         String[] fechaSeparada = fechaString.split("-");
         Calendar cal = Calendar.getInstance(Tools.getLocale());
-        cal.set(Integer.valueOf(fechaSeparada[0]), Integer.valueOf(fechaSeparada[1]) -1, Integer.valueOf(fechaSeparada[2]));
+        cal.set(Integer.valueOf(fechaSeparada[0]), Integer.valueOf(fechaSeparada[1]) - 1, Integer.valueOf(fechaSeparada[2]));
         String[] date = cal.getTime().toString().split(" ");
         return date[2] + "-" + date[1] + "-" + date[5];
     }
-    
+
     public static String roundDouble(double input) {
         NumberFormat format = DecimalFormat.getNumberInstance();
         format.setMaximumFractionDigits(2);
         format.setMinimumFractionDigits(2);
         return format.format(input);
     }
-    
+
     public static String leerArchivoClassPath(String ruta) {
         StringBuilder texto = new StringBuilder();
-        Scanner sc = new Scanner(Tools.class.getResourceAsStream(ruta), "UTF-8");
+        Scanner sc = null;
+        boolean ok = false;
+        try {
+            sc = new Scanner(Tools.class.getResourceAsStream(ruta), "UTF-8");
 
 
-        while (sc.hasNext()) {
-            texto.append(sc.nextLine());
-            texto.append("\n");
+            while (sc.hasNext()) {
+                texto.append(sc.nextLine());
+                texto.append("\n");
+            }
+            ok = true;
+        } catch (NullPointerException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, "Plantilla Mail no encontrada");
+        }finally{
+            if (sc != null){
+                sc.close();
+            }
         }
-
-        sc.close();
-
-
+        if (!ok){
+            return null;
+        }
         return texto.toString();
     }
-    
-    public static String printBigDecimal (BigDecimal input){
+
+    public static String printBigDecimal(BigDecimal input) {
         NumberFormat numFormat = NumberFormat.getInstance(Tools.getLocale());
         return numFormat.format(input);
     }
-    
-    public static boolean emailSend (HttpServletRequest request, String subject, String destination, String contenido, HashMap <String, String> adjuntos){
+
+    public static boolean emailSend(HttpServletRequest request, String subject, String destination, String contenido, HashMap<String, String> adjuntos) {
         MailSender mailConfig = (MailSender) request.getServletContext().getAttribute("emailSender");
-        Session mailSession = mailConfig.startSession((Authenticator) request.getServletContext().getAttribute("mailAuth"));
-        
+        Session mailSession = null;
+        if (mailConfig == null){
+            return false;
+        }
+        mailSession = mailConfig.startSession((Authenticator) request.getServletContext().getAttribute("mailAuth"));
+        if (mailSession == null){
+            return false;
+        }
+
         MimeMessage mensaje = null;
-        if (adjuntos == null){
+        if (adjuntos == null) {
             mensaje = mailConfig.newMail(subject, destination, contenido, mailSession);
-        } else{
+        } else {
             mensaje = mailConfig.newMail(adjuntos, subject, destination, contenido, mailSession);
         }
-        
+
         if (mensaje == null) {
             return false;
         } else {

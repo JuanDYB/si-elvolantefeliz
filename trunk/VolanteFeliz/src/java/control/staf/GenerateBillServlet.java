@@ -121,6 +121,9 @@ public class GenerateBillServlet extends HttpServlet {
     
     private boolean sendMail (HttpServletRequest request, Cliente client, Factura factura){
         String contenido = Tools.leerArchivoClassPath("/plantillaFactura.html");
+        if (contenido == null){
+            return false;
+        }
         HashMap <String, String> adjuntos = new HashMap <String, String> ();
         adjuntos.put(request.getServletContext().getRealPath("/staf/billFolder/" + factura.getCodFactura() + ".pdf"), "Factura_" + factura.getCodFactura() + ".pdf");
         return Tools.emailSend(request, "El Volante Feliz: Factura", client.getEmail(), contenido, adjuntos);

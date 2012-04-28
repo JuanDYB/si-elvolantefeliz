@@ -104,7 +104,7 @@ public class ConfigLoader {
     private boolean processMailConfig(){
         if (propiedades.containsKey("smtp.host") && propiedades.containsKey("smtp.port") && propiedades.containsKey("smtp.user") 
                 && propiedades.containsKey("smtp.tsl") && propiedades.containsKey("smtp.auth") 
-                && propiedades.containsKey("smtp.pass") && propiedades.containsKey("from")){
+                && propiedades.containsKey("smtp.pass") && propiedades.containsKey("smtp.from")){
             try{
                 Tools.validateHost(propiedades.get("smtp.host"));
                 Tools.validateNumber(propiedades.get("smtp.port"), "Puerto SMTP", Integer.MAX_VALUE);
@@ -123,7 +123,7 @@ public class ConfigLoader {
     
     public HashMap <String, String> getProperties (){
         
-        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions() /*&& this.processMailConfig()*/){
+        if (this.loadFile() && this.processEmpl() && this.processSucursal() && this.processAppOptions() && this.processMailConfig()){
             return propiedades;
         }
         return null;

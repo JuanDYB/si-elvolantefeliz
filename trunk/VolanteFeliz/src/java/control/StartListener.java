@@ -67,10 +67,10 @@ public class StartListener implements ServletContextListener {
         }else if (numAdmin == -1){
             throw new RuntimeException("No se pudo obtener numero de empleados con permisos de administracion, la aplicación no se iniciara");
         }
-//        MailSender mail = new MailSender(config);
-//        Authenticator autorizacionMail = mail.getAuth();
-//        sce.getServletContext().setAttribute("emailSender", mail);
-//        sce.getServletContext().setAttribute("mailAuth", autorizacionMail);
+        MailSender mail = new MailSender(config);
+        Authenticator autorizacionMail = mail.getAuth();
+        sce.getServletContext().setAttribute("emailSender", mail);
+        sce.getServletContext().setAttribute("mailAuth", autorizacionMail);
 
         sce.getServletContext().setAttribute("appConfig", appConfig);
         sce.getServletContext().setAttribute("persistence", persistence);
