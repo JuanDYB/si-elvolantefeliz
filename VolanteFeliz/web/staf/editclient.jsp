@@ -4,6 +4,7 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="model.Sucursal"%>
 <%@page import="org.owasp.esapi.errors.ValidationException"%>
 <%@page import="tools.Tools"%>
 <%@page import="model.Cliente"%>
@@ -15,6 +16,7 @@
 PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
 Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
 Cliente cli = persistence.getClient(request.getParameter("cli"));
+Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 if (!this.validateForm(request)){
     response.sendError(404);
     return;
@@ -56,7 +58,7 @@ if (!this.validateForm(request)){
                         <h1>Gesti&oacute;n de Clientes</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Editar cliente</h2>
-                        <% if (cli != null && cli.getCodSucursal().equals(emplLogedIn.getCodSucursal())){ %>
+                        <% if (cli != null && (cli.getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())){ %>
                         <p>
                             Tiene a su disposición el siguiente formulario para editar el cliente seleccionado
                         </p>
@@ -76,7 +78,11 @@ if (!this.validateForm(request)){
                             </p>
                             <p>
                                 <label>Empresa</label>
+                                <% if (cli.getCompany() == null){ %>
+                                <input name="company" type="text" size="70" maxlength="100" class=":name :only_on_blur" />
+                                <% }else{ %>
                                 <input value="<%= cli.getCompany() %>" name="company" type="text" size="70" maxlength="100" class=":name :only_on_blur" />
+                                <% } %>
                             </p>
                             <p>
                                 <label>Email</label>
