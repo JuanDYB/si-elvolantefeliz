@@ -71,7 +71,7 @@
                         <form name="elegirAlquileresFactura" action="" method="POST" >
                             <% }%>
                             <% if (type.equals("all") || type.equals("alq")) {%>
-                            <h1>Alquileres pendientes de facturar del cliente: <%= cliente.getName()%></h1>
+                            <h2>Alquileres pendientes de facturar</h2>
                             <% if (alqSinFacturarCliente != null) {%>
                             <table border="0" align="center" width="90%">
                                 <tr><td>&nbsp;</td><td>Fecha Salida</td><td>Fecha Entrada</td><td>Matricula</td><td>Marca</td><td>Importe</td></tr>
@@ -97,7 +97,7 @@
                                 }
                                 if (type.equals("all") || type.equals("inc")) {
                                     if (incSinFacturarCliente != null) {%>
-                            <h1>Incidencias pendientes de facturar</h1>
+                            <h2>Incidencias pendientes de facturar</h2>
                             <table border="0" align="center" width="90%">
                                 <tr><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Precio</td></tr>
                                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
