@@ -1071,37 +1071,13 @@ Vanadium.setupValidatorTypes = function() {
         }, 'Introduzca una direcci&oacute;n v&aacute;lida'],
         //
         ['DNI', function (v) {
-            aLetras = new Array();
-            aLetras[0] = "T" ;
-            aLetras[1] = "R" ;
-            aLetras[2] = "W" ;
-            aLetras[3] = "A" ;
-            aLetras[4] = "G" ;
-            aLetras[5] = "M" ;
-            aLetras[6] = "Y" ;
-            aLetras[7] = "F" ;
-            aLetras[8] = "P" ;
-            aLetras[9] = "D" ;
-            aLetras[10] = "X" ;
-            aLetras[11] = "B" ;
-            aLetras[12] = "N" ;
-            aLetras[13] = "J" ;
-            aLetras[14] = "Z" ;
-            aLetras[15] = "S" ;
-            aLetras[16] = "Q" ;
-            aLetras[17] = "V" ;
-            aLetras[18] = "H" ;
-            aLetras[19] = "L" ;
-            aLetras[20] = "C" ;
-            aLetras[21] = "K" ;
-            aLetras[22] = "E" ;
-            var dni=v.substring(0,8);
-            var letraUsuario=v.substring(8).toUpperCase();
-            var modulo=dni%23;
-            var letra=aLetras[modulo];
+            var lockup = 'TRWAGMYFPDXBNJZSQVHLCKE';
             
+            var letraUsuario=v.substring(8).toUpperCase();
+            var modulo=v.substring(0,8)%23;
+            var letraCorrecta=lockup.charAt(modulo);
             var ok=false;
-            if(letra==letraUsuario) ok=true;
+            if(letraCorrecta==letraUsuario) ok=true;
             return ok&&(Vanadium.validators_types['empty'].test(v) || /^[0-9]{8}[A-Za-z]{1}$/.test(v))   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
         }, 'Introduzca un DNI v&aacute;lido'],
         //

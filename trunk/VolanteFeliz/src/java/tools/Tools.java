@@ -119,34 +119,11 @@ public class Tools {
     public static String validateDNI(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         String dni = validador.getValidInput("DNI", input, "DNI", 9, false);
-        char [] letras = new char [23];
-        letras[0] = 'T';
-        letras[1] = 'R';
-        letras[2] = 'W';
-        letras[3] = 'A';
-        letras[4] = 'G';
-        letras[5] = 'M';
-        letras[6] = 'Y';
-        letras[7] = 'F';
-        letras[8] = 'P';
-        letras[9] = 'D';
-        letras[10] = 'X';
-        letras[11] = 'B';
-        letras[12] = 'N';
-        letras[13] = 'J';
-        letras[14] = 'Z';
-        letras[15] = 'S';
-        letras[16] = 'Q';
-        letras[17] = 'V';
-        letras[18] = 'H';
-        letras[19] = 'L';
-        letras[20] = 'C';
-        letras[21] = 'K';
-        letras[22] = 'E';
+        final String NIF_STRING_ASOCIATION = "TRWAGMYFPDXBNJZSQVHLCKE";
         
         String numeros = dni.substring(0,8);
         char letraEntrada = dni.substring(8).toUpperCase().charAt(0);
-        char letraCorrecta = letras [Integer.parseInt(numeros) % 23];
+        char letraCorrecta = NIF_STRING_ASOCIATION.charAt(Integer.parseInt(numeros) % 23);
         if (letraEntrada != letraCorrecta){
             throw new ValidationException("Letra de DNI incorrecta", "Letra de DNI incorrecta");
         }return dni;

@@ -66,7 +66,7 @@ public class NewClientServlet extends HttpServlet {
                     if (this.sendMail(request, client)){
                         Tools.anadirMensaje(request, "Email de registro enviado correctamente", 'o');
                     }else{
-                        Tools.anadirMensaje(request, "Ocurrio un error al mandar email de registro al cliente", 'w');
+                        Tools.anadirMensaje(request, "Ocurrió un error al mandar email de registro al cliente", 'w');
                     }
                     request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                     return;
