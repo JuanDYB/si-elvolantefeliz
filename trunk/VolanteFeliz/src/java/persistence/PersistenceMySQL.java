@@ -536,8 +536,8 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "WHERE cli.codSucursal=? AND alq.codCliente=cli.codCliente AND alq.FechaEntrega IS NOT NULL "
                     + "AND alq.codAlquiler <> alqFac.codAlquiler");
             select.setString(1, codSucursal);
+            logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
-            clientes = new HashMap<String, Cliente>();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
                 Cliente cli = new Cliente(codCliente, rs.getString("cli.Nombre"), rs.getString("cli.Email"), rs.getString("cli.DNI"), rs.getString("cli.Direccion"), rs.getString("cli.Telefono"), rs.getString("cli.Empresa"), codSucursal, rs.getInt("cli.Edad"), rs.getBoolean("cli.Activo"));
