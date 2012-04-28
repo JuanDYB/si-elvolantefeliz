@@ -54,6 +54,7 @@
                     <div class="gradient">
                         <h1>Detalles Cliente</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
+                        <% if (suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral()){ %>
                         <h2>Informaci&oacute;n General del Cliente</h2>
                         <ul>
 
@@ -70,22 +71,14 @@
                             <li><b>Edad: </b><%= cli.getAge()%></li>
 
                         </ul>
-                        <h2>Informaci&oacute;n General de la sucursal</h2>
-                        <% if (suc != null) {%>
-                        <ul>
-                            <li><b>Sucursal: </b><%= suc.getNombre()%></li>
-                            <li><b>Nombre: </b><%= suc.getDir()%></li>
-                            <li><b>Teléfono: </b><%= suc.getTelefono()%></li>
-                            <li><b>Fax: </b><%= suc.getFax()%></li>
-                            <li><b>Direcci&oacute;n: </b><%= suc.getDir()%></li>
-                        </ul>
-                        <% } else {%>
-                        <blockquote class="stop">
+                            <% } else{ %>
+                            <blockquote class="exclamation">
                             <p>
-                                Ha ocurrido un error obteniendo la sucursal al que pertenece el empleado
+                                No tiene permisos de ver los derechos de este cliente porque no pertenece a esta sucursal
                             </p>
                         </blockquote>
-                        <% }%> 
+                            <% } %>
+                        
                     </div>
                     <div class="gradient">
                         <a href="/staf/client-facturepending.jsp?type=alq&cli=<%= cli.getCodCliente()%>">Ver Facturas pendientes de pagar</a>
