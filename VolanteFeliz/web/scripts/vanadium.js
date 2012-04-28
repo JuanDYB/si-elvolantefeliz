@@ -1096,7 +1096,7 @@ Vanadium.setupValidatorTypes = function() {
             aLetras[21] = "K" ;
             aLetras[22] = "E" ;
             var dni=v.substring(0,8);
-            var letraUsuario=v.substring(8);
+            var letraUsuario=v.substring(8).toUpperCase();
             var modulo=dni%23;
             var letra=aLetras[modulo];
             
