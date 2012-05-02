@@ -4,6 +4,7 @@
     Author     : Juan Jose Olivares
 --%>
 
+<%@page import="model.Sucursal"%>
 <%@page import="model.Empleado"%>
 <%@page import="model.Cliente"%>
 <%@page import="persistence.PersistenceInterface"%>
@@ -14,6 +15,8 @@
 <!DOCTYPE html>
 <%
 Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 <!DOCTYPE html>
 <html>
@@ -50,7 +53,7 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Clientes con alquileres sin facturar</h1>
-                        <% PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+                        <% 
                             HashMap<String, Cliente> clientes1 = persistence.getClientsToFactureRent(((Empleado) session.getAttribute("empleado")).getCodSucursal());
                             HashMap<String, Cliente> clientes2 = persistence.getClientsToFactureIncidence(((Empleado) session.getAttribute("empleado")).getCodSucursal());
                             String type = "alq";
@@ -65,15 +68,21 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
                         <p>
                             No se han encontrado clientes en esta sucursal con alquileres pendientes de facturar
                         </p>
-                        <% } else {%>    
-                        <table border="0" align="center" width="90%">
-                            <tr><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>Telefono</td><td>&nbsp;</td></tr>
-                            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <% } else {%>
+                            <% if (suc.isCentral()){ %>
+                            <p>Por estar en una sucursal central no podra hacer facturas de otras sucursales, únicamente podrá consultar datos</p>
+                            <% } %>
+                        <table>
+                            <tr class="theader"><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>Telefono</td><td>&nbsp;</td></tr>
                             <% for (Cliente cli : clientes1.values()) {%>
                             <tr>
                                 <td><%= cli.getName()%></td>
                                 <td><%= cli.getDni()%></td>
+                                <% if (cli.getCompany() == null){ %>
+                                <td>Cliente particular</td>
+                                <% }else{ %>
                                 <td><%= cli.getCompany()%></td>
+                                <% } %>
                                 <td><%= cli.getTelephone()%></td>
                                 <td><a href="/staf/client-facturepending.jsp?cli=<%= cli.getCodCliente()%>&type=<%= type%>"><img src="/images/icons/selecCli.png" alt="selecCli" /></a></td>
                             </tr>

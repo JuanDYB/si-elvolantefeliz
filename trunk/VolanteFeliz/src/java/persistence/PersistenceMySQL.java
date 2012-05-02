@@ -521,6 +521,13 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return clientes;
     }
+    
+    /*
+     * SELECT AlqNotFact.codAlquiler, alq.codCliente FROM
+     * (SELECT codAlquiler FROM Alquiler WHERE codAlquiler NOT IN (SELECT codAlquiler FROM AlquilerFactura)) AlqNotFact, 
+     * Alquiler alq, Cliente cli
+     * where alq.codAlquiler = AlqNotFact.codAlquiler AND alq.FechaEntrega IS NOT NULL AND cli.codCliente=alq.codCliente;
+     */
 
     @Override
     public HashMap<String, Cliente> getClientsToFactureRent(String codSucursal) {
@@ -531,12 +538,13 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
-                    + ", cli.Telefono, cli.Email "
-                    + "FROM " + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFac "
-                    + "WHERE cli.codSucursal=? AND alq.codCliente=cli.codCliente AND alq.FechaEntrega IS NOT NULL "
-                    + "AND alq.codAlquiler <> alqFac.codAlquiler");
+                    + ", cli.Telefono, cli.Email, cli.Activo "
+                    + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
+                    + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, " 
+                    + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq "
+                    + "WHERE cli.codSucursal=? AND cli.codCliente=alq.codCliente AND alq.FechaEntrega IS NOT NULL "
+                    + "AND alq.codAlquiler = AlqNotFact.codAlquiler");
             select.setString(1, codSucursal);
-            logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
@@ -544,7 +552,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 clientes.put(codCliente, cli);
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar");
+            logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar", ex);
         } finally {
             cerrarResultSets(rs);
             cerrarConexionesYStatementsm(conexion, select);
@@ -554,7 +562,14 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return clientes;
     }
-
+    
+    /*
+     * SELECT IncNotFact.codincidencia, alq.codCliente FROM
+     * (SELECT codIncidencia FROM Incidencia WHERE codIncidencia NOT IN (SELECT codIncidencia FROM IncidenciaFactura)) IncNotFact, 
+     * Incidencia inc, Cliente cli
+     * where inc.codIncidencia = IncNotFact.codincidencia AND cli.codCliente=alq.codCliente;
+     */
+   
     @Override
     public HashMap<String, Cliente> getClientsToFactureIncidence(String codSucursal) {
         Connection conexion = null;
@@ -564,9 +579,11 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
-                    + ", cli.Telefono, cli.Email "
-                    + "FROM " + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFac "
-                    + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND inc.codIncidencia <> incFac.codIncidencia");
+                    + ", cli.Telefono, cli.Email, cli.Activo "
+                    + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
+                    + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
+                    + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc, "
+                    + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente");
             select.setString(1, codSucursal);
             logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
