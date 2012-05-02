@@ -582,10 +582,9 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + ", cli.Telefono, cli.Email, cli.Activo "
                     + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
                     + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
-                    + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc, "
+                    + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc "
                     + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente");
             select.setString(1, codSucursal);
-            logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
@@ -612,8 +611,12 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, Alquiler> alquileresCliente = new HashMap<String, Alquiler> ();
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFact "
-                    + "WHERE alq.codCliente=? AND alq.codAlquiler <> alqFact.codAlquiler");
+            select = conexion.prepareStatement("SELECT alq.codAlquiler, alq.codCliente, alq.codVehiculo, alq.codTarifa, alq.FechaInicio, "
+                    + "alq.FechaFin, alq.FechaEntrega, alq.Importe, alq.KMInicio, alq.KMFin, alq.CombustibleFin, alq.Observaciones "
+                    + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
+                    + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
+                    + nameBD + ".Alquiler alq "
+                    + "WHERE alq.codCliente=?");
             select.setString(1, cli.getCodCliente());
             rs = select.executeQuery();
             alquileresCliente = new HashMap<String, Alquiler>();
@@ -652,13 +655,15 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, TipoIncidencia> tiposIncidencias = new HashMap<String, TipoIncidencia>();
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT* "
-                    + "FROM " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFact, " + nameBD + ".TipoIncidencia tipoinc"
-                    + " WHERE inc.codCliente=? AND tipoinc.codTipoIncidencia=inc.codTipoIncidencia "
-                    + "AND tipoinc.AbonaCliente=? AND inc.codIncidencia <> incFact.codIncidencia");
+            select = conexion.prepareStatement("SELECT inc.codIncidencia, inc.codTipoIncidencia, inc.codAlquiler, inc.codCliente, inc.Fecha, "
+                    + "inc.Observaciones, inc.Precio "
+                    + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
+                    + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
+                    + nameBD + ".Incidencia inc, " + nameBD + ".TipoIncidencia tipoinc "
+                    + "WHERE inc.codCliente=? AND tipoinc.codTipoIncidencia=inc.codTipoIncidencia "
+                    + "AND tipoinc.AbonaCliente=?");
             select.setString(1, cli.getCodCliente());
             select.setBoolean(2, true);
-            logger.log(Level.INFO, select.toString());
             rs = select.executeQuery();
             incidenciasCliente = new HashMap<String, Incidencia>();
             while (rs.next()) {
