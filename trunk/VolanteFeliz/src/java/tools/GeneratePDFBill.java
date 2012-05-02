@@ -171,7 +171,7 @@ public class GeneratePDFBill {
         return false;
     }
 
-    private void doBillContent() throws DocumentException {
+    private void doBillContent(){
         //Crear Tabla
         float[] columnas = {80, 10, 10};
         PdfPTable tablaContenido = this.generateTable(100, columnas, true);
@@ -270,7 +270,11 @@ public class GeneratePDFBill {
             totalConIVA.setColspan(2);
             tablaContenido.addCell(totalConIVA);
         }
-        doc.add(tablaContenido);
+        try{
+            doc.add(tablaContenido);
+        }catch (DocumentException ex){
+            Logger.getLogger(GeneratePDFBill.class.getName()).log(Level.SEVERE, "Error en documento PDF", ex);
+        }
 
 
     }
@@ -279,6 +283,7 @@ public class GeneratePDFBill {
         this.newPDF();
         this.setHeaderAndMetadata();
         this.doBillHeader();
+        this.doBillContent();
         this.closePDF();
     }
 }

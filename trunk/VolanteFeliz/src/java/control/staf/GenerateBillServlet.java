@@ -96,6 +96,7 @@ public class GenerateBillServlet extends HttpServlet {
                 Tools.anadirMensaje(request, "Esta intentando generar la factura de un cliente que no pertenece a esta sucursal", 'w');
             }
         } else {
+            
         }
     }
 
