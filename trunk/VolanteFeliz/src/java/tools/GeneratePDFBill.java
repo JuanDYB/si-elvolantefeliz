@@ -36,10 +36,12 @@ public class GeneratePDFBill {
     private void newPDF() {
         doc = new Document(PageSize.A4);
         try {
-            writer = PdfWriter.getInstance(doc, new FileOutputStream(rutaRaizWeb + "/staf/billFolder/prueba.pdf"));
+            writer = PdfWriter.getInstance(doc, new FileOutputStream(rutaRaizWeb + "/staf/billFolder/" + factura.getCodFactura() + ".pdf"));
             doc.open();
         } catch (FileNotFoundException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Archivo no encontrado", ex);
         } catch (DocumentException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Archivo no encontrado", ex);
         }
     }
 
@@ -169,7 +171,7 @@ public class GeneratePDFBill {
         return false;
     }
 
-    private void doBillContent() {
+    private void doBillContent() throws DocumentException {
         //Crear Tabla
         float[] columnas = {80, 10, 10};
         PdfPTable tablaContenido = this.generateTable(100, columnas, true);
@@ -268,6 +270,7 @@ public class GeneratePDFBill {
             totalConIVA.setColspan(2);
             tablaContenido.addCell(totalConIVA);
         }
+        doc.add(tablaContenido);
 
 
     }
