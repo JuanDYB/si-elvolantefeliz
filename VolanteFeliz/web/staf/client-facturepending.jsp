@@ -68,7 +68,7 @@
                                 HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
                                 if (alqSinFacturarCliente != null || incSinFacturarCliente != null) {
                         %>
-                        <form name="elegirAlquileresFactura" action="" method="POST" >
+                        <form name="elegirAlquileresFactura" action="/staf/genbill" method="POST" >
                             <% }%>
                             <% if (type.equals("all") || type.equals("alq")) {%>
                             <h2>Alquileres pendientes de facturar</h2>
@@ -116,7 +116,7 @@
 
                             <% }%>
                             <% if (alqSinFacturarCliente != null || incSinFacturarCliente != null) {%>
-                            <input name="client" type="hidden" value="<%= cliente.getCodCliente()%>" />
+                            <input name="cliente" type="hidden" value="<%= cliente.getCodCliente()%>" />
                             <input name="genFact" type="submit" value="Generar Factura" />
                         </form>
                         <% }
