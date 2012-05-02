@@ -62,6 +62,7 @@ public class GenerateBillServlet extends HttpServlet {
                         if (client.getCompany() == null && alquileres.length > 1){
                             request.setAttribute("resultados", "Factura incorrecta");
                             Tools.anadirMensaje(request, "No se puede facturar más de un alquiler a un cliente particular", 'w');
+                            //PAGINA ERROR
                             request.getRequestDispatcher("/WEB-INF/errrorPage").forward(request, response);
                             return;
                         }

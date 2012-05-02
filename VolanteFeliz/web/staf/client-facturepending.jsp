@@ -73,9 +73,8 @@
                             <% if (type.equals("all") || type.equals("alq")) {%>
                             <h2>Alquileres pendientes de facturar</h2>
                             <% if (alqSinFacturarCliente != null) {%>
-                            <table border="0" align="center" width="90%">
-                                <tr><td>&nbsp;</td><td>Fecha Salida</td><td>Fecha Entrada</td><td>Matricula</td><td>Marca</td><td>Importe</td></tr>
-                                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            <table>
+                                <tr class="theader"><td>&nbsp;</td><td>Fecha Salida</td><td>Fecha Entrada</td><td>Matricula</td><td>Marca</td><td>Importe</td></tr>
                                 <% for (Alquiler alq : alqSinFacturarCliente.values()) {%>
                                 <tr>
                                     <% if (empresa) {%>
@@ -91,16 +90,16 @@
                                 </tr>
                                 <% }%>
                             </table>
-                            } else{ %>
+                            <% } else{ %>
                             <p>Ha ocurrido un error obteniendo los datos de los alquileres del cliente pendientes de facturar</p>
                             <% }
                                 }
-                                if (type.equals("all") || type.equals("inc")) {
-                                    if (incSinFacturarCliente != null) {%>
-                            <h2>Incidencias pendientes de facturar</h2>
-                            <table border="0" align="center" width="90%">
-                                <tr><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Precio</td></tr>
-                                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                if (type.equals("all") || type.equals("inc")) { %>
+                                        <h2>Incidencias pendientes de facturar</h2>
+                                   <% if (incSinFacturarCliente != null) {%>
+                            
+                            <table>
+                                <tr class="theader"><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Precio</td></tr>
                                 <% for (Incidencia inc : incSinFacturarCliente.values()) {%>
                                 <tr>
                                     <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia()%>" /></td>
@@ -128,14 +127,15 @@
                         <h1>Cliente no encontrado</h1>
                         <p>El cliente seleccionado para ver los alquileres pendientes de facturar no se ha encontrado</p>
                         <% }%>
-
-                        <!-- FIN BLOQUE GRADIENTE -->
                     </div>
-                    <!-- FIN COLUMNA PRINCIPAL -->
-
+                    <!-- FIN BLOQUE GRADIENTE -->
+                    
+                </div>
+                <!-- FIN COLUMNA PRINCIPAL -->
 
                 </div>
                 <!-- Fin contenido página -->
+                
             </div>
             <!-- FIN CONTENIDO -->
 

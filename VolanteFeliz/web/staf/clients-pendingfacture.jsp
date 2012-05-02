@@ -73,7 +73,7 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                             <p>Por estar en una sucursal central no podra hacer facturas de otras sucursales, únicamente podrá consultar datos</p>
                             <% } %>
                         <table>
-                            <tr class="theader"><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>Telefono</td><td>&nbsp;</td></tr>
+                            <tr class="theader"><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>&nbsp;</td></tr>
                             <% for (Cliente cli : clientes1.values()) {%>
                             <tr>
                                 <td><%= cli.getName()%></td>
