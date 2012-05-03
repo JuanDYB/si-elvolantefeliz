@@ -40,6 +40,7 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Gesti&oacute;n Facturaci&oacute;n</h1>
+                        <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Acciones disponibles</h2>
                         <ul>
                             <li><a href="/staf/clients-pendingfacture.jsp">Nueva Factura</a></li>

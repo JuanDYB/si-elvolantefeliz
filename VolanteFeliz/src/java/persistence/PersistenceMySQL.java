@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import model.*;
 import tools.GenerateBill;
@@ -74,7 +75,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo numero de administradores", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, count);
+            cerrarConexionesYStatement(conexion, count);
         }
         return numAdmin;
     }
@@ -96,7 +97,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo numero de administradores", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, count);
+            cerrarConexionesYStatement(conexion, count);
         }
         return numAdmin;
     }
@@ -127,7 +128,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Error insertando un cliente en BD", ex);
         } finally {
-            cerrarConexionesYStatementsm(conexion, insert);
+            cerrarConexionesYStatement(conexion, insert);
         }
         return ok;
     }
@@ -155,7 +156,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Ha ocurrido un error insertando un empleado", ex);
         } finally {
-            cerrarConexionesYStatementsm(conexion, insert);
+            cerrarConexionesYStatement(conexion, insert);
         }
         return ok;
     }
@@ -184,7 +185,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Ha ocurrido un error insertando un empleado", ex);
         } finally {
-            cerrarConexionesYStatementsm(conexion, insert);
+            cerrarConexionesYStatement(conexion, insert);
         }
         return ok;
     }
@@ -210,7 +211,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Ha ocurrido un error obteniendo el cliente de la BD", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         return client;
     }
@@ -234,7 +235,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             empl = null;
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         return empl;
     }
@@ -262,7 +263,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo una incidencia de la base de datos", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         return incidencia;
     }
@@ -288,8 +289,10 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un vehiculo de la base de datos", ex);
         } finally {
-            cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            if (conExterna == null){
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(conexion, select);
+            }
         }
         return vehicle;
     }
@@ -315,8 +318,10 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un vehiculo de la base de datos", ex);
         } finally {
-            cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            if (conExterna == null){
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(conexion, select);
+            }
         }
         return tarifa;
     }
@@ -339,7 +344,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo los datos de una sucursal");
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         return suc;
     }
@@ -369,7 +374,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo un alquiler de la Base de Datos", rs);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         return alq;
     }
@@ -424,7 +429,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo una factura de la Base de Datos", ex);
         } finally {
             cerrarResultSets(rsFactura, rsElementoFactura);
-            cerrarConexionesYStatementsm(conexion, selectFactura, selectElementoFactura);
+            cerrarConexionesYStatement(conexion, selectFactura, selectElementoFactura);
         }
         return factura;
     }
@@ -455,7 +460,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo incidencias del alquiler: " + codAlquiler, ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (incidencias.isEmpty()) {
             return null;
@@ -484,8 +489,10 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo el tipo de incidencia: " + codTipoIncidencia, ex);
         } finally {
-            cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            if (conExterna == null){
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(conexion, select);
+            }
         }
         return tipoIncidencia;
     }
@@ -514,7 +521,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error en la obtencion de clientes", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (clientes.isEmpty()) {
             return null;
@@ -543,7 +550,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, " 
                     + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq "
                     + "WHERE cli.codSucursal=? AND cli.codCliente=alq.codCliente AND alq.FechaEntrega IS NOT NULL "
-                    + "AND alq.codAlquiler = AlqNotFact.codAlquiler");
+                    + "AND alq.codAlquiler=AlqNotFact.codAlquiler");
             select.setString(1, codSucursal);
             rs = select.executeQuery();
             while (rs.next()) {
@@ -555,7 +562,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (clientes.isEmpty()) {
             return null;
@@ -583,7 +590,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
                     + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
                     + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc "
-                    + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente");
+                    + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND IncNotFact.codIncidencia=inc.codIncidencia");
             select.setString(1, codSucursal);
             rs = select.executeQuery();
             while (rs.next()) {
@@ -595,7 +602,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo clientes con alquileres terminados pendientes de facturar", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (clientes.isEmpty()) {
             return null;
@@ -616,7 +623,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
                     + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
                     + nameBD + ".Alquiler alq "
-                    + "WHERE alq.codCliente=?");
+                    + "WHERE alq.codCliente=? AND AlqNotFact.codAlquiler=alq.codAlquiler");
             select.setString(1, cli.getCodCliente());
             rs = select.executeQuery();
             alquileresCliente = new HashMap<String, Alquiler>();
@@ -637,7 +644,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo alquileres de un cliente pendientes de facturar", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (alquileresCliente.isEmpty()) {
             return null;
@@ -661,13 +668,13 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
                     + nameBD + ".Incidencia inc, " + nameBD + ".TipoIncidencia tipoinc "
                     + "WHERE inc.codCliente=? AND tipoinc.codTipoIncidencia=inc.codTipoIncidencia "
-                    + "AND tipoinc.AbonaCliente=?");
+                    + "AND tipoinc.AbonaCliente=? AND IncNotFact.codIncidencia=inc.codIncidencia");
             select.setString(1, cli.getCodCliente());
             select.setBoolean(2, true);
             rs = select.executeQuery();
             incidenciasCliente = new HashMap<String, Incidencia>();
             while (rs.next()) {
-                String codIncidencia = rs.getString("inc.codAlquiler");
+                String codIncidencia = rs.getString("inc.codIncidencia");
                 String codTipoIncidencia = rs.getString("inc.codTipoIncidencia");
                 ///////////EVITANDO CONSULTAS IGUALES A TIPO INCIDENCIA ///////////
                 TipoIncidencia tipoIncidencia;
@@ -679,7 +686,9 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
                 ///////////FIN EVITACION CONSULTAS IGUALES ///////////
                 if (tipoIncidencia != null) {
-                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler"), rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"), rs.getBigDecimal("inc.Precio"));
+                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler"), 
+                            rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"), 
+                            rs.getBigDecimal("inc.Precio"));
                     incidenciasCliente.put(codIncidencia, inc);
                 } else {
                     incidenciasCliente.clear();
@@ -688,10 +697,10 @@ public class PersistenceMySQL implements PersistenceInterface {
 
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error obteniendo alquileres de un cliente pendientes de facturar", ex);
+            logger.log(Level.SEVERE, "Error obteniendo incidencias de un cliente pendientes de facturar", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (incidenciasCliente.isEmpty()) {
             return null;
@@ -733,7 +742,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Ocurrio un error consultando alquileres de la base de datos", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (alquileres.isEmpty()) {
             return null;
@@ -742,7 +751,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Factura generarFactura(Cliente cli, String[] alquileres, String[] incidencias) {
+    public Factura generarFactura(Cliente cli, String[] alquileres, String[] incidencias, HttpServletRequest request) {
         Connection conexion = null;
         PreparedStatement selectAlquiler = null;
         PreparedStatement selectIncidencia = null;
@@ -754,52 +763,72 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, Incidencia> incidenciasFacturar = new HashMap<String, Incidencia>();
         HashMap<String, TipoIncidencia> tiposIncidencia = new HashMap<String, TipoIncidencia>();
         Factura factura = null;
+        boolean okAlq = true;
+        boolean okInc = true;
         boolean ok = false;
         try {
             conexion = pool.getConnection();
             conexion.setAutoCommit(false);
-            selectAlquiler = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq, " + nameBD + ".AlquilerFactura alqFact "
-                    + "WHERE alq.codAlquiler=? AND alq.FechaEntrega IS NOT NULL AND alq.codAlquiler <> alqFact.codAlquiler");
+            selectAlquiler = conexion.prepareStatement("SELECT alq.codAlquiler, alq.codCliente, alq.codVehiculo, alq.codTarifa, alq.FechaInicio, "
+                    + "alq.FechaFin, alq.FechaEntrega, alq.Importe, alq.KMInicio, alq.KMFin, alq.CombustibleFin, alq.Observaciones "
+                    + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
+                    + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
+                    + nameBD + ".Alquiler alq "
+                    + "WHERE alq.codAlquiler=? AND alq.FechaEntrega IS NOT NULL AND alq.codCliente=?");
 
-            selectIncidencia = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Incidencia inc, " + nameBD + ".IncidenciaFactura incFact "
-                    + "WHERE inc.codIncidencia=? AND inc.CodIncidencia <> incFact.codIncidencia");
+            selectIncidencia = conexion.prepareStatement("SELECT inc.codIncidencia, inc.codTipoIncidencia, inc.codAlquiler, "
+                    + "inc.codCliente, inc.Fecha, inc.Observaciones, inc.Precio "
+                    + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
+                    + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
+                    + nameBD + ".Incidencia inc "
+                    + "WHERE inc.codIncidencia=? AND inc.codCliente=?");
             if (alquileres != null) {
                 for (int i = 0; i < alquileres.length; i++) {
                     selectAlquiler.setString(1, alquileres[i]);
+                    selectAlquiler.setString(2, cli.getCodCliente());
                     rsAlquiler = selectAlquiler.executeQuery();
 
                     while (rsAlquiler.next()) {
                         Vehiculo vehicle = this.getVehiculo("codVehiculo", rsAlquiler.getString("alq.codVehiculo"), conexion);
                         Tarifa tarifa = this.getTarifa(rsAlquiler.getString("alq.codTarifa"), conexion);
-                        if (vehicle != null && tarifa != null && cli.getCodCliente().equals(rsAlquiler.getString("alq.codCliente"))) {
-                            Alquiler alq = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), cli, vehicle, tarifa, rsAlquiler.getDate("alq.FechaInicio"), rsAlquiler.getDate("alq.FechaFin"), rsAlquiler.getDate("alq.FechaEntrega"), rsAlquiler.getBigDecimal("alq.Precio"), rsAlquiler.getInt("alq.KMInicio"), rsAlquiler.getInt("alq.KMFin"), rsAlquiler.getInt("alq.CombustibleFin"), rsAlquiler.getString("alq.Observaciones"));
+                        if (vehicle != null && tarifa != null) {
+                            Alquiler alq = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), cli, vehicle, tarifa, 
+                                    rsAlquiler.getDate("alq.FechaInicio"), rsAlquiler.getDate("alq.FechaFin"), 
+                                    rsAlquiler.getDate("alq.FechaEntrega"), rsAlquiler.getBigDecimal("alq.Importe"), 
+                                    rsAlquiler.getInt("alq.KMInicio"), rsAlquiler.getInt("alq.KMFin"), 
+                                    rsAlquiler.getInt("alq.CombustibleFin"), rsAlquiler.getString("alq.Observaciones"));
                             alquileresFacturar.put(alq.getCodAlquiler(), alq);
+                        } else{
+                            okAlq = false;
                         }
                     }
                     selectAlquiler.clearParameters();
                     rsAlquiler.close();
                 }
-                ok = true;
             }
             if (incidencias != null) {
                 for (int i = 0; i < incidencias.length; i++) {
                     selectIncidencia.setString(1, incidencias[i]);
+                    selectIncidencia.setString(2, cli.getCodCliente());
                     rsIncidencia = selectIncidencia.executeQuery();
                     while (rsIncidencia.next()) {
                         TipoIncidencia tipoIncidencia = this.getTipoInciencia(rsIncidencia.getString("inc.codTipoIncidencia"), conexion);
-                        if (tipoIncidencia != null && cli.getCodCliente().equals(rsIncidencia.getString("inc.codCliente"))) {
-                            Incidencia inc = new Incidencia(rsIncidencia.getString("inc.codIncidencia"), tipoIncidencia, rsIncidencia.getString("inc.CodAlquiler"), cli.getCodCliente(), rsAlquiler.getDate("Fecha"), rsIncidencia.getString("Observaciones"), rsIncidencia.getBigDecimal("Precio"));
+                        if (tipoIncidencia != null) {
+                            Incidencia inc = new Incidencia(rsIncidencia.getString("inc.codIncidencia"), tipoIncidencia, 
+                                    rsIncidencia.getString("inc.CodAlquiler"), cli.getCodCliente(), 
+                                    rsIncidencia.getDate("inc.Fecha"), rsIncidencia.getString("inc.Observaciones"), 
+                                    rsIncidencia.getBigDecimal("inc.Precio"));
                             incidenciasFacturar.put(inc.getCodIncidencia(), inc);
-                        } else {
-                            ok = false;
+                        } else{
+                            okInc = false;
                         }
                     }
                     selectIncidencia.clearParameters();
                     rsIncidencia.close();
                 }
             }
-            if (ok) {
-                GenerateBill genBill = new GenerateBill(cli, alquileres, alquileresFacturar, incidencias, incidenciasFacturar, null);
+            if (okAlq || okInc) {
+                GenerateBill genBill = new GenerateBill(cli, alquileres, alquileresFacturar, incidencias, incidenciasFacturar, request);
                 factura = genBill.generateBill();
                 insertFactura = conexion.prepareStatement("INSERT INTO " + nameBD + ".Factura VALUES (?,?,?,?,?,?,?,?,?)");
                 insertFactura.setString(1, factura.getCodFactura());
@@ -810,11 +839,15 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insertFactura.setDate(6, new java.sql.Date(factura.getFechaEmision().getTime()));
                 insertFactura.setNull(7, java.sql.Types.VARCHAR);
                 insertFactura.setNull(8, java.sql.Types.DATE);
-                insertFactura.setBoolean(9, false);
+                insertFactura.setBoolean(9, factura.isPagado());
 
                 int filasTablaFactura = insertFactura.executeUpdate();
+                if (filasTablaFactura != 1){
+                    conexion.rollback();
+                }
+                
                 if (filasTablaFactura == 1 && factura.getAlquileres() != null) {
-                    insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + "AlquilerFactura VALUES (?,?)");
+                    insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + ".AlquilerFactura VALUES (?,?)");
                     for (Alquiler alq : factura.getAlquileres().values()) {
                         insertElementosFactura.setString(1, factura.getCodFactura());
                         insertElementosFactura.setString(2, alq.getCodAlquiler());
@@ -822,17 +855,13 @@ public class PersistenceMySQL implements PersistenceInterface {
                             insertElementosFactura.clearParameters();
                         } else {
                             conexion.rollback();
-                            ok = false;
                             break;
                         }
                     }
-                } else {
-                    conexion.rollback();
-                    ok = false;
                 }
 
-                if (ok && filasTablaFactura == 1 && factura.getIncidencias() != null) {
-                    insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + "IncidenciaFactura VALUES (?,?)");
+                if (filasTablaFactura == 1 && factura.getIncidencias() != null) {
+                    insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + ".IncidenciaFactura VALUES (?,?)");
                     for (Incidencia inc : factura.getIncidencias().values()) {
                         insertElementosFactura.setString(1, factura.getCodFactura());
                         insertElementosFactura.setString(2, inc.getCodIncidencia());
@@ -840,15 +869,15 @@ public class PersistenceMySQL implements PersistenceInterface {
                             insertElementosFactura.clearParameters();
                         } else {
                             conexion.rollback();
-                            ok = false;
                             break;
                         }
                     }
                 }
             }
             conexion.commit();
+            ok = true;
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error creando una factura en la base de datos");
+            logger.log(Level.SEVERE, "Error creando una factura en la base de datos", ex);
             try {
                 conexion.rollback();
             } catch (SQLException ex1) {
@@ -856,7 +885,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             }
         } finally {
             cerrarResultSets(rsAlquiler);
-            cerrarConexionesYStatementsm(conexion, selectAlquiler);
+            cerrarConexionesYStatement(conexion, selectAlquiler);
         }
         if (!ok) {
             return null;
@@ -891,7 +920,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Ocurrio un error obteniendo las facturas pendientes de pago", ex);
         } finally {
             cerrarResultSets(rs);
-            cerrarConexionesYStatementsm(conexion, select);
+            cerrarConexionesYStatement(conexion, select);
         }
         if (facturas.isEmpty()) {
             return null;
@@ -919,7 +948,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex){
             logger.log(Level.SEVERE, "Error al actualizar el estado de una factura a pagada en la Base de Datos", ex);
         } finally{
-            cerrarConexionesYStatementsm(conexion, update);
+            cerrarConexionesYStatement(conexion, update);
         }
         return ok;
     }
@@ -946,7 +975,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error editando cliente en la base de datos", ex);
         } finally {
-            cerrarConexionesYStatementsm(conexion, update);
+            cerrarConexionesYStatement(conexion, update);
         }
         return ok;
     }
@@ -966,12 +995,12 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error borrando cliente de la base de datos", ex.getMessage());
         } finally {
-            cerrarConexionesYStatementsm(conexion, delete);
+            cerrarConexionesYStatement(conexion, delete);
         }
         return ok;
     }
 
-    private void cerrarConexionesYStatementsm(Connection conexion, Statement... st) {
+    private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {
             if (statement != null) {
                 try {
