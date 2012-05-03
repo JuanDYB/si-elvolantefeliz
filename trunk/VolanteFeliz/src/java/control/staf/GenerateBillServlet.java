@@ -54,16 +54,21 @@ public class GenerateBillServlet extends HttpServlet {
             Cliente client = persistence.getClient(request.getParameter("cliente"));
             Empleado emplLogedIn = (Empleado) request.getSession().getAttribute("empleado");
             Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
-            if (client.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral()) {
+            if (client.getCodSucursal().equals(emplLogedIn.getCodSucursal())) {
                 try {
-                    String[] alquileres = request.getParameterValues("alquileres");
-                    String[] incidencias = request.getParameterValues("incidencias");
+                    String[] alquileres = request.getParameterValues("alquiler");
+                    String[] incidencias = request.getParameterValues("incidencia");
+                    if (alquileres == null && incidencias == null){
+                        request.setAttribute("resultados", "Factura vacia");
+                        Tools.anadirMensaje(request, "No se puede generar la factura por no haber ni alquileres ni incidencias por facturar", 'w');
+                        request.getRequestDispatcher("/staf/bill_management.jsp").forward(request, response);
+                        return;
+                    }
                     if (alquileres != null) {
                         if (client.getCompany() == null && alquileres.length > 1){
                             request.setAttribute("resultados", "Factura incorrecta");
                             Tools.anadirMensaje(request, "No se puede facturar más de un alquiler a un cliente particular", 'w');
-                            //PAGINA ERROR
-                            request.getRequestDispatcher("/WEB-INF/errrorPage").forward(request, response);
+                            request.getRequestDispatcher("/staf/bill_management.jsp").forward(request, response);
                             return;
                         }
                         for (int i = 0; i < alquileres.length; i++) {
@@ -76,16 +81,19 @@ public class GenerateBillServlet extends HttpServlet {
                         }
                     }
 
-                    Factura factura = persistence.generarFactura(client, alquileres, incidencias);
+                    Factura factura = persistence.generarFactura(client, alquileres, incidencias, request);
                     GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
                     pdfBill.generateBill();
+                    
+                    request.setAttribute("resultados", "Resultados de la operación");
+                    Tools.anadirMensaje(request, "Factura generada correctamente", 'o');
                     if (this.sendMail(request, client, factura)){
                         Tools.anadirMensaje(request, "Email de factura enviado correctamente", 'o');
                     }else{
                         Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente", 'w');
                     }
-
-
+                    request.getRequestDispatcher("/staf/view_bill.jsp").forward(request, response);
+                    return;
 
                 } catch (ValidationException ex) {
                     request.setAttribute("resultados", "Validacion de parametros fallida");
@@ -96,8 +104,10 @@ public class GenerateBillServlet extends HttpServlet {
                 Tools.anadirMensaje(request, "Esta intentando generar la factura de un cliente que no pertenece a esta sucursal", 'w');
             }
         } else {
-            
+            request.setAttribute("resultados", "Formulario no esperado");
+            Tools.anadirMensaje(request, "El formulario recibido no se esperaba", 'e');
         }
+        request.getRequestDispatcher("/staf/bill_management.jsp").forward(request, response);
     }
 
     /**

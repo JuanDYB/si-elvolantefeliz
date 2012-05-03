@@ -33,7 +33,7 @@
         <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
         <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
-        <title>Detalles cliente</title>
+        <title>Facturacion cliente</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -56,7 +56,7 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Detalles Cliente</h1>
+                        <h1>Facturación Cliente</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Informaci&oacute;n General del Cliente</h2>
                         <% if (cliente != null && (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral())) {
@@ -86,7 +86,7 @@
                                     <td><%= alq.getFechaEntrega()%></td>
                                     <td><%= alq.getVehiculo().getMatricula()%></td>
                                     <td><%= alq.getVehiculo().getMarca()%></td>
-                                    <td><%= Tools.printBigDecimal(alq.getPrecio())%></td>
+                                    <td><%= Tools.printBigDecimal(alq.getPrecio())%> €</td>
                                 </tr>
                                 <% }%>
                             </table>
@@ -99,13 +99,13 @@
                                    <% if (incSinFacturarCliente != null) {%>
                             
                             <table>
-                                <tr class="theader"><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Precio</td></tr>
+                                <tr class="theader"><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Importe</td></tr>
                                 <% for (Incidencia inc : incSinFacturarCliente.values()) {%>
                                 <tr>
                                     <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia()%>" /></td>
                                     <td><%= inc.getTipoIncidencia().getNombre()%></td>
                                     <td><%= inc.getFecha()%></td>
-                                    <td><%= Tools.printBigDecimal(inc.getPrecio())%></td>
+                                    <td><%= Tools.printBigDecimal(inc.getPrecio())%> €</td>
                                 </tr>
                                 <% }%>
                             </table>

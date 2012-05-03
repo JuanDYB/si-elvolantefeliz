@@ -13,7 +13,7 @@
         <% } else if (emplLogedIn != null && emplLogedIn.getPermisos() == 'a'){ %>
         <li><a href="/staf/administration/index.jsp" title="administration" <%= menuPreferencias %> >Administraci&oacute;n</a></li>
         <% } else{ %>
-        <li><a href="login.jsp" title="Login" <%= menuLogin %> >Login</a></li>
+        <li><a href="/login.jsp" title="Login" <%= menuLogin %> >Login</a></li>
         <% } %>
         <li><a href="/about.jsp" title="Acerca de" <%= menuAbout %> >Ayuda</a></li>
         <li><a href="/contact.jsp" title="Contacta" <%= menuContacto %> >Contacto</a></li>
