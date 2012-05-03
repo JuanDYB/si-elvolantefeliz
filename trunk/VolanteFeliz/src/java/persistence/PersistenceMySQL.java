@@ -999,7 +999,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
-
+    
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {
             if (statement != null) {
