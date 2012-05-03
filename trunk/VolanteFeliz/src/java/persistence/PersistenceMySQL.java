@@ -884,8 +884,8 @@ public class PersistenceMySQL implements PersistenceInterface {
                 logger.log(Level.SEVERE, "Error haciendo rollback de transacción de generación de factura", ex1);
             }
         } finally {
-            cerrarResultSets(rsAlquiler);
-            cerrarConexionesYStatement(conexion, selectAlquiler);
+            cerrarResultSets(rsAlquiler, rsIncidencia);
+            cerrarConexionesYStatement(conexion, selectAlquiler, selectIncidencia, insertFactura, insertElementosFactura);
         }
         if (!ok) {
             return null;
