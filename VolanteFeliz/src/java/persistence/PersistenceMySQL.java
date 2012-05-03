@@ -1,7 +1,6 @@
 package persistence;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import com.sun.faces.util.CollectionsUtils;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.logging.Level;

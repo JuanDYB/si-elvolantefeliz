@@ -8,6 +8,8 @@
 <%@page import="model.Factura"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="model.Empleado"%>
+<%@page import="tools.Tools"%>
+<%@page import="org.owasp.esapi.errors.ValidationException"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
@@ -50,8 +52,24 @@
                         <h1>Pagar facturas pendientes</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <%
-                            HashMap<String, Factura> facturasSinPagar = persistence.getFacturasSinPagar();
+                            HashMap<String, Factura> facturasSinPagar = persistence.getFacturasPendientesPago(null);
                         %>
+                        <h2>Facturas sin pagar</h2>
+                        <table>
+                           
+                            <tr class="theader"><td>Cod.Factura</td><td>Cliente</td><td>Fecha Emision</td>Base imponible</td><td>I.V.A.</td><td>Importe total</td></tr>
+                            <% for (Factura fac : facturasSinPagar.values()) {%>
+                            <tr>
+                                <td><%= fac.getCodFactura()%></td>
+                                <td><%= fac.getCliente().getCodCliente() %></td>
+                                <td><%= fac.getFechaEmision() %></td>
+                                <td><%= Tools.printBigDecimal(fac.getImporteSinIVA()) %>€</td>
+                                <td><%= fac.getIVA() %>€</td>
+                                <td><%= Tools.printBigDecimal(fac.getImporte()) %>€</td>
+                                <td>Pagar factura</td>
+                            </tr>
+                            <% }%>
+                        </table>
 
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->

@@ -60,8 +60,6 @@ public interface PersistenceInterface {
     
     public HashMap <String, Alquiler> getAlquileres (String campo, String valor);
     
-    public HashMap <String,Factura> getFacturasSinPagar();
-    
     //Ha de ser una operación unitaria para evitar problemas de concurrencia (otro empleado factura 
     public Factura generarFactura (Cliente cli, String [] alquileres, String [] incidencias, HttpServletRequest request);
     
