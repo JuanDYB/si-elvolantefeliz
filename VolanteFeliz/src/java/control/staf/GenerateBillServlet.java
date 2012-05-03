@@ -58,14 +58,14 @@ public class GenerateBillServlet extends HttpServlet {
                 try {
                     String[] alquileres = request.getParameterValues("alquiler");
                     String[] incidencias = request.getParameterValues("incidencia");
-                    if (alquileres == null && incidencias == null){
+                    if (alquileres == null && incidencias == null) {
                         request.setAttribute("resultados", "Factura vacia");
                         Tools.anadirMensaje(request, "No se puede generar la factura por no haber ni alquileres ni incidencias por facturar", 'w');
                         request.getRequestDispatcher("/staf/bill_management.jsp").forward(request, response);
                         return;
                     }
                     if (alquileres != null) {
-                        if (client.getCompany() == null && alquileres.length > 1){
+                        if (client.getCompany() == null && alquileres.length > 1) {
                             request.setAttribute("resultados", "Factura incorrecta");
                             Tools.anadirMensaje(request, "No se puede facturar más de un alquiler a un cliente particular", 'w');
                             request.getRequestDispatcher("/staf/bill_management.jsp").forward(request, response);
@@ -81,19 +81,21 @@ public class GenerateBillServlet extends HttpServlet {
                         }
                     }
 
-                    Factura factura = persistence.generarFactura(client, alquileres, incidencias, request);
-                    GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
-                    pdfBill.generateBill();
-                    
-                    request.setAttribute("resultados", "Resultados de la operación");
-                    Tools.anadirMensaje(request, "Factura generada correctamente", 'o');
-                    if (this.sendMail(request, client, factura)){
-                        Tools.anadirMensaje(request, "Email de factura enviado correctamente", 'o');
-                    }else{
-                        Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente", 'w');
+                    Factura factura = persistence.generarFactura(suc, client, alquileres, incidencias, request);
+                    if (factura != null) {
+                        request.setAttribute("resultados", "Resultados de la operación");
+                        Tools.anadirMensaje(request, "Factura generada correctamente", 'o');
+                        if (this.sendMail(request, client, factura)) {
+                            Tools.anadirMensaje(request, "Email de factura enviado correctamente", 'o');
+                        } else {
+                            Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente", 'w');
+                        }
+                        request.getRequestDispatcher("/staf/view_bill.jsp").forward(request, response);
+                        return;
+                    } else{
+                        request.setAttribute("resultados", "Factura no generada");
+                        Tools.anadirMensaje(request, "Ha ocurrido un error generando la factura", 'e');
                     }
-                    request.getRequestDispatcher("/staf/view_bill.jsp").forward(request, response);
-                    return;
 
                 } catch (ValidationException ex) {
                     request.setAttribute("resultados", "Validacion de parametros fallida");
@@ -130,13 +132,13 @@ public class GenerateBillServlet extends HttpServlet {
         }
         return false;
     }
-    
-    private boolean sendMail (HttpServletRequest request, Cliente client, Factura factura){
+
+    private boolean sendMail(HttpServletRequest request, Cliente client, Factura factura) {
         String contenido = Tools.leerArchivoClassPath("/plantillaFactura.html");
-        if (contenido == null){
+        if (contenido == null) {
             return false;
         }
-        HashMap <String, String> adjuntos = new HashMap <String, String> ();
+        HashMap<String, String> adjuntos = new HashMap<String, String>();
         adjuntos.put(request.getServletContext().getRealPath("/staf/billFolder/" + factura.getCodFactura() + ".pdf"), "Factura_" + factura.getCodFactura() + ".pdf");
         return Tools.emailSend(request, "El Volante Feliz: Factura", client.getEmail(), contenido, adjuntos);
     }
