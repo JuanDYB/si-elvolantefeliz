@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import model.*;
 import tools.GenerateBill;
+import tools.GeneratePDFBill;
+import tools.Tools;
 
 /**
  *
@@ -721,11 +723,11 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             if (campo != null && valor != null) {
-                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE ?=?");
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE " + campo + "=?");
                 select.setString(1, campo);
                 select.setString(2, valor);
             } else {
-                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE");
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler");
             }
             rs = select.executeQuery();
             alquileres = new HashMap<String, Alquiler>();
@@ -750,7 +752,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Factura generarFactura(Cliente cli, String[] alquileres, String[] incidencias, HttpServletRequest request) {
+    public Factura generarFactura(Sucursal suc, Cliente cli, String[] alquileres, String[] incidencias, HttpServletRequest request) {
         Connection conexion = null;
         PreparedStatement selectAlquiler = null;
         PreparedStatement selectIncidencia = null;
@@ -873,8 +875,15 @@ public class PersistenceMySQL implements PersistenceInterface {
                     }
                 }
             }
-            conexion.commit();
-            ok = true;
+            GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
+            if (pdfBill.generateBill()){
+                conexion.commit();
+                ok = true;
+            }else{
+                conexion.rollback();
+                request.setAttribute("resultados", "Factura no generada");
+                Tools.anadirMensaje(request, "Ocurrio un error generando el documento de la factura", 'e');
+            }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error creando una factura en la base de datos", ex);
             try {
@@ -901,10 +910,12 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             if (cli != null) {
-                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE codCliente=? AND Pagado='0'");
+                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE codCliente=? AND Pagado=?");
                 select.setString(1, cli.getCodCliente());
+                select.setBoolean(2, false);
             } else {
-                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE AND Pagado='0'");
+                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE AND Pagado=?");
+                select.setBoolean(1, false);
             }
             rs = select.executeQuery();
             facturas = new HashMap<String, Factura>();
@@ -926,6 +937,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return facturas;
     }
+    
     @Override
     public boolean pagarFactura (String codFactura, java.util.Date fechaPago, String formaPago){
         Connection conexion = null;
