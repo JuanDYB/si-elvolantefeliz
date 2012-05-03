@@ -154,6 +154,8 @@ public class GeneratePDFBill {
             tablaCabecera.addCell(celdaDatosEmpresa);
             tablaCabecera.addCell(celdaDatosCliente);
             tablaCabecera.addCell(celdaInfoExtra);
+            tablaCabecera.addCell(hueco);
+            tablaCabecera.addCell(hueco);
 
             doc.add(tablaCabecera);
 
@@ -173,7 +175,7 @@ public class GeneratePDFBill {
 
     private void doBillContent(){
         //Crear Tabla
-        float[] columnas = {80, 10, 10};
+        float[] columnas = {70, 15, 15};
         PdfPTable tablaContenido = this.generateTable(100, columnas, true);
 
         //Contenido
@@ -197,20 +199,19 @@ public class GeneratePDFBill {
 
             //Bucle Alquileres
             for (Alquiler alq: alquileres.values()) {
-                PdfPCell celdaDescripcion = new PdfPCell();
                 Phrase descripcion = new Phrase("Alquiler: " + alq.getCodAlquiler() + "\n"
                         + "Marca: " + "Modelo: " + "\n"
                         + "Fecha Salida: " + "Fecha Fin Alquiler: " + "Fecha Entrega: ");
                 Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
-                Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()));
-                tablaContenido.addCell(celdaDescripcion);
+                Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
+                tablaContenido.addCell(descripcion);
                 tablaContenido.addCell(tarifa);
                 tablaContenido.addCell(precio);
             }
         }
         if (factura.getIncidencias() != null) {
             //Titulo Incidencias
-            PdfPCell tituloIncidencias = new PdfPCell(new Phrase("Alquileres"));
+            PdfPCell tituloIncidencias = new PdfPCell(new Phrase("Incidencias"));
             tituloIncidencias.setColspan(3);
             tituloIncidencias.setBackgroundColor(BaseColor.LIGHT_GRAY);
             this.eliminarBordeCelda(tituloIncidencias);
@@ -232,7 +233,8 @@ public class GeneratePDFBill {
                         + "Fecha Incidencia: " + Tools.printDate(inc.getFecha()) + "\n"
                         + "Observaciones: " + inc.getObservaciones());
                 celdaDescripcion.setColspan(2);
-                Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()));
+                celdaDescripcion.addElement(descripcion);
+                Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €");
                 tablaContenido.addCell(celdaDescripcion);
                 tablaContenido.addCell(precio);
             }
