@@ -290,7 +290,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un vehiculo de la base de datos", ex);
         } finally {
-            if (conExterna == null){
+            if (conExterna == null) {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
             }
@@ -319,7 +319,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un vehiculo de la base de datos", ex);
         } finally {
-            if (conExterna == null){
+            if (conExterna == null) {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
             }
@@ -366,9 +366,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("codVehiculo"), null);
                 Tarifa tarifa = this.getTarifa(rs.getString("codTarifa"), null);
                 if (cli != null && vehicle != null && tarifa != null) {
-                    alq = new Alquiler(codAlquiler, cli, vehicle, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin")
-                            , rs.getDate("FechaFin"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio")
-                            , rs.getInt("KMFin"), rs.getInt("CombustibleFin"), rs.getString("Observaciones"));
+                    alq = new Alquiler(codAlquiler, cli, vehicle, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin"), rs.getDate("FechaFin"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio"), rs.getInt("KMFin"), rs.getInt("CombustibleFin"), rs.getString("Observaciones"));
                 }
             }
         } catch (SQLException ex) {
@@ -381,7 +379,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Factura getFactura(String codFactura) {
+    public Factura getFactura(String codFactura, Connection conexionExterna) {
         Connection conexion = null;
         PreparedStatement selectFactura = null;
         PreparedStatement selectElementoFactura = null;
@@ -389,7 +387,11 @@ public class PersistenceMySQL implements PersistenceInterface {
         ResultSet rsElementoFactura = null;
         Factura factura = null;
         try {
-            conexion = pool.getConnection();
+            if (conexionExterna == null) {
+                conexion = pool.getConnection();
+            } else {
+                conexion = conexionExterna;
+            }
             selectFactura = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Factura WHERE codFactura=?");
             selectFactura.setString(1, codFactura);
             rsFactura = selectFactura.executeQuery();
@@ -402,7 +404,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 selectElementoFactura.executeQuery();
                 while (rsElementoFactura.next()) {
                     Alquiler alq = this.getAlquiler(rsElementoFactura.getString("codAlquiler"));
-                    if (alq != null){
+                    if (alq != null) {
                         alquileresFactura.put(alq.getCodAlquiler(), alq);
                     }
                 }
@@ -412,18 +414,19 @@ public class PersistenceMySQL implements PersistenceInterface {
                 selectElementoFactura.executeQuery();
                 while (rsElementoFactura.next()) {
                     Incidencia inc = this.getIncidencia("codIncidencia", rsElementoFactura.getString("codIncidencia"));
-                    if (inc != null){
+                    if (inc != null) {
                         incidenciasFactura.put(inc.getCodIncidencia(), inc);
                     }
                 }
                 Cliente cli = this.getClient(rsFactura.getString("codCliente"));
-                if (cli != null){
-                    if (incidenciasFactura.isEmpty()) incidenciasFactura = null;
-                    if (alquileresFactura.isEmpty()) alquileresFactura = null;
-                    factura = new Factura(codFactura, cli, alquileresFactura, incidenciasFactura, rsFactura.getInt("IVA")
-                            , rsFactura.getBigDecimal("ImporteSinIVA"), rsFactura.getBigDecimal("Importe")
-                            , rsFactura.getDate("FechaEmision"), rsFactura.getString("FormaPago")
-                            , rsFactura.getDate("FechaPago"), rsFactura.getBoolean("Pagado"));
+                if (cli != null) {
+                    if (incidenciasFactura.isEmpty()) {
+                        incidenciasFactura = null;
+                    }
+                    if (alquileresFactura.isEmpty()) {
+                        alquileresFactura = null;
+                    }
+                    factura = new Factura(codFactura, cli, alquileresFactura, incidenciasFactura, rsFactura.getInt("IVA"), rsFactura.getBigDecimal("ImporteSinIVA"), rsFactura.getBigDecimal("Importe"), rsFactura.getDate("FechaEmision"), rsFactura.getString("FormaPago"), rsFactura.getDate("FechaPago"), rsFactura.getBoolean("Pagado"));
                 }
             }
         } catch (SQLException ex) {
@@ -440,7 +443,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Incidencia> incidencias = new HashMap <String, Incidencia> ();
+        HashMap<String, Incidencia> incidencias = new HashMap<String, Incidencia>();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codAlquiler=?");
@@ -490,7 +493,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo el tipo de incidencia: " + codTipoIncidencia, ex);
         } finally {
-            if (conExterna == null){
+            if (conExterna == null) {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
             }
@@ -529,14 +532,14 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return clientes;
     }
-    
-    /*
-     * SELECT AlqNotFact.codAlquiler, alq.codCliente FROM
-     * (SELECT codAlquiler FROM Alquiler WHERE codAlquiler NOT IN (SELECT codAlquiler FROM AlquilerFactura)) AlqNotFact, 
-     * Alquiler alq, Cliente cli
-     * where alq.codAlquiler = AlqNotFact.codAlquiler AND alq.FechaEntrega IS NOT NULL AND cli.codCliente=alq.codCliente;
-     */
 
+    /*
+     * SELECT AlqNotFact.codAlquiler, alq.codCliente FROM (SELECT codAlquiler
+     * FROM Alquiler WHERE codAlquiler NOT IN (SELECT codAlquiler FROM
+     * AlquilerFactura)) AlqNotFact, Alquiler alq, Cliente cli where
+     * alq.codAlquiler = AlqNotFact.codAlquiler AND alq.FechaEntrega IS NOT NULL
+     * AND cli.codCliente=alq.codCliente;
+     */
     @Override
     public HashMap<String, Cliente> getClientsToFactureRent(String codSucursal) {
         Connection conexion = null;
@@ -547,8 +550,8 @@ public class PersistenceMySQL implements PersistenceInterface {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
                     + ", cli.Telefono, cli.Email, cli.Activo "
-                    + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
-                    + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, " 
+                    + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
+                    + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
                     + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq "
                     + "WHERE cli.codSucursal=? AND cli.codCliente=alq.codCliente AND alq.FechaEntrega IS NOT NULL "
                     + "AND alq.codAlquiler=AlqNotFact.codAlquiler");
@@ -570,14 +573,14 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return clientes;
     }
-    
+
     /*
-     * SELECT IncNotFact.codincidencia, alq.codCliente FROM
-     * (SELECT codIncidencia FROM Incidencia WHERE codIncidencia NOT IN (SELECT codIncidencia FROM IncidenciaFactura)) IncNotFact, 
-     * Incidencia inc, Cliente cli
-     * where inc.codIncidencia = IncNotFact.codincidencia AND cli.codCliente=alq.codCliente;
+     * SELECT IncNotFact.codincidencia, alq.codCliente FROM (SELECT
+     * codIncidencia FROM Incidencia WHERE codIncidencia NOT IN (SELECT
+     * codIncidencia FROM IncidenciaFactura)) IncNotFact, Incidencia inc,
+     * Cliente cli where inc.codIncidencia = IncNotFact.codincidencia AND
+     * cli.codCliente=alq.codCliente;
      */
-   
     @Override
     public HashMap<String, Cliente> getClientsToFactureIncidence(String codSucursal) {
         Connection conexion = null;
@@ -616,12 +619,12 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap<String, Alquiler> alquileresCliente = new HashMap<String, Alquiler> ();
+        HashMap<String, Alquiler> alquileresCliente = new HashMap<String, Alquiler>();
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT alq.codAlquiler, alq.codCliente, alq.codVehiculo, alq.codTarifa, alq.FechaInicio, "
                     + "alq.FechaFin, alq.FechaEntrega, alq.Importe, alq.KMInicio, alq.KMFin, alq.CombustibleFin, alq.Observaciones "
-                    + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
+                    + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
                     + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
                     + nameBD + ".Alquiler alq "
                     + "WHERE alq.codCliente=? AND AlqNotFact.codAlquiler=alq.codAlquiler");
@@ -687,8 +690,8 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
                 ///////////FIN EVITACION CONSULTAS IGUALES ///////////
                 if (tipoIncidencia != null) {
-                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler"), 
-                            rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"), 
+                    Incidencia inc = new Incidencia(codIncidencia, tipoIncidencia, rs.getString("inc.codAlquiler"),
+                            rs.getString("inc.codCliente"), rs.getDate("Fecha"), rs.getString("inc.Observaciones"),
                             rs.getBigDecimal("inc.Precio"));
                     incidenciasCliente.put(codIncidencia, inc);
                 } else {
@@ -772,7 +775,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             conexion.setAutoCommit(false);
             selectAlquiler = conexion.prepareStatement("SELECT alq.codAlquiler, alq.codCliente, alq.codVehiculo, alq.codTarifa, alq.FechaInicio, "
                     + "alq.FechaFin, alq.FechaEntrega, alq.Importe, alq.KMInicio, alq.KMFin, alq.CombustibleFin, alq.Observaciones "
-                    + "FROM (SELECT codAlquiler FROM " + nameBD +".Alquiler WHERE codAlquiler "
+                    + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
                     + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
                     + nameBD + ".Alquiler alq "
                     + "WHERE alq.codAlquiler=? AND alq.FechaEntrega IS NOT NULL AND alq.codCliente=?");
@@ -793,13 +796,13 @@ public class PersistenceMySQL implements PersistenceInterface {
                         Vehiculo vehicle = this.getVehiculo("codVehiculo", rsAlquiler.getString("alq.codVehiculo"), conexion);
                         Tarifa tarifa = this.getTarifa(rsAlquiler.getString("alq.codTarifa"), conexion);
                         if (vehicle != null && tarifa != null) {
-                            Alquiler alq = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), cli, vehicle, tarifa, 
-                                    rsAlquiler.getDate("alq.FechaInicio"), rsAlquiler.getDate("alq.FechaFin"), 
-                                    rsAlquiler.getDate("alq.FechaEntrega"), rsAlquiler.getBigDecimal("alq.Importe"), 
-                                    rsAlquiler.getInt("alq.KMInicio"), rsAlquiler.getInt("alq.KMFin"), 
+                            Alquiler alq = new Alquiler(rsAlquiler.getString("alq.codAlquiler"), cli, vehicle, tarifa,
+                                    rsAlquiler.getDate("alq.FechaInicio"), rsAlquiler.getDate("alq.FechaFin"),
+                                    rsAlquiler.getDate("alq.FechaEntrega"), rsAlquiler.getBigDecimal("alq.Importe"),
+                                    rsAlquiler.getInt("alq.KMInicio"), rsAlquiler.getInt("alq.KMFin"),
                                     rsAlquiler.getInt("alq.CombustibleFin"), rsAlquiler.getString("alq.Observaciones"));
                             alquileresFacturar.put(alq.getCodAlquiler(), alq);
-                        } else{
+                        } else {
                             okAlq = false;
                         }
                     }
@@ -815,12 +818,12 @@ public class PersistenceMySQL implements PersistenceInterface {
                     while (rsIncidencia.next()) {
                         TipoIncidencia tipoIncidencia = this.getTipoInciencia(rsIncidencia.getString("inc.codTipoIncidencia"), conexion);
                         if (tipoIncidencia != null) {
-                            Incidencia inc = new Incidencia(rsIncidencia.getString("inc.codIncidencia"), tipoIncidencia, 
-                                    rsIncidencia.getString("inc.CodAlquiler"), cli.getCodCliente(), 
-                                    rsIncidencia.getDate("inc.Fecha"), rsIncidencia.getString("inc.Observaciones"), 
+                            Incidencia inc = new Incidencia(rsIncidencia.getString("inc.codIncidencia"), tipoIncidencia,
+                                    rsIncidencia.getString("inc.CodAlquiler"), cli.getCodCliente(),
+                                    rsIncidencia.getDate("inc.Fecha"), rsIncidencia.getString("inc.Observaciones"),
                                     rsIncidencia.getBigDecimal("inc.Precio"));
                             incidenciasFacturar.put(inc.getCodIncidencia(), inc);
-                        } else{
+                        } else {
                             okInc = false;
                         }
                     }
@@ -843,10 +846,10 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insertFactura.setBoolean(9, factura.isPagado());
 
                 int filasTablaFactura = insertFactura.executeUpdate();
-                if (filasTablaFactura != 1){
+                if (filasTablaFactura != 1) {
                     conexion.rollback();
                 }
-                
+
                 if (filasTablaFactura == 1 && factura.getAlquileres() != null) {
                     insertElementosFactura = conexion.prepareStatement("INSERT INTO " + nameBD + ".AlquilerFactura VALUES (?,?)");
                     for (Alquiler alq : factura.getAlquileres().values()) {
@@ -876,10 +879,10 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
             }
             GeneratePDFBill pdfBill = new GeneratePDFBill(factura, suc, request.getServletContext().getRealPath("/"));
-            if (pdfBill.generateBill()){
+            if (pdfBill.generateBill()) {
                 conexion.commit();
                 ok = true;
-            }else{
+            } else {
                 conexion.rollback();
                 request.setAttribute("resultados", "Factura no generada");
                 Tools.anadirMensaje(request, "Ocurrio un error generando el documento de la factura", 'e');
@@ -920,10 +923,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             rs = select.executeQuery();
             facturas = new HashMap<String, Factura>();
             while (rs.next()) {
-                if (cli == null) {
-                    cli = this.getClient(rs.getString("codCliente"));
-                }
-                Factura fact = this.getFactura(rs.getString("codFactura"));
+                Factura fact = this.getFactura(rs.getString("codFactura"), conexion);
                 facturas.put(fact.getCodFactura(), fact);
             }
         } catch (SQLException ex) {
@@ -937,13 +937,51 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return facturas;
     }
-    
+
     @Override
-    public boolean pagarFactura (String codFactura, java.util.Date fechaPago, String formaPago){
+    public HashMap<String, Factura> getFacturas(String campo, String valor, String codSucursal) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Factura> facturas = new HashMap<String, Factura>();
+        try {
+            conexion = pool.getConnection();
+            if (codSucursal != null) {
+                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE " + campo + "=?");
+                select.setString(1, valor);
+            } else {
+                select = conexion.prepareStatement("SELECT fac.codFactura "
+                        + "FROM " + nameBD + ".Factura fac, " + nameBD + ".Cliente cli"
+                        + "WHERE fac.codCliente=cli.codCliente AND cli.codSucursal=? fac." + campo + "=?");
+                select.setString(1, codSucursal);
+                select.setString(2, valor);
+            }
+
+
+            rs = select.executeQuery();
+            facturas = new HashMap<String, Factura>();
+            while (rs.next()) {
+                Factura fact = this.getFactura(rs.getString("codFactura"), conexion);
+                facturas.put(fact.getCodFactura(), fact);
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Ocurrio un error obteniendo las facturas pendientes de pago", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (facturas.isEmpty()) {
+            return null;
+        }
+        return facturas;
+    }
+
+    @Override
+    public boolean pagarFactura(String codFactura, java.util.Date fechaPago, String formaPago) {
         Connection conexion = null;
         PreparedStatement update = null;
         boolean ok = false;
-        try{
+        try {
             conexion = pool.getConnection();
             update = conexion.prepareStatement("UPDATE " + nameBD + ".Factura "
                     + "SET FechaPago=?, FormaPago=?, Pagado=? "
@@ -953,12 +991,12 @@ public class PersistenceMySQL implements PersistenceInterface {
             update.setBoolean(3, true);
             update.setString(4, codFactura);
             update.setBoolean(5, false);
-            if (update.executeUpdate() == 1){
+            if (update.executeUpdate() == 1) {
                 ok = true;
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error al actualizar el estado de una factura a pagada en la Base de Datos", ex);
-        } finally{
+        } finally {
             cerrarConexionesYStatement(conexion, update);
         }
         return ok;
@@ -1010,7 +1048,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
-    
+
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {
             if (statement != null) {
