@@ -58,16 +58,34 @@
                     <div class="gradient">
                         <h1>Facturación Cliente</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        <h2>Informaci&oacute;n General del Cliente</h2>
                         <% if (cliente != null && (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral())) {
                                 boolean empresa = false;
                                 if (cliente.getCompany() != null) {
                                     empresa = true;
                                 }
-                                HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
-                                HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
-                                if (alqSinFacturarCliente != null || incSinFacturarCliente != null) {
                         %>
+                        <h2>Informaci&oacute;n General del Cliente</h2>
+                        <ul>
+
+                            <li><b>Nombre: </b><%= cliente.getName()%></li>
+                            <li><b>Email: </b><%= cliente.getEmail()%></li>
+                            <li><b>DNI: </b><%= cliente.getDni()%></li>
+                            <li><b>Dirección: </b><%= cliente.getAddress()%></li>
+                            <li><b>Tel&eacute;fono: </b><%= cliente.getTelephone()%></li>
+                            <% if (!empresa) {%>
+                            <li><b>Empresa: </b>Cliente Particular</li>
+                            <% } else {%>
+                            <li><b>Empresa: </b><%= cliente.getCompany()%></li>
+                            <% }%>
+                            <li><b>Edad: </b><%= cliente.getAge()%></li>
+
+                        </ul>
+                        <%
+                            HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
+                            HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
+                            if (alqSinFacturarCliente != null || incSinFacturarCliente != null) {
+                        %>
+                        <h2>Personalización de factura</h2>
                         <form name="elegirAlquileresFactura" action="/staf/genbill" method="POST" >
                             <% }%>
                             <% if (type.equals("all") || type.equals("alq")) {%>
@@ -80,37 +98,41 @@
                                     <% if (empresa) {%>
                                     <td><input type="checkbox" name="alquiler" value="<%= alq.getCodAlquiler()%>" /></td>
                                         <% } else {%>
-                                    <td><input type="Radio" name="alquiler" value="<%= alq.getCodAlquiler()%>"></option></td>
+                                    <td><input type="Radio" name="alquiler" value="<%= alq.getCodAlquiler()%>" /></td>
                                         <% }%>
-                                    <td><%= alq.getFechaInicio()%></td>
-                                    <td><%= alq.getFechaEntrega()%></td>
+                                    <td><%= Tools.printDate(alq.getFechaInicio())%></td>
+                                    <td><%= Tools.printDate(alq.getFechaEntrega())%></td>
                                     <td><%= alq.getVehiculo().getMatricula()%></td>
                                     <td><%= alq.getVehiculo().getMarca()%></td>
                                     <td><%= Tools.printBigDecimal(alq.getPrecio())%> €</td>
                                 </tr>
                                 <% }%>
                             </table>
-                            <% } else{ %>
-                            <p>No se han encontrado alquileres pendientes de facturar</p>
+                            <% } else {%>
+                            <blockquote class="go" >
+                                <p>No se han encontrado alquileres pendientes de facturar</p>
+                            </blockquote>
                             <% }
                                 }
-                                if (type.equals("all") || type.equals("inc")) { %>
-                                        <h2>Incidencias pendientes de facturar</h2>
-                                   <% if (incSinFacturarCliente != null) {%>
-                            
+                                if (type.equals("all") || type.equals("inc")) {%>
+                            <h2>Incidencias pendientes de facturar</h2>
+                            <% if (incSinFacturarCliente != null) {%>
+
                             <table>
                                 <tr class="theader"><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Importe</td></tr>
                                 <% for (Incidencia inc : incSinFacturarCliente.values()) {%>
                                 <tr>
                                     <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia()%>" /></td>
                                     <td><%= inc.getTipoIncidencia().getNombre()%></td>
-                                    <td><%= inc.getFecha()%></td>
+                                    <td><%= Tools.printDate(inc.getFecha())%></td>
                                     <td><%= Tools.printBigDecimal(inc.getPrecio())%> €</td>
                                 </tr>
                                 <% }%>
                             </table>
                             <% } else {%>
-                            <p>No se han encontrado incidencias pendientes de facturar</p>
+                            <blockquote class="go" >
+                                <p>No se han encontrado incidencias pendientes de facturar</p>
+                            </blockquote>
                             <% }%>
 
 
@@ -120,27 +142,29 @@
                             <input name="genFact" type="submit" value="Generar Factura" />
                         </form>
                         <% }
-                        } else if (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal())) {%>
-                        <h1>Sucursal incorrecta</h1>
-                        <p>El cliente seleccionado no pertenece a la sucursal que esta intentando facturar el cliente</p>
+                        } else if (cliente != null && !cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal())) {%>
+                        <blockquote class="exclamation">
+                            <p>No puede generar un factura de este cliente, no pertenece a esta sucursal</p>
+                        </blockquote>
                         <% } else {%>
-                        <h1>Cliente no encontrado</h1>
-                        <p>El cliente seleccionado para ver los alquileres pendientes de facturar no se ha encontrado</p>
+                        <blockquote class="exclamation" />
+                            <p>El cliente seleccionada para la generación de factura no ha sido encontrado</p>
+                        </blockquote>
                         <% }%>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
+
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
 
-                </div>
-                <!-- Fin contenido página -->
-                
             </div>
-            <!-- FIN CONTENIDO -->
+            <!-- Fin contenido página -->
 
-            <!-- FOOTER -->
-            <%@include file="/WEB-INF/include/footer.jsp" %>    
+        </div>
+        <!-- FIN CONTENIDO -->
+
+        <!-- FOOTER -->
+        <%@include file="/WEB-INF/include/footer.jsp" %>    
     </body>
 </html>
 

@@ -57,12 +57,12 @@
                         <h2>Facturas sin pagar</h2>
                         <table>
                            
-                            <tr class="theader"><td>Cod.Factura</td><td>Cliente</td><td>Fecha Emision</td>Base imponible</td><td>I.V.A.</td><td>Importe total</td></tr>
+                            <tr class="theader"><td>Cod Factura</td><td>Cliente</td><td>Fecha Emision</td>Base imponible</td><td>I.V.A.</td><td>Importe total</td></tr>
                             <% for (Factura fac : facturasSinPagar.values()) {%>
                             <tr>
                                 <td><%= fac.getCodFactura()%></td>
                                 <td><%= fac.getCliente().getCodCliente() %></td>
-                                <td><%= fac.getFechaEmision() %></td>
+                                <td><%= Tools.printDate(fac.getFechaEmision()) %></td>
                                 <td><%= Tools.printBigDecimal(fac.getImporteSinIVA()) %>€</td>
                                 <td><%= fac.getIVA() %>€</td>
                                 <td><%= Tools.printBigDecimal(fac.getImporte()) %>€</td>

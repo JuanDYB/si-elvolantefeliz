@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,18 +170,23 @@ public class Tools {
         return cal.getTime();
     }
 
-    public static String printDate(Date fecha) {
-        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
-        cal.setTime(fecha);
-        return cal.get(GregorianCalendar.DAY_OF_MONTH) + "-" + cal.get(GregorianCalendar.MONTH) + "-" + cal.get(GregorianCalendar.YEAR);
-    }
-
-    public static String printDate(String fechaString) {
-        String[] fechaSeparada = fechaString.split("-");
-        Calendar cal = Calendar.getInstance(Tools.getLocale());
-        cal.set(Integer.valueOf(fechaSeparada[0]), Integer.valueOf(fechaSeparada[1]) - 1, Integer.valueOf(fechaSeparada[2]));
-        String[] date = cal.getTime().toString().split(" ");
-        return date[2] + "-" + date[1] + "-" + date[5];
+//    public static String printDate(Date fecha) {
+//        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+//        cal.setTime(fecha);
+//        return cal.get(GregorianCalendar.DAY_OF_MONTH) + "-" + cal.get(GregorianCalendar.MONTH) + "-" + cal.get(GregorianCalendar.YEAR);
+//    }
+//
+//    public static String printDate(String fechaString) {
+//        String[] fechaSeparada = fechaString.split("-");
+//        Calendar cal = Calendar.getInstance(Tools.getLocale());
+//        cal.set(Integer.valueOf(fechaSeparada[0]), Integer.valueOf(fechaSeparada[1]) - 1, Integer.valueOf(fechaSeparada[2]));
+//        String[] date = cal.getTime().toString().split(" ");
+//        return date[2] + "-" + date[1] + "-" + date[5];
+//    }
+    
+    public static String printDate (Date fecha){
+        SimpleDateFormat formatedor = new SimpleDateFormat("dd '-' MMM '-' yyyy", Tools.getLocale());
+        return formatedor.format(fecha);
     }
 
     public static String roundDouble(double input) {

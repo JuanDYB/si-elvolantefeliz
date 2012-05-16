@@ -17,6 +17,14 @@
 Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
 PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
 Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+boolean central = false;;
+if (!this.validateEntry(request)){
+    response.sendError(404);
+}else{
+    if (request.getParameter("central").equals("1")){
+        central = true;
+    }
+}
 %>
 <!DOCTYPE html>
 <html>
@@ -53,9 +61,23 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Clientes con alquileres sin facturar</h1>
+                        <% if (suc.isCentral()){ %>
+                        <ul>
+                            <li><a href="/staf/clients-pendingfacture.jsp?central=0">Mostrar clientes con facturacion pendiente para esta sucursal</a></li>
+                            <li><a href="/staf/clients-pendingfacture.jsp?central=1">Mostrar clientes con facturacion pendiente para todas las sucursales</a></li>
+                        </ul>
+                        <% } %>
                         <% 
-                            HashMap<String, Cliente> clientes1 = persistence.getClientsToFactureRent(((Empleado) session.getAttribute("empleado")).getCodSucursal());
-                            HashMap<String, Cliente> clientes2 = persistence.getClientsToFactureIncidence(((Empleado) session.getAttribute("empleado")).getCodSucursal());
+                            HashMap<String, Cliente> clientes1;
+                            HashMap<String, Cliente> clientes2;
+                            if (central){
+                                clientes1 = persistence.getClientsToFactureRent(null);
+                                clientes2 = persistence.getClientsToFactureIncidence(null);
+                            }else{
+                                clientes1 = persistence.getClientsToFactureRent(((Empleado) session.getAttribute("empleado")).getCodSucursal());
+                                clientes2 = persistence.getClientsToFactureIncidence(((Empleado) session.getAttribute("empleado")).getCodSucursal());
+                            }
+                            
                             String type = "alq";
                             if (clientes1 != null && clientes2 != null) {
                                 clientes1.putAll(clientes2);
@@ -109,4 +131,17 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 <%! String menuPreferencias = "class=\"here\""; %>
 <%! String menuAbout = ""; %>
 <%! String menuContacto = ""; %>
+
+<%!
+
+    private boolean validateEntry (HttpServletRequest request) {
+        if (request.getParameterMap().size() >= 1 && request.getParameter("central") != null){
+            if (request.getParameter("central").equals("1") || request.getParameter("central").equals("0")){
+                return true;
+            }
+        }
+        return false;
+    }
+ 
+%>
 
