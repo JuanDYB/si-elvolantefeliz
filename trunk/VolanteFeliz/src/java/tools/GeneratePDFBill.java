@@ -1,6 +1,7 @@
 package tools;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -19,12 +20,16 @@ import model.*;
  */
 public class GeneratePDFBill {
 
-    Factura factura;
-    Sucursal suc;
-    Cliente cli;
-    String rutaRaizWeb;
-    Document doc;
-    PdfWriter writer;
+    private Factura factura;
+    private Sucursal suc;
+    private Cliente cli;
+    private String rutaRaizWeb;
+    private Document doc;
+    private PdfWriter writer;
+    private final Font fuenteTitulo_1 = new Font(FontFamily.TIMES_ROMAN, 22, Font.BOLD);
+    private final Font fuenteTitulo_2 = new Font(FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+    private final Font fuenteTitulo_3 = new Font(FontFamily.TIMES_ROMAN, 14, Font.BOLD);
+    private final Font fuenteNormal = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
 
     public GeneratePDFBill(Factura factura, Sucursal suc, String rutaRaizWeb) {
         this.factura = factura;
@@ -80,7 +85,7 @@ public class GeneratePDFBill {
         celdaLogo.setRowspan(2);
 
         //Datos Empresa
-        PdfPCell tituloDatosEmpresa = new PdfPCell(new Phrase("Datos Empresa\n", new Font(Font.FontFamily.TIMES_ROMAN, 20)));
+        PdfPCell tituloDatosEmpresa = new PdfPCell(new Phrase("Datos Empresa\n", fuenteTitulo_1));
         tituloDatosEmpresa.setBackgroundColor(BaseColor.LIGHT_GRAY);
         this.eliminarBordeCelda(tituloDatosEmpresa);
 
@@ -100,7 +105,7 @@ public class GeneratePDFBill {
         celdaDatosEmpresa.addElement(datosEmpresa);
 
         //Datos Cliente
-        PdfPCell tituloDatosCliente = new PdfPCell(new Phrase("Datos Cliente\n", new Font(Font.FontFamily.TIMES_ROMAN, 20)));
+        PdfPCell tituloDatosCliente = new PdfPCell(new Phrase("Datos Cliente\n", fuenteTitulo_1));
         tituloDatosCliente.setBackgroundColor(BaseColor.LIGHT_GRAY);
         this.eliminarBordeCelda(tituloDatosCliente);
 
@@ -123,7 +128,7 @@ public class GeneratePDFBill {
 
         //Codigo y Fecha
         PdfPCell celdaInfoExtra = new PdfPCell();
-        Phrase codFactura = new Phrase("Codigo Factura: " + factura.getCodFactura() + "\n");
+        Phrase codFactura = new Phrase("Código Factura: " + factura.getCodFactura() + "\n");
         celdaInfoExtra.addElement(codFactura);
         Phrase fecha = new Phrase("Fecha: " + Tools.printDate(factura.getFechaEmision()) + "\n");
         celdaInfoExtra.addElement(fecha);
@@ -156,7 +161,7 @@ public class GeneratePDFBill {
 
     private void doBillContent() throws DocumentException {
         //Crear Tabla
-        float[] columnas = {65, 17.5F, 17.5F};
+        float[] columnas = {70, 15, 15};
         PdfPTable tablaContenido = this.generateTable(100, columnas, true);
 
         //Contenido
@@ -164,16 +169,16 @@ public class GeneratePDFBill {
         HashMap<String, Incidencia> incidencias = factura.getIncidencias();
         if (factura.getAlquileres() != null) {
             //Titulo Alquileres
-            PdfPCell tituloAlquileres = new PdfPCell(new Phrase("Alquileres"));
+            PdfPCell tituloAlquileres = new PdfPCell(new Phrase("Alquileres", fuenteTitulo_2));
             tituloAlquileres.setColspan(3);
             tituloAlquileres.setBackgroundColor(BaseColor.LIGHT_GRAY);
             this.eliminarBordeCelda(tituloAlquileres);
             tablaContenido.addCell(tituloAlquileres);
 
             //Cabecera Alquileres
-            PdfPCell celdaTitulo1 = new PdfPCell(new Phrase("Descripcion"));
-            PdfPCell celdaTitulo2 = new PdfPCell(new Phrase("Tarifa"));
-            PdfPCell celdaTitulo3 = new PdfPCell(new Phrase("Precio (sin IVA)"));
+            PdfPCell celdaTitulo1 = new PdfPCell(new Phrase("Descripcion", fuenteTitulo_3));
+            PdfPCell celdaTitulo2 = new PdfPCell(new Phrase("Tarifa", fuenteTitulo_3));
+            PdfPCell celdaTitulo3 = new PdfPCell(new Phrase("Precio\n(sin IVA)", fuenteTitulo_3));
             tablaContenido.addCell(celdaTitulo1);
             tablaContenido.addCell(celdaTitulo2);
             tablaContenido.addCell(celdaTitulo3);
@@ -181,9 +186,9 @@ public class GeneratePDFBill {
             //Bucle Alquileres
             for (Alquiler alq : alquileres.values()) {
                 Phrase descripcion = new Phrase("Alquiler: " + alq.getCodAlquiler() + "\n"
-                        + "Marca: " + alq.getVehiculo().getMarca() +  "\tModelo: " + alq.getVehiculo().getModelo() + "\n"
-                        + "Fecha Salida: " + Tools.printDate(alq.getFechaInicio()) + "\tFecha Fin Alquiler: " 
-                        + Tools.printDate(alq.getFechaFin()) + "\tFecha Entrega: " + Tools.printDate(alq.getFechaEntrega()));
+                        + "Marca: " + alq.getVehiculo().getMarca() +  "   Modelo: " + alq.getVehiculo().getModelo() + "\n"
+                        + "Fecha Salida: " + Tools.printDate(alq.getFechaInicio()) + "\nFecha Fin Alquiler: " 
+                        + Tools.printDate(alq.getFechaFin()) + "\nFecha Entrega: " + Tools.printDate(alq.getFechaEntrega()));
                 Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
                 Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
                 tablaContenido.addCell(descripcion);
@@ -193,16 +198,16 @@ public class GeneratePDFBill {
         }
         if (factura.getIncidencias() != null) {
             //Titulo Incidencias
-            PdfPCell tituloIncidencias = new PdfPCell(new Phrase("Incidencias"));
+            PdfPCell tituloIncidencias = new PdfPCell(new Phrase("Incidencias", fuenteTitulo_2));
             tituloIncidencias.setColspan(3);
             tituloIncidencias.setBackgroundColor(BaseColor.LIGHT_GRAY);
             this.eliminarBordeCelda(tituloIncidencias);
             tablaContenido.addCell(tituloIncidencias);
 
             //Cabecera Incidencias
-            PdfPCell celdaTitulo1 = new PdfPCell(new Phrase("Descripcion"));
+            PdfPCell celdaTitulo1 = new PdfPCell(new Phrase("Descripcion", fuenteTitulo_3));
             celdaTitulo1.setColspan(2);
-            PdfPCell celdaTitulo2 = new PdfPCell(new Phrase("Precio (sin IVA)"));
+            PdfPCell celdaTitulo2 = new PdfPCell(new Phrase("Precio\n(sin IVA)", fuenteTitulo_3));
             tablaContenido.addCell(celdaTitulo1);
             tablaContenido.addCell(celdaTitulo2);
 

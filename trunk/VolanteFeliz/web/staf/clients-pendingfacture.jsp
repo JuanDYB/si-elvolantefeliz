@@ -1,5 +1,5 @@
 <%-- 
-    Document   : clients_rentingfacture
+    Document   : clients_pendingfacture
     Created on : 09-abr-2012, 10:22:33
     Author     : Juan Jose Olivares
 --%>
@@ -91,9 +91,6 @@ if (!this.validateEntry(request)){
                             No se han encontrado clientes en esta sucursal con alquileres pendientes de facturar
                         </p>
                         <% } else {%>
-                            <% if (suc.isCentral()){ %>
-                            <p>Por estar en una sucursal central no podra hacer facturas de otras sucursales, únicamente podrá consultar datos</p>
-                            <% } %>
                         <table>
                             <tr class="theader"><td>Nombre</td><td>DNI</td><td>Empresa</td><td>Telefono</td><td>&nbsp;</td></tr>
                             <% for (Cliente cli : clientes1.values()) {%>

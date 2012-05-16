@@ -975,15 +975,22 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, Factura> facturas = new HashMap<String, Factura>();
         try {
             conexion = pool.getConnection();
-            if (codSucursal != null) {
+            if (codSucursal == null) {
                 select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE " + campo + "=?");
                 select.setString(1, valor);
             } else {
-                select = conexion.prepareStatement("SELECT fac.codFactura "
-                        + "FROM " + nameBD + ".Factura fac, " + nameBD + ".Cliente cli"
-                        + "WHERE fac.codCliente=cli.codCliente AND cli.codSucursal=? fac." + campo + "=?");
-                select.setString(1, codSucursal);
-                select.setString(2, valor);
+                if (!campo.equals("1")) {
+                    select = conexion.prepareStatement("SELECT fac.codFactura "
+                            + "FROM " + nameBD + ".Factura fac, " + nameBD + ".Cliente cli "
+                            + "WHERE fac.codCliente=cli.codCliente AND cli.codSucursal=? AND fac." + campo + "=?");
+                    select.setString(1, codSucursal);
+                    select.setString(2, valor);
+                } else {
+                    select = conexion.prepareStatement("SELECT fac.codFactura "
+                            + "FROM " + nameBD + ".Factura fac, " + nameBD + ".Cliente cli "
+                            + "WHERE fac.codCliente=cli.codCliente AND cli.codSucursal=?");
+                    select.setString(1, codSucursal);
+                }
             }
 
 
@@ -998,7 +1005,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Ocurrio un error obteniendo las facturas pendientes de pago", ex);
+            logger.log(Level.SEVERE, "Ocurrio un error obteniendo una lista de facturas", ex);
         } finally {
             cerrarResultSets(rs);
             cerrarConexionesYStatement(conexion, select);
