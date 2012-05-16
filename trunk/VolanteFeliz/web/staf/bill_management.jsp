@@ -6,7 +6,6 @@
 
 <%@page import="model.Sucursal"%>
 <%@page import="tools.Tools"%>
-<%@page import="com.sun.xml.ws.rx.rm.runtime.ClientAckRequesterTask"%>
 <%@page import="model.Factura"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="persistence.PersistenceInterface"%>
@@ -24,7 +23,7 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
         <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
         <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
-        <title>Zona de empleados</title>
+        <title>Gestión de Facturas</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -63,7 +62,7 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Facturas disponibles</h1>
-                        <a
+                        <%if (suc != null){ %>
                         <%
                         HashMap <String, Factura> facturas;
                         if (suc.isCentral() && request.getParameter("all") != null && request.getParameter("all").equals("1")){
@@ -74,28 +73,39 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                         if (facturas != null){
                         %>
                         <table>
-                            <tr class="theader"><td>Cliente</td><td>Fecha</td><td>Importe</td></tr>
+                            <tr class="theader"><td>Cliente</td><td>Fecha</td><td>Importe</td><td></td><td></td></tr>
                             <% for (Factura fact: facturas.values()){ %>
                             <tr>
                                 <td><%= fact.getCliente().getName() %></td>
                                 <td><%= fact.getFechaEmision() %></td>
-                                <td><%= Tools.printBigDecimal(fact.getImporte()) %></td>
-                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura() %>"</td>
+                                <td><%= Tools.printBigDecimal(fact.getImporte()) %> €</td>
+                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura() %>">
+                                        <img src="/images/icons/bill.png" alt="VerFactura"/>
+                                    </a></td>
                                 <% if (fact.isPagado()){ %>
-                            <img src="/images/icons/facPagada.png" alt="facPagada" title="Factura Pagada" />
+                                <td><img src="/images/icons/facPagada.png" alt="facPagada" title="Factura Pagada" /></td>
                                 <% } else{ %>
-                            <a title="Pagar Factura" href="/staf/paybill.jsp?bill=<%= fact.getCodFactura() %>"><img src="/images/icons/pay.png" alt="pagarFactura" /></a>
+                                <td><a title="Pagar Factura" href="/staf/paybill.jsp?bill=<%= fact.getCodFactura() %>">
+                                <img src="/images/icons/pay.png" alt="pagarFactura" />
+                            </a></td>
                                 <% }%>
                             </tr>
                             <% } %>
                         </table>
                         <% } else{ %>
-                        <h2>No se han encontrado facturas en el sistema</h2>
+                        <blockquote class="exclamation" >
+                            <p>
+                                No se han encontrado facturas en el sistema
+                            </p>
+                        </blockquote>
                         <% } %>
-                        <ul>
-                            <li><a href="/staf/clients-pendingfacture.jsp">Nueva Factura</a></li>
-                            <li><a href="/staf/pending_paybill.jsp">Pagar Factura</a></li>
-                        </ul>
+                        <% } else{ %>
+                        <blockquote class="stop">
+                            <p>
+                                Ha ocurrido un error obteniendo la sucursal actual, no se puede completar la operación
+                            </p>
+                        </blockquote>
+                        <% } %>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

@@ -76,7 +76,7 @@ public class GenerateBillServlet extends HttpServlet {
                         }
                     }
                     if (incidencias != null) {
-                        for (int i = 0; i < alquileres.length; i++) {
+                        for (int i = 0; i < incidencias.length; i++) {
                             Tools.validateUUID(incidencias[i]);
                         }
                     }
@@ -90,7 +90,7 @@ public class GenerateBillServlet extends HttpServlet {
                         } else {
                             Tools.anadirMensaje(request, "Ocurrio un error al enviar el email con la factura al cliente", 'w');
                         }
-                        request.getRequestDispatcher("/staf/view_bill.jsp").forward(request, response);
+                        request.getRequestDispatcher("/staf/viewbill.jsp?bill=" + factura.getCodFactura()).forward(request, response);
                         return;
                     } else{
                         request.setAttribute("resultados", "Factura no generada");
