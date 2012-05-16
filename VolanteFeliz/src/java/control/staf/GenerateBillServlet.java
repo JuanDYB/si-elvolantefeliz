@@ -12,7 +12,6 @@ import model.Factura;
 import model.Sucursal;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
-import tools.GeneratePDFBill;
 import tools.Tools;
 
 /**
@@ -54,7 +53,7 @@ public class GenerateBillServlet extends HttpServlet {
             Cliente client = persistence.getClient(request.getParameter("cliente"));
             Empleado emplLogedIn = (Empleado) request.getSession().getAttribute("empleado");
             Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
-            if (client.getCodSucursal().equals(emplLogedIn.getCodSucursal())) {
+            if (client.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral()) {
                 try {
                     String[] alquileres = request.getParameterValues("alquiler");
                     String[] incidencias = request.getParameterValues("incidencia");

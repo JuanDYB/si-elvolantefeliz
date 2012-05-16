@@ -50,10 +50,10 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Acciones disponibles</h2>
                         <ul>
-                            <li><a href="/staf/clients-pendingfacture.jsp">Nueva Factura</a></li>
+                            <li><a href="/staf/clients-pendingfacture.jsp?central=0">Nueva Factura</a></li>
                             <li><a href="/staf/pending_paybill.jsp">Pagar Factura</a></li>
                             <% if (suc.isCentral()){ %>
-                            <li>Sucursal Central: <a href="/staf/bill_management.jsp?all=1">Ver todas las facturas</a></li>
+                            <li><b>Sucursal Central:</b> <a href="/staf/bill_management.jsp?all=1">Ver todas las facturas</a></li>
                             <% } %>
                         </ul>
                     </div>

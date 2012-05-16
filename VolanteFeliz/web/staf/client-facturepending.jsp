@@ -85,7 +85,10 @@
                             HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
                             if (alqSinFacturarCliente != null || incSinFacturarCliente != null) {
                         %>
-                        <h2>Personalización de factura</h2>
+                    </div>
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <h1>Personalización de factura</h1>
                         <form name="elegirAlquileresFactura" action="/staf/genbill" method="POST" >
                             <% }%>
                             <% if (type.equals("all") || type.equals("alq")) {%>
@@ -141,19 +144,25 @@
                             <input name="cliente" type="hidden" value="<%= cliente.getCodCliente()%>" />
                             <input name="genFact" type="submit" value="Generar Factura" />
                         </form>
+                    </div>
                         <% }
                         } else if (cliente != null && !cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal())) {%>
-                        <blockquote class="exclamation">
-                            <p>No puede generar un factura de este cliente, no pertenece a esta sucursal</p>
-                        </blockquote>
+                        <!-- Gradiente color dentro de la columna principal -->
+                        <div class="gradient">
+                            <blockquote class="exclamation">
+                                <p>No puede generar un factura de este cliente, no pertenece a esta sucursal</p>
+                            </blockquote>
+                        </div>
+                        <!-- FIN BLOQUE GRADIENTE -->
                         <% } else {%>
-                        <blockquote class="exclamation" />
-                            <p>El cliente seleccionada para la generación de factura no ha sido encontrado</p>
-                        </blockquote>
+                        <!-- Gradiente color dentro de la columna principal -->
+                        <div class="gradient">
+                            <blockquote class="exclamation" />
+                                <p>El cliente seleccionada para la generación de factura no ha sido encontrado</p>
+                            </blockquote>
+                        </div>
+                        <!-- FIN BLOQUE GRADIENTE -->
                         <% }%>
-                    </div>
-                    <!-- FIN BLOQUE GRADIENTE -->
-
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
 
