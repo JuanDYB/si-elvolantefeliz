@@ -250,9 +250,8 @@ public class PersistenceMySQL implements PersistenceInterface {
         TipoIncidencia tipoIncidencia = null;
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Incidencia WHERE ?=?");
-            select.setString(1, campo);
-            select.setString(2, valor);
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Incidencia WHERE " + campo + "=?");
+            select.setString(1, valor);
             rs = select.executeQuery();
             while (rs.next()) {
                 tipoIncidencia = this.getTipoInciencia(rs.getString("codTipoIncidencia"), null);
@@ -401,7 +400,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 selectElementoFactura = conexion.prepareStatement("SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura "
                         + "WHERE codFactura=?");
                 selectElementoFactura.setString(1, codFactura);
-                selectElementoFactura.executeQuery();
+                rsElementoFactura = selectElementoFactura.executeQuery();
                 while (rsElementoFactura.next()) {
                     Alquiler alq = this.getAlquiler(rsElementoFactura.getString("codAlquiler"));
                     if (alq != null) {
@@ -411,7 +410,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 selectElementoFactura = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura "
                         + "WHERE codFactura =?");
                 selectElementoFactura.setString(1, codFactura);
-                selectElementoFactura.executeQuery();
+                rsElementoFactura = selectElementoFactura.executeQuery();
                 while (rsElementoFactura.next()) {
                     Incidencia inc = this.getIncidencia("codIncidencia", rsElementoFactura.getString("codIncidencia"));
                     if (inc != null) {
@@ -433,7 +432,9 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo una factura de la Base de Datos", ex);
         } finally {
             cerrarResultSets(rsFactura, rsElementoFactura);
-            cerrarConexionesYStatement(conexion, selectFactura, selectElementoFactura);
+            if (conexionExterna == null){
+                cerrarConexionesYStatement(conexion, selectFactura, selectElementoFactura);
+            }
         }
         return factura;
     }
@@ -497,6 +498,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
             }
+            cerrarResultSets(rs);
         }
         return tipoIncidencia;
     }
@@ -962,7 +964,11 @@ public class PersistenceMySQL implements PersistenceInterface {
             facturas = new HashMap<String, Factura>();
             while (rs.next()) {
                 Factura fact = this.getFactura(rs.getString("codFactura"), conexion);
-                facturas.put(fact.getCodFactura(), fact);
+                if (fact!= null){
+                    facturas.put(fact.getCodFactura(), fact);
+                }else{
+                    logger.log(Level.SEVERE, "Ha ocurrido un error obteniendo una factura en getFacturas ()");
+                }
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Ocurrio un error obteniendo las facturas pendientes de pago", ex);
@@ -1059,10 +1065,12 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
             }
         }
+        if (conexion != null){
         try {
             conexion.close();
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error al cerrar una conexion", ex);
+        }
         }
     }
 

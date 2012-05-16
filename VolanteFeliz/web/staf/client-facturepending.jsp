@@ -91,7 +91,7 @@
                                 <% }%>
                             </table>
                             <% } else{ %>
-                            <p>Ha ocurrido un error obteniendo los datos de los alquileres del cliente pendientes de facturar</p>
+                            <p>No se han encontrado alquileres pendientes de facturar</p>
                             <% }
                                 }
                                 if (type.equals("all") || type.equals("inc")) { %>
@@ -110,7 +110,7 @@
                                 <% }%>
                             </table>
                             <% } else {%>
-                            <p>Ha ocurrido un error obteniendo las incidencias pendientes de facturar</p>
+                            <p>No se han encontrado incidencias pendientes de facturar</p>
                             <% }%>
 
 
