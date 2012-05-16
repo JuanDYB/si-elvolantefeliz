@@ -73,11 +73,11 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                         if (facturas != null){
                         %>
                         <table>
-                            <tr class="theader"><td>Cliente</td><td>Fecha</td><td>Importe</td><td></td><td></td></tr>
+                            <tr class="theader"><td>Cliente</td><td>Fecha</td><td>Importe</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                             <% for (Factura fact: facturas.values()){ %>
                             <tr>
                                 <td><%= fact.getCliente().getName() %></td>
-                                <td><%= fact.getFechaEmision() %></td>
+                                <td><%= Tools.printDate(fact.getFechaEmision()) %></td>
                                 <td><%= Tools.printBigDecimal(fact.getImporte()) %> €</td>
                                 <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura() %>">
                                         <img src="/images/icons/bill.png" alt="VerFactura"/>

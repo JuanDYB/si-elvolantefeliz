@@ -67,13 +67,13 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                             <li><b>Importe: </b><%= Tools.printBigDecimal(bill.getImporteSinIVA()) %> €</li>
                             <li><b>IVA: </b><%= bill.getIVA() %> %</li>
                             <li><b>Importe con IVA: </b><%= Tools.printBigDecimal(bill.getImporte()) %> €</li>
-                            <li><b>Fecha Emisión: </b><%= bill.getFechaEmision() %></li>
+                            <li><b>Fecha Emisión: </b><%= Tools.printDate (bill.getFechaEmision()) %></li>
                             <% if (!bill.isPagado()){ %>
                             <li><b>Pagado: </b>Factura pendiente de pago</li>
                             <img src="/images/icons/pay.png" alt="Pagar Factura"><a title="Haga click para pagar la factura" href="/staf/paybill.jsp?bill=<%= bill.getCodFactura() %>">Pagar Factura</a>
                             <% }else{ %>
                             <li><b>Pagado: </b>Factura pagada</li>
-                            <li><b>Fecha de pago: </b><%= bill.getFechaPago() %></li>
+                            <li><b>Fecha de pago: </b><%= Tools.printDate(bill.getFechaPago()) %></li>
                             <li><b>Forma de pago: </b><%= bill.getFormaPago() %></li>
                             <% } %>
                         </ul>

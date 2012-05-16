@@ -125,7 +125,7 @@ public class GeneratePDFBill {
         PdfPCell celdaInfoExtra = new PdfPCell();
         Phrase codFactura = new Phrase("Codigo Factura: " + factura.getCodFactura() + "\n");
         celdaInfoExtra.addElement(codFactura);
-        Phrase fecha = new Phrase("Fecha: " + factura.getFechaEmision() + "\n");
+        Phrase fecha = new Phrase("Fecha: " + Tools.printDate(factura.getFechaEmision()) + "\n");
         celdaInfoExtra.addElement(fecha);
         celdaInfoExtra.setColspan(4);
 
@@ -156,7 +156,7 @@ public class GeneratePDFBill {
 
     private void doBillContent() throws DocumentException {
         //Crear Tabla
-        float[] columnas = {70, 15, 15};
+        float[] columnas = {65, 17.5F, 17.5F};
         PdfPTable tablaContenido = this.generateTable(100, columnas, true);
 
         //Contenido
@@ -181,8 +181,9 @@ public class GeneratePDFBill {
             //Bucle Alquileres
             for (Alquiler alq : alquileres.values()) {
                 Phrase descripcion = new Phrase("Alquiler: " + alq.getCodAlquiler() + "\n"
-                        + "Marca: " + "Modelo: " + "\n"
-                        + "Fecha Salida: " + "Fecha Fin Alquiler: " + "Fecha Entrega: ");
+                        + "Marca: " + alq.getVehiculo().getMarca() +  "\tModelo: " + alq.getVehiculo().getModelo() + "\n"
+                        + "Fecha Salida: " + Tools.printDate(alq.getFechaInicio()) + "\tFecha Fin Alquiler: " 
+                        + Tools.printDate(alq.getFechaFin()) + "\tFecha Entrega: " + Tools.printDate(alq.getFechaEntrega()));
                 Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
                 Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
                 tablaContenido.addCell(descripcion);

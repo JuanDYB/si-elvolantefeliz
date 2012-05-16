@@ -292,6 +292,9 @@ public class PersistenceMySQL implements PersistenceInterface {
             if (conExterna == null) {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
+            } else {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(null, select);
             }
         }
         return vehicle;
@@ -321,6 +324,9 @@ public class PersistenceMySQL implements PersistenceInterface {
             if (conExterna == null) {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
+            } else {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(null, select);
             }
         }
         return tarifa;
@@ -432,7 +438,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             logger.log(Level.SEVERE, "Error obteniendo una factura de la Base de Datos", ex);
         } finally {
             cerrarResultSets(rsFactura, rsElementoFactura);
-            if (conexionExterna == null){
+            if (conexionExterna == null) {
                 cerrarConexionesYStatement(conexion, selectFactura, selectElementoFactura);
             }
         }
@@ -497,8 +503,10 @@ public class PersistenceMySQL implements PersistenceInterface {
             if (conExterna == null) {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(conexion, select);
+            } else {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(null, select);
             }
-            cerrarResultSets(rs);
         }
         return tipoIncidencia;
     }
@@ -550,14 +558,24 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
-                    + ", cli.Telefono, cli.Email, cli.Activo "
-                    + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
-                    + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
-                    + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq "
-                    + "WHERE cli.codSucursal=? AND cli.codCliente=alq.codCliente AND alq.FechaEntrega IS NOT NULL "
-                    + "AND alq.codAlquiler=AlqNotFact.codAlquiler");
-            select.setString(1, codSucursal);
+            if (codSucursal != null) {
+                select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
+                        + ", cli.Telefono, cli.Email, cli.Activo "
+                        + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
+                        + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
+                        + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq "
+                        + "WHERE cli.codSucursal=? AND cli.codCliente=alq.codCliente AND alq.FechaEntrega IS NOT NULL "
+                        + "AND alq.codAlquiler=AlqNotFact.codAlquiler");
+                select.setString(1, codSucursal);
+            } else {
+                select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
+                        + ", cli.Telefono, cli.Email, cli.Activo "
+                        + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
+                        + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
+                        + nameBD + ".Cliente cli, " + nameBD + ".Alquiler alq "
+                        + "WHERE cli.codCliente=alq.codCliente AND alq.FechaEntrega IS NOT NULL "
+                        + "AND alq.codAlquiler=AlqNotFact.codAlquiler");
+            }
             rs = select.executeQuery();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
@@ -591,13 +609,22 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
-                    + ", cli.Telefono, cli.Email, cli.Activo "
-                    + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
-                    + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
-                    + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc "
-                    + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND IncNotFact.codIncidencia=inc.codIncidencia");
-            select.setString(1, codSucursal);
+            if (codSucursal != null) {
+                select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
+                        + ", cli.Telefono, cli.Email, cli.Activo "
+                        + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
+                        + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
+                        + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc "
+                        + "WHERE cli.codSucursal=? AND cli.codCliente=inc.codCliente AND IncNotFact.codIncidencia=inc.codIncidencia");
+                select.setString(1, codSucursal);
+            } else {
+                select = conexion.prepareStatement("SELECT cli.codCliente, cli.DNI, cli.Nombre, cli.Edad, cli.Empresa, cli.Direccion"
+                        + ", cli.Telefono, cli.Email, cli.Activo "
+                        + "FROM (SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codIncidencia "
+                        + "NOT IN (SELECT codIncidencia FROM " + nameBD + ".IncidenciaFactura)) IncNotFact, "
+                        + nameBD + ".Cliente cli, " + nameBD + ".Incidencia inc "
+                        + "WHERE cli.codCliente=inc.codCliente AND IncNotFact.codIncidencia=inc.codIncidencia");
+            }
             rs = select.executeQuery();
             while (rs.next()) {
                 String codCliente = rs.getString("cli.codCliente");
@@ -964,9 +991,9 @@ public class PersistenceMySQL implements PersistenceInterface {
             facturas = new HashMap<String, Factura>();
             while (rs.next()) {
                 Factura fact = this.getFactura(rs.getString("codFactura"), conexion);
-                if (fact!= null){
+                if (fact != null) {
                     facturas.put(fact.getCodFactura(), fact);
-                }else{
+                } else {
                     logger.log(Level.SEVERE, "Ha ocurrido un error obteniendo una factura en getFacturas ()");
                 }
             }
@@ -1065,12 +1092,12 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
             }
         }
-        if (conexion != null){
-        try {
-            conexion.close();
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error al cerrar una conexion", ex);
-        }
+        if (conexion != null) {
+            try {
+                conexion.close();
+            } catch (SQLException ex) {
+                logger.log(Level.SEVERE, "Error al cerrar una conexion", ex);
+            }
         }
     }
 
