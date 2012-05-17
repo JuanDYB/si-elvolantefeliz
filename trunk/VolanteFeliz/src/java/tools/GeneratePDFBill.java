@@ -29,7 +29,8 @@ public class GeneratePDFBill {
     private final Font fuenteTitulo_1 = new Font(FontFamily.TIMES_ROMAN, 22, Font.BOLD);
     private final Font fuenteTitulo_2 = new Font(FontFamily.TIMES_ROMAN, 18, Font.BOLD);
     private final Font fuenteTitulo_3 = new Font(FontFamily.TIMES_ROMAN, 14, Font.BOLD);
-    private final Font fuenteNormal = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+    private final Font fuenteNormal = new Font(FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
+    private final Font fuenteNormalDestacado = new Font(FontFamily.TIMES_ROMAN, 11, Font.BOLD);
 
     public GeneratePDFBill(Factura factura, Sucursal suc, String rutaRaizWeb) {
         this.factura = factura;
@@ -91,16 +92,15 @@ public class GeneratePDFBill {
 
         PdfPCell celdaDatosEmpresa = new PdfPCell();
         Paragraph datosEmpresa = new Paragraph();
-        Phrase nombreEmpresa = new Phrase("El Volante Feliz S.A\n");
-        datosEmpresa.add(nombreEmpresa);
-        Phrase nombreSucursalEmpresa = new Phrase("Sucursal: " + suc.getNombre() + "\n");
-        datosEmpresa.add(nombreSucursalEmpresa);
-        Phrase dirEmpresa = new Phrase("Direccion: " + suc.getDir() + "\n");
-        datosEmpresa.add(dirEmpresa);
-        Phrase telefonoEmpresa = new Phrase("Teléfono: " + suc.getTelefono() + "\n");
-        datosEmpresa.add(telefonoEmpresa);
-        Phrase faxEmpresa = new Phrase("Fax: " + suc.getFax() + "\n");
-        datosEmpresa.add(faxEmpresa);
+        datosEmpresa.add(new Phrase("El Volante Feliz S.A\n", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase("Sucursal: ", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase (suc.getNombre() + "\n", fuenteNormal));
+        datosEmpresa.add(new Phrase ("Direccion: ", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase(suc.getDir() + "\n", fuenteNormal));
+        datosEmpresa.add(new Phrase ("Teléfono: ", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase (suc.getTelefono() + "\n", fuenteNormal));
+        datosEmpresa.add(new Phrase ("Fax", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase(suc.getFax() + "\n", fuenteNormal));
 
         celdaDatosEmpresa.addElement(datosEmpresa);
 
@@ -111,27 +111,27 @@ public class GeneratePDFBill {
 
         PdfPCell celdaDatosCliente = new PdfPCell();
         Paragraph datosCliente = new Paragraph();
-        Phrase nombreCliente = new Phrase("Nombre: " + cli.getName() + "\n");
-        celdaDatosCliente.addElement(nombreCliente);
-        Phrase dniCliente = new Phrase("DNI: " + cli.getDni() + "\n");
-        celdaDatosCliente.addElement(dniCliente);
-        Phrase dirCliente = new Phrase("Dirección: " + cli.getAddress() + "\n");
-        celdaDatosCliente.addElement(dirCliente);
-        Phrase telefonoCliente = new Phrase("Teléfono: " + cli.getTelephone() + "\n");
-        celdaDatosCliente.addElement(telefonoCliente);
+        datosCliente.add(new Phrase("Nombre: ", fuenteNormalDestacado));
+        datosCliente.add(new Phrase(cli.getName() + "\n", fuenteNormal));
+        datosCliente.add(new Phrase("DNI: ", fuenteNormalDestacado));
+        datosCliente.add(new Phrase(cli.getDni() + "\n", fuenteNormal));
+        datosCliente.add(new Phrase("Direccion: ", fuenteNormalDestacado));
+        datosCliente.add(new Phrase(cli.getAddress() + "\n", fuenteNormal));
+        datosCliente.add(new Phrase("Teléfono", fuenteNormalDestacado));
+        datosCliente.add(new Phrase(cli.getTelephone() + "\n", fuenteNormal));
         if (cli.getCompany() != null) {
-            Phrase nombreEmpresaCliente = new Phrase("Empresa: " + cli.getCompany());
-            celdaDatosCliente.addElement(nombreEmpresaCliente);
+            datosCliente.add(new Phrase("Empresa", fuenteNormalDestacado));
+            datosCliente.add(new Phrase(cli.getCompany() + "\n", fuenteNormal));
         }
 
         celdaDatosCliente.addElement(datosCliente);
 
         //Codigo y Fecha
         PdfPCell celdaInfoExtra = new PdfPCell();
-        Phrase codFactura = new Phrase("Código Factura: " + factura.getCodFactura() + "\n");
-        celdaInfoExtra.addElement(codFactura);
-        Phrase fecha = new Phrase("Fecha: " + Tools.printDate(factura.getFechaEmision()) + "\n");
-        celdaInfoExtra.addElement(fecha);
+        celdaInfoExtra.addElement(new Phrase("Código Factura: ", fuenteNormalDestacado));
+        celdaInfoExtra.addElement(new Phrase(factura.getCodFactura() + "\n", fuenteNormal));
+        celdaInfoExtra.addElement(new Phrase("Fecha Emisión: ", fuenteNormalDestacado));
+        celdaInfoExtra.addElement(new Phrase(Tools.printDate(factura.getFechaEmision()) + "\n", fuenteNormalDestacado));
         celdaInfoExtra.setColspan(4);
 
         //Añadir elementos de tabla
@@ -185,13 +185,20 @@ public class GeneratePDFBill {
 
             //Bucle Alquileres
             for (Alquiler alq : alquileres.values()) {
-                Phrase descripcion = new Phrase("Alquiler: " + alq.getCodAlquiler() + "\n"
-                        + "Marca: " + alq.getVehiculo().getMarca() +  "   Modelo: " + alq.getVehiculo().getModelo() + "\n"
-                        + "Fecha Salida: " + Tools.printDate(alq.getFechaInicio()) + "\nFecha Fin Alquiler: " 
-                        + Tools.printDate(alq.getFechaFin()) + "\nFecha Entrega: " + Tools.printDate(alq.getFechaEntrega()));
+                Paragraph descripcionAlquiler = new Paragraph();
+                descripcionAlquiler.add(new Phrase("Marca: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMarca() + "\t", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("Modelo: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getModelo() + "\n", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("Fecha Salida: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaInicio()) + "\t", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("Fecha Fin: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaFin()) + "\t", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("Fecha Entrega Vehiculo", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaEntrega()), fuenteNormal));
                 Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
                 Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
-                tablaContenido.addCell(descripcion);
+                tablaContenido.addCell(descripcionAlquiler);
                 tablaContenido.addCell(tarifa);
                 tablaContenido.addCell(precio);
             }
@@ -215,12 +222,17 @@ public class GeneratePDFBill {
             //Bucle incidencias
             for (Incidencia inc : incidencias.values()) {
                 PdfPCell celdaDescripcion = new PdfPCell();
-                Phrase descripcion = new Phrase("Incidencia: " + inc.getCodIncidencia() + "\n"
-                        + "Tipo Incidencia: " + inc.getTipoIncidencia().getNombre() + "\n"
-                        + "Fecha Incidencia: " + Tools.printDate(inc.getFecha()) + "\n"
-                        + "Observaciones: " + inc.getObservaciones());
+                Paragraph descripcionIncidencia = new Paragraph();
+                descripcionIncidencia.add(new Phrase("Incidencia: ", fuenteNormalDestacado));
+                descripcionIncidencia.add(new Phrase(inc.getCodIncidencia() + "\n", fuenteNormal));
+                descripcionIncidencia.add(new Phrase("TipoIncidencia: ", fuenteNormalDestacado));
+                descripcionIncidencia.add(new Phrase(inc.getTipoIncidencia().getNombre() + "\t", fuenteNormal));
+                descripcionIncidencia.add(new Phrase("Fecha Incidencia: ", fuenteNormalDestacado));
+                descripcionIncidencia.add(new Phrase(Tools.printDate(inc.getFecha()) + "\n", fuenteNormal));
+                descripcionIncidencia.add(new Phrase("Observaciones: ", fuenteNormalDestacado));
+                descripcionIncidencia.add(new Phrase(inc.getObservaciones(), fuenteNormal));
                 celdaDescripcion.setColspan(2);
-                celdaDescripcion.addElement(descripcion);
+                celdaDescripcion.addElement(descripcionIncidencia);
                 Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €");
                 tablaContenido.addCell(celdaDescripcion);
                 tablaContenido.addCell(precio);
