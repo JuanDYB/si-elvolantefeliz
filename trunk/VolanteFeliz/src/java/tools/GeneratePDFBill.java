@@ -80,15 +80,15 @@ public class GeneratePDFBill {
     private void doBillHeader() throws DocumentException, BadElementException, MalformedURLException, IOException {
         //Logo
         Image logo = Image.getInstance(rutaRaizWeb + "/images/logo.png");
-        logo.setAlignment(Image.ALIGN_LEFT);
-        logo.scalePercent(90);
+        logo.setBorder(0);
+        logo.setBorderWidth(0);
         PdfPCell celdaLogo = new PdfPCell(logo, true);
         celdaLogo.setRowspan(2);
 
         //Datos Empresa
         PdfPCell tituloDatosEmpresa = new PdfPCell(new Phrase("Datos Empresa\n", fuenteTitulo_1));
         tituloDatosEmpresa.setBackgroundColor(BaseColor.LIGHT_GRAY);
-        this.eliminarBordeCelda(tituloDatosEmpresa);
+        
 
         PdfPCell celdaDatosEmpresa = new PdfPCell();
         Paragraph datosEmpresa = new Paragraph();
@@ -107,7 +107,7 @@ public class GeneratePDFBill {
         //Datos Cliente
         PdfPCell tituloDatosCliente = new PdfPCell(new Phrase("Datos Cliente\n", fuenteTitulo_1));
         tituloDatosCliente.setBackgroundColor(BaseColor.LIGHT_GRAY);
-        this.eliminarBordeCelda(tituloDatosCliente);
+        
 
         PdfPCell celdaDatosCliente = new PdfPCell();
         Paragraph datosCliente = new Paragraph();
@@ -128,21 +128,26 @@ public class GeneratePDFBill {
 
         //Codigo y Fecha
         PdfPCell celdaInfoExtra = new PdfPCell();
-        celdaInfoExtra.addElement(new Phrase("Código Factura: ", fuenteNormalDestacado));
-        celdaInfoExtra.addElement(new Phrase(factura.getCodFactura() + "\n", fuenteNormal));
-        celdaInfoExtra.addElement(new Phrase("Fecha Emisión: ", fuenteNormalDestacado));
-        celdaInfoExtra.addElement(new Phrase(Tools.printDate(factura.getFechaEmision()) + "\n", fuenteNormalDestacado));
+        Paragraph infoExtra = new Paragraph();
+        infoExtra.add(new Phrase("Código Factura: ", fuenteNormalDestacado));
+        infoExtra.add(new Phrase(factura.getCodFactura() + "\n", fuenteNormal));
+        infoExtra.add(new Phrase("Fecha Emisión: ", fuenteNormalDestacado));
+        infoExtra.add(new Phrase(Tools.printDate(factura.getFechaEmision()) + "\n", fuenteNormal));
         celdaInfoExtra.setColspan(4);
+        celdaInfoExtra.setFixedHeight(50);
+        celdaInfoExtra.addElement(infoExtra);
 
         //Añadir elementos de tabla
-        float[] columnas = {(float) 25, (float) 10, (float) 50, (float) 50};
+        float[] columnas = {(float) 25, (float) 5, (float) 52.5, (float) 52.5};
         PdfPTable tablaCabecera = this.generateTable(100, columnas, false);
         tablaCabecera.addCell(celdaLogo);
         PdfPCell hueco = new PdfPCell();
         hueco.setRowspan(2);
-
+        
         this.eliminarBordeCelda(celdaLogo);
         this.eliminarBordeCelda(hueco);
+        this.eliminarBordeCelda(tituloDatosEmpresa);
+        this.eliminarBordeCelda(tituloDatosCliente);
         this.eliminarBordeCelda(celdaDatosEmpresa);
         this.eliminarBordeCelda(celdaDatosCliente);
         this.eliminarBordeCelda(celdaInfoExtra);
@@ -153,9 +158,7 @@ public class GeneratePDFBill {
         tablaCabecera.addCell(celdaDatosEmpresa);
         tablaCabecera.addCell(celdaDatosCliente);
         tablaCabecera.addCell(celdaInfoExtra);
-        tablaCabecera.addCell(hueco);
-        tablaCabecera.addCell(hueco);
-
+        
         doc.add(tablaCabecera);
     }
 
@@ -167,7 +170,8 @@ public class GeneratePDFBill {
         //Contenido
         HashMap<String, Alquiler> alquileres = factura.getAlquileres();
         HashMap<String, Incidencia> incidencias = factura.getIncidencias();
-        if (factura.getAlquileres() != null) {
+        
+        if (factura.getAlquileres() != null  && factura.getAlquileres().size() > 0) {
             //Titulo Alquileres
             PdfPCell tituloAlquileres = new PdfPCell(new Phrase("Alquileres", fuenteTitulo_2));
             tituloAlquileres.setColspan(3);
@@ -187,15 +191,17 @@ public class GeneratePDFBill {
             for (Alquiler alq : alquileres.values()) {
                 Paragraph descripcionAlquiler = new Paragraph();
                 descripcionAlquiler.add(new Phrase("Marca: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMarca() + "\t", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMarca() + "     ", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Modelo: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getModelo() + "\n", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getModelo() + "     ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("Matrícula: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMatricula() + "\n", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Salida: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaInicio()) + "\t", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaInicio()) + "     ", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Fin: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaFin()) + "\t", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaFin()) + "\n", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Entrega Vehiculo", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaEntrega()), fuenteNormal));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaEntrega()) + "\n ", fuenteNormal));
                 Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
                 Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
                 tablaContenido.addCell(descripcionAlquiler);
@@ -203,7 +209,7 @@ public class GeneratePDFBill {
                 tablaContenido.addCell(precio);
             }
         }
-        if (factura.getIncidencias() != null) {
+        if (factura.getIncidencias() != null && factura.getIncidencias().size() > 0) {
             //Titulo Incidencias
             PdfPCell tituloIncidencias = new PdfPCell(new Phrase("Incidencias", fuenteTitulo_2));
             tituloIncidencias.setColspan(3);
@@ -226,11 +232,11 @@ public class GeneratePDFBill {
                 descripcionIncidencia.add(new Phrase("Incidencia: ", fuenteNormalDestacado));
                 descripcionIncidencia.add(new Phrase(inc.getCodIncidencia() + "\n", fuenteNormal));
                 descripcionIncidencia.add(new Phrase("TipoIncidencia: ", fuenteNormalDestacado));
-                descripcionIncidencia.add(new Phrase(inc.getTipoIncidencia().getNombre() + "\t", fuenteNormal));
+                descripcionIncidencia.add(new Phrase(inc.getTipoIncidencia().getNombre() + "     ", fuenteNormal));
                 descripcionIncidencia.add(new Phrase("Fecha Incidencia: ", fuenteNormalDestacado));
                 descripcionIncidencia.add(new Phrase(Tools.printDate(inc.getFecha()) + "\n", fuenteNormal));
                 descripcionIncidencia.add(new Phrase("Observaciones: ", fuenteNormalDestacado));
-                descripcionIncidencia.add(new Phrase(inc.getObservaciones(), fuenteNormal));
+                descripcionIncidencia.add(new Phrase(inc.getObservaciones() + "\n ", fuenteNormal));
                 celdaDescripcion.setColspan(2);
                 celdaDescripcion.addElement(descripcionIncidencia);
                 Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €");

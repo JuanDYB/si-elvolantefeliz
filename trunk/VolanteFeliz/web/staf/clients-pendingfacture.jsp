@@ -60,7 +60,7 @@ if (!this.validateEntry(request)){
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Clientes con alquileres sin facturar</h1>
+                        <h1>Clientes con elementos pendientes de facturar</h1>
                         <% if (suc.isCentral()){ %>
                         <ul>
                             <li><a href="/staf/clients-pendingfacture.jsp?central=0">Mostrar clientes con facturacion pendiente para esta sucursal</a></li>

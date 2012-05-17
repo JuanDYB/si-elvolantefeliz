@@ -49,9 +49,10 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Detalles Factura</h1>
+                        <h1>Detalles Factura</h1> 
                         <% Factura bill = persistence.getFactura(request.getParameter("bill"), null);
                         if (bill != null && (bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())){ %>
+                        <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Detalles generales</h2>
                         <ul>
                             <li><b>Codigo Factura: </b><%= bill.getCodFactura() %></li>
