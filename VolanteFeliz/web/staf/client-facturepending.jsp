@@ -122,11 +122,11 @@
                             <% if (incSinFacturarCliente != null) {%>
 
                             <table>
-                                <tr class="theader"><td>&nbsp;</td><td>Tipo Incidencia</td><td>Fecha</td><td>Importe</td></tr>
+                                <tr class="theader"><td>&nbsp;</td><td>Incidencia</td><td>Fecha</td><td>Importe</td></tr>
                                 <% for (Incidencia inc : incSinFacturarCliente.values()) {%>
                                 <tr>
                                     <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia()%>" /></td>
-                                    <td><%= inc.getTipoIncidencia().getNombre()%></td>
+                                    <td><b><%= inc.getTipoIncidencia().getNombre()%>: </b><%= inc.getObservaciones() %></td>
                                     <td><%= Tools.printDate(inc.getFecha())%></td>
                                     <td><%= Tools.printBigDecimal(inc.getPrecio())%> €</td>
                                 </tr>
