@@ -1,7 +1,7 @@
 package tools;
 
-import com.itextpdf.text.*;
 import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -95,7 +95,7 @@ public class GeneratePDFBill {
         datosEmpresa.add(new Phrase("El Volante Feliz S.A\n", fuenteNormalDestacado));
         datosEmpresa.add(new Phrase("Sucursal: ", fuenteNormalDestacado));
         datosEmpresa.add(new Phrase (suc.getNombre() + "\n", fuenteNormal));
-        datosEmpresa.add(new Phrase ("Direccion: ", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase ("Dirección: ", fuenteNormalDestacado));
         datosEmpresa.add(new Phrase(suc.getDir() + "\n", fuenteNormal));
         datosEmpresa.add(new Phrase ("Teléfono: ", fuenteNormalDestacado));
         datosEmpresa.add(new Phrase (suc.getTelefono() + "\n", fuenteNormal));
@@ -115,7 +115,7 @@ public class GeneratePDFBill {
         datosCliente.add(new Phrase(cli.getName() + "\n", fuenteNormal));
         datosCliente.add(new Phrase("DNI: ", fuenteNormalDestacado));
         datosCliente.add(new Phrase(cli.getDni() + "\n", fuenteNormal));
-        datosCliente.add(new Phrase("Direccion: ", fuenteNormalDestacado));
+        datosCliente.add(new Phrase("Dirección: ", fuenteNormalDestacado));
         datosCliente.add(new Phrase(cli.getAddress() + "\n", fuenteNormal));
         datosCliente.add(new Phrase("Teléfono: ", fuenteNormalDestacado));
         datosCliente.add(new Phrase(cli.getTelephone() + "\n", fuenteNormal));
@@ -134,7 +134,7 @@ public class GeneratePDFBill {
         infoExtra.add(new Phrase("Fecha Emisión: ", fuenteNormalDestacado));
         infoExtra.add(new Phrase(Tools.printDate(factura.getFechaEmision()) + "\n", fuenteNormal));
         celdaInfoExtra.setColspan(4);
-        celdaInfoExtra.setFixedHeight(50);
+        celdaInfoExtra.setFixedHeight(70);
         celdaInfoExtra.addElement(infoExtra);
 
         //Añadir elementos de tabla
@@ -189,6 +189,7 @@ public class GeneratePDFBill {
 
             //Bucle Alquileres
             for (Alquiler alq : alquileres.values()) {
+                PdfPCell celdaDescripcionAlquiler = new PdfPCell();
                 Paragraph descripcionAlquiler = new Paragraph();
                 descripcionAlquiler.add(new Phrase("Marca: ", fuenteNormalDestacado));
                 descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMarca() + "     ", fuenteNormal));
@@ -200,11 +201,13 @@ public class GeneratePDFBill {
                 descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaInicio()) + "     ", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Fin: ", fuenteNormalDestacado));
                 descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaFin()) + "\n", fuenteNormal));
-                descripcionAlquiler.add(new Phrase("Fecha Entrega Vehiculo", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase("Fecha Entrega Vehiculo: ", fuenteNormalDestacado));
                 descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaEntrega()) + "\n ", fuenteNormal));
+
                 Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
                 Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
-                tablaContenido.addCell(descripcionAlquiler);
+                celdaDescripcionAlquiler.addElement(descripcionAlquiler);
+                tablaContenido.addCell(celdaDescripcionAlquiler);
                 tablaContenido.addCell(tarifa);
                 tablaContenido.addCell(precio);
             }
@@ -227,7 +230,7 @@ public class GeneratePDFBill {
 
             //Bucle incidencias
             for (Incidencia inc : incidencias.values()) {
-                PdfPCell celdaDescripcion = new PdfPCell();
+                PdfPCell celdaDescripcionIncidencia = new PdfPCell();
                 Paragraph descripcionIncidencia = new Paragraph();
                 descripcionIncidencia.add(new Phrase("Incidencia: ", fuenteNormalDestacado));
                 descripcionIncidencia.add(new Phrase(inc.getCodIncidencia() + "\n", fuenteNormal));
@@ -237,10 +240,10 @@ public class GeneratePDFBill {
                 descripcionIncidencia.add(new Phrase(Tools.printDate(inc.getFecha()) + "\n", fuenteNormal));
                 descripcionIncidencia.add(new Phrase("Observaciones: ", fuenteNormalDestacado));
                 descripcionIncidencia.add(new Phrase(inc.getObservaciones() + "\n ", fuenteNormal));
-                celdaDescripcion.setColspan(2);
-                celdaDescripcion.addElement(descripcionIncidencia);
+                celdaDescripcionIncidencia.setColspan(2);
+                celdaDescripcionIncidencia.addElement(descripcionIncidencia);
                 Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €");
-                tablaContenido.addCell(celdaDescripcion);
+                tablaContenido.addCell(celdaDescripcionIncidencia);
                 tablaContenido.addCell(precio);
             }
         }

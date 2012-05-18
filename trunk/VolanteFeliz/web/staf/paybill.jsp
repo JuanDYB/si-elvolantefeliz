@@ -13,13 +13,13 @@
 <%@page import="model.Empleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<% 
-if (!validateEntry(request)){
-    response.sendError(404);
-}
-Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+<%
+    if (!validateEntry(request)) {
+        response.sendError(404);
+    }
+    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+    PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 <html>
     <head>
@@ -48,27 +48,90 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                 <div class="width75 floatRight">
 
 
+                    <% Factura bill = persistence.getFactura(request.getParameter("bill"), null);
+                        if (bill != null && (bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())) {%>
+                    <% if (!bill.isPagado()) {%>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Detalles Factura</h1>
-                        <% Factura bill = persistence.getFactura(request.getParameter("bill"), null);
-                        if (bill != null && (bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())){ %>
-                        
-                        <% } %>
-                        
+                        <h1>Detalles de la factura</h1>
+                        <h2>Detalles generales</h2>
+                        <ul>
+                            <li><b>Codigo Factura: </b><%= bill.getCodFactura()%></li>
+                            <li><b>Cliente: </b><a title="Ver Detalles del cliente" href="/staf/viewclient.jsp?cli=<%= bill.getCliente().getCodCliente()%>"><%= bill.getCliente().getName()%></a></li>
+                            <% if (bill.getCliente().getCompany() == null) {%>
+                            <li><b>Empresa: </b>Cliente Particular</li>
+                            <% } else {%>
+                            <li><b>Empresa: </b><%= bill.getCliente().getCompany()%></li>
+                            <% }%>
+                        </ul>
+                        <h2>Detalles Económicos</h2>
+                        <ul>
+                            <li><b>Importe: </b><%= Tools.printBigDecimal(bill.getImporteSinIVA())%> €</li>
+                            <li><b>IVA: </b><%= bill.getIVA()%> %</li>
+                            <li><b>Importe con IVA: </b><%= Tools.printBigDecimal(bill.getImporte())%> €</li>
+                            <li><b>Fecha Emisión: </b><%= Tools.printDate(bill.getFechaEmision())%></li>
+                            <li><b>Pagado: </b>Factura pendiente de pago</li>
+                        </ul>
+                        <h2>Detalles de la factura completa</h2>
+                        <img src="/images/icons/pdf.png" alt="pdf"/><a title="Ver factura completa" target="_blank" href="/staf/billFolder/<%= bill.getCodFactura()%>.pdf">Ver Factura completa en PDF</a>
                     </div>
-                    <!-- FIN BLOQUE GRADIENTE -->
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <h1>Formulario de pago</h1>
+                        <form title="payBill" method="POST" action="/staf/paybill">
+                            <p><label>Forma de pago</label>
+                            <select name="formaPago">
+                                <option value="card">Tarjeta de crédito</option>
+                                <option value="cash">Efectivo</option>
+                                <option value="check">Talon bancario</option>
+                            </select></p>
+                            <p><input name="pay" type="submit" value="Confirmar pago" /></p>
+                        </form>
+                    </div>
+                    <% } else {%>
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <h1>Detalles de la factura</h1>
+                        <blockquote class="exclamation">
+                            <p>
+                                No puede efectuar el pago de esta factura porque ya ha sido pagada previamente
+                            </p>
+                        </blockquote>
+                    </div>
+                    <% }%>
                 </div>
-                <!-- FIN COLUMNA PRINCIPAL -->
+                <!-- FIN BLOQUE GRADIENTE -->
+                <% } else if (bill != null && !bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {%>
+                <!-- Gradiente color dentro de la columna principal -->
+                <div class="gradient">
+                    <blockquote class="exclamation">
+                        <p>
+                            No tiene permisos para mostrar esta factura porque no pertenece a su sucursal y tampoco es la sucursal central
+                        </p>
+                    </blockquote>
+                </div>
+                <% } else {%>
+                <!-- Gradiente color dentro de la columna principal -->
+                <div class="gradient">
+                    <blockquote class="stop">
+                        <p>
+                            Ocurrio un error obteniendo la factura. Es posible que la factura solicitada no exista
+                        </p>
+                    </blockquote>
+                </div>
+                <% }%>
 
             </div>
-            <!-- Fin contenido página -->
-        </div>
-        <!-- FIN CONTENIDO -->
+            <!-- FIN COLUMNA PRINCIPAL -->
 
-        <!-- FOOTER -->
-        <%@include file="/WEB-INF/include/footer.jsp" %>
-    </body>
+        </div>
+        <!-- Fin contenido página -->
+    </div>
+    <!-- FIN CONTENIDO -->
+
+    <!-- FOOTER -->
+    <%@include file="/WEB-INF/include/footer.jsp" %>
+</body>
 </html>
 
 
@@ -79,15 +142,15 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 <%! String menuContacto = "";%>
 
 <%!
-private boolean validateEntry (HttpServletRequest request){
-    if (request.getParameterMap().size() >= 1 && request.getParameter("bill") != null){
-        try{
-            Tools.validateUUID(request.getParameter("bill"));
-        } catch (ValidationException ex){
-            return false;
+    private boolean validateEntry(HttpServletRequest request) {
+        if (request.getParameterMap().size() >= 1 && request.getParameter("bill") != null) {
+            try {
+                Tools.validateUUID(request.getParameter("bill"));
+            } catch (ValidationException ex) {
+                return false;
+            }
         }
+        return true;
     }
-    return true;
-}
 %>
 
