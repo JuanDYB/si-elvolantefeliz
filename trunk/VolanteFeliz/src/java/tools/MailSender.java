@@ -1,5 +1,7 @@
 package tools;
 
+import java.io.File;
+import java.io.IOException;
 import tools.Tools;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class MailSender {
 
     public Session startSession(Authenticator auth) {
         if (auth != null) {
-            Session sesion = Session.getDefaultInstance(configSMTP, auth);
+            Session sesion = Session.getInstance(configSMTP, auth);
             return sesion;
         }
         return null;
@@ -70,9 +72,9 @@ public class MailSender {
         try {
             MimeMultipart multiParte = new MimeMultipart();
 
-//        BodyPart contenido = new MimeBodyPart();
-//        contenido.setText(content, "UTF-8", "html");
-//        multiParte.addBodyPart(contenido);
+        MimeBodyPart textoMensaje = new MimeBodyPart();
+        textoMensaje.setText(content, "UTF-8", "html");
+        multiParte.addBodyPart(textoMensaje);
 
             Iterator<String> iterador = adjuntos.keySet().iterator();
             while (iterador.hasNext()) {
@@ -82,14 +84,13 @@ public class MailSender {
                 adjunto.setFileName(adjuntos.get(ruta));
                 multiParte.addBodyPart(adjunto);
             }
-
+            
             MimeMessage mensaje = new MimeMessage(sesion);
             mensaje.setFrom(new InternetAddress(configSMTP.getProperty("mail.from")));
             mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             mensaje.addHeader("Content-Type", "text/html; charset=UTF-8");
             mensaje.setSubject(subject, "UTF-8");
             mensaje.setContent(multiParte);
-            mensaje.setText(content, "UTF-8", "html");
             return mensaje;
 
         } catch (AddressException ex) {

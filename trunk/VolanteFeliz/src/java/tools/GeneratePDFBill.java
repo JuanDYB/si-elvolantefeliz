@@ -99,7 +99,7 @@ public class GeneratePDFBill {
         datosEmpresa.add(new Phrase(suc.getDir() + "\n", fuenteNormal));
         datosEmpresa.add(new Phrase ("Teléfono: ", fuenteNormalDestacado));
         datosEmpresa.add(new Phrase (suc.getTelefono() + "\n", fuenteNormal));
-        datosEmpresa.add(new Phrase ("Fax", fuenteNormalDestacado));
+        datosEmpresa.add(new Phrase ("Fax: ", fuenteNormalDestacado));
         datosEmpresa.add(new Phrase(suc.getFax() + "\n", fuenteNormal));
 
         celdaDatosEmpresa.addElement(datosEmpresa);
@@ -117,10 +117,10 @@ public class GeneratePDFBill {
         datosCliente.add(new Phrase(cli.getDni() + "\n", fuenteNormal));
         datosCliente.add(new Phrase("Direccion: ", fuenteNormalDestacado));
         datosCliente.add(new Phrase(cli.getAddress() + "\n", fuenteNormal));
-        datosCliente.add(new Phrase("Teléfono", fuenteNormalDestacado));
+        datosCliente.add(new Phrase("Teléfono: ", fuenteNormalDestacado));
         datosCliente.add(new Phrase(cli.getTelephone() + "\n", fuenteNormal));
         if (cli.getCompany() != null) {
-            datosCliente.add(new Phrase("Empresa", fuenteNormalDestacado));
+            datosCliente.add(new Phrase("Empresa: ", fuenteNormalDestacado));
             datosCliente.add(new Phrase(cli.getCompany() + "\n", fuenteNormal));
         }
 
