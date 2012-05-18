@@ -53,17 +53,17 @@
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
 
-
+                    <% if (cliente != null && (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral())) {
+                            boolean empresa = false;
+                            if (cliente.getCompany() != null) {
+                                empresa = true;
+                            }
+                    %>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Facturación Cliente</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        <% if (cliente != null && (cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral())) {
-                                boolean empresa = false;
-                                if (cliente.getCompany() != null) {
-                                    empresa = true;
-                                }
-                        %>
+
                         <h2>Informaci&oacute;n General del Cliente</h2>
                         <ul>
 
@@ -80,12 +80,12 @@
                             <li><b>Edad: </b><%= cliente.getAge()%></li>
 
                         </ul>
+                    </div>
                         <%
                             HashMap<String, Incidencia> incSinFacturarCliente = persistence.getIncidenciasClienteSinFacturar(cliente);
                             HashMap<String, Alquiler> alqSinFacturarCliente = persistence.getAlquileresClienteSinFacturar(cliente);
                             if (alqSinFacturarCliente != null || incSinFacturarCliente != null) {
-                        %>
-                    </div>
+                        %>   
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Personalización de factura</h1>
@@ -126,7 +126,7 @@
                                 <% for (Incidencia inc : incSinFacturarCliente.values()) {%>
                                 <tr>
                                     <td><input type="checkbox" name="incidencia" value="<%= inc.getCodIncidencia()%>" /></td>
-                                    <td><b><%= inc.getTipoIncidencia().getNombre()%>: </b><%= inc.getObservaciones() %></td>
+                                    <td><b><%= inc.getTipoIncidencia().getNombre()%>: </b><%= inc.getObservaciones()%></td>
                                     <td><%= Tools.printDate(inc.getFecha())%></td>
                                     <td><%= Tools.printBigDecimal(inc.getPrecio())%> €</td>
                                 </tr>
@@ -145,24 +145,24 @@
                             <input name="genFact" type="submit" value="Generar Factura" />
                         </form>
                     </div>
-                        <% }
+                    <% }
                         } else if (cliente != null && !cliente.getCodSucursal().equals(emplLogedIn.getCodSucursal())) {%>
-                        <!-- Gradiente color dentro de la columna principal -->
-                        <div class="gradient">
-                            <blockquote class="exclamation">
-                                <p>No puede generar un factura de este cliente, no pertenece a esta sucursal</p>
-                            </blockquote>
-                        </div>
-                        <!-- FIN BLOQUE GRADIENTE -->
-                        <% } else {%>
-                        <!-- Gradiente color dentro de la columna principal -->
-                        <div class="gradient">
-                            <blockquote class="exclamation" />
-                                <p>El cliente seleccionada para la generación de factura no ha sido encontrado</p>
-                            </blockquote>
-                        </div>
-                        <!-- FIN BLOQUE GRADIENTE -->
-                        <% }%>
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <blockquote class="exclamation">
+                            <p>No puede generar un factura de este cliente, no pertenece a esta sucursal</p>
+                        </blockquote>
+                    </div>
+                    <!-- FIN BLOQUE GRADIENTE -->
+                    <% } else {%>
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <blockquote class="exclamation" />
+                        <p>El cliente seleccionada para la generación de factura no ha sido encontrado</p>
+                        </blockquote>
+                    </div>
+                    <!-- FIN BLOQUE GRADIENTE -->
+                    <% }%>
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
 

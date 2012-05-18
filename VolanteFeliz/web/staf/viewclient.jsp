@@ -13,15 +13,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
-    PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-    Cliente cli = persistence.getClient(request.getParameter("cli"));
-    Sucursal suc = persistence.getSucursal(cli.getCodSucursal());
-
     if (!validateForm(request)) {
         response.sendError(404);
         return;
     }
+    PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+    Cliente cli = persistence.getClient(request.getParameter("cli"));
+    Sucursal suc = persistence.getSucursal(cli.getCodSucursal());
 %>
 <html>
     <head>
