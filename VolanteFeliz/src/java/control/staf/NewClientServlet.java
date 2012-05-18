@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cliente;
 import model.Empleado;
+import model.Sucursal;
 import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
@@ -59,11 +60,17 @@ public class NewClientServlet extends HttpServlet {
                 String codCliente = Tools.generaUUID();
                 Cliente client = new Cliente(codCliente, nombre, email, dni, address, tlf, company, codSucursal, edad, true);
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
-                boolean ok = persistence.addClient(client);
+                Sucursal suc = persistence.getSucursal(codSucursal);
                 request.setAttribute("resultados", "Resultados de la operación");
+                if (suc == null){
+                    Tools.anadirMensaje(request, "No se ha encontrado la sucursal que se desea asignar al cliente", 'e');
+                    request.getRequestDispatcher("/staf/newclient.jsp").forward(request, response);
+                    return;
+                }
+                boolean ok = persistence.addClient(client);
                 if (ok) {
                     Tools.anadirMensaje(request, "El cliente ha sido dado de alta correctamente", 'o');
-                    if (this.sendMail(request, client)){
+                    if (this.sendMail(request, client, suc)){
                         Tools.anadirMensaje(request, "Email de registro enviado correctamente", 'o');
                     }else{
                         Tools.anadirMensaje(request, "Ocurrió un error al mandar email de registro al cliente", 'w');
@@ -107,11 +114,28 @@ public class NewClientServlet extends HttpServlet {
         return false;
     }
     
-    private boolean sendMail (HttpServletRequest request, Cliente client){
-        String contenido = Tools.leerArchivoClassPath("/plantillaRegistro.html");
+    private boolean sendMail (HttpServletRequest request, Cliente client, Sucursal suc){
+        String contenido = Tools.leerArchivoClassPath("/plantillaRegistroCliente.html");
         if (contenido == null){
             return false;
         }
+        contenido.replace("&NAME_CLI&", client.getName());
+        contenido.replace("&DNI_CLI&", client.getDni());
+        contenido.replace("&DIR_CLI&", client.getAddress());
+        contenido.replace("&TEL_CLI&", client.getTelephone());
+        contenido.replace("&MAIL_CLI&", client.getEmail());
+        if (client.getCompany() == null){
+            contenido.replace("&COMPANY_CLI&", "Cliente Particular");
+        }else{
+            contenido.replace("&COMPANY_CLI&", client.getCompany());
+        }
+        contenido.replace("&AGE_CLI&", Integer.toString(client.getAge()));
+        
+        contenido.replace("&NAME_SUC&", suc.getNombre());
+        contenido.replace("&DIR_SUC&", suc.getDir());
+        contenido.replace("&TEL_SUC&", suc.getTelefono());
+        contenido.replace("&FAX_SUC&", suc.getFax());
+        
         return Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido, null);
     }
 }
