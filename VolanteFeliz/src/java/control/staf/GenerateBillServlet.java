@@ -138,32 +138,32 @@ public class GenerateBillServlet extends HttpServlet {
         if (contenido == null) {
             return false;
         }
-        contenido.replace("&NAME_CLI&", factura.getCliente().getName());
-        contenido.replace("&DNI_CLI&", factura.getCliente().getDni());
-        contenido.replace("&DIR_CLI&", factura.getCliente().getAddress());
-        contenido.replace("&TEL_CLI&", factura.getCliente().getTelephone());
-        contenido.replace("&MAIL_CLI&", factura.getCliente().getEmail());
+        contenido = contenido.replace("&NAME_CLI&", factura.getCliente().getName());
+        contenido = contenido.replace("&DNI_CLI&", factura.getCliente().getDni());
+        contenido = contenido.replace("&DIR_CLI&", factura.getCliente().getAddress());
+        contenido = contenido.replace("&TEL_CLI&", factura.getCliente().getTelephone());
+        contenido = contenido.replace("&MAIL_CLI&", factura.getCliente().getEmail());
         if (factura.getCliente().getCompany() == null){
-            contenido.replace("&COMPANY_CLI&", "Cliente Particular");
+            contenido = contenido.replace("&COMPANY_CLI&", "Cliente Particular");
         }else{
-            contenido.replace("&COMPANY_CLI&", factura.getCliente().getCompany());
+            contenido = contenido.replace("&COMPANY_CLI&", factura.getCliente().getCompany());
         }
-        contenido.replace("&AGE_CLI&", Integer.toString(factura.getCliente().getAge()));
+        contenido = contenido.replace("&AGE_CLI&", Integer.toString(factura.getCliente().getAge()));
         
-        contenido.replace("&NAME_SUC&", suc.getNombre());
-        contenido.replace("&DIR_SUC&", suc.getDir());
-        contenido.replace("&TEL_SUC&", suc.getTelefono());
-        contenido.replace("&FAX_SUC&", suc.getFax());
+        contenido = contenido.replace("&NAME_SUC&", suc.getNombre());
+        contenido = contenido.replace("&DIR_SUC&", suc.getDir());
+        contenido = contenido.replace("&TEL_SUC&", suc.getTelefono());
+        contenido = contenido.replace("&FAX_SUC&", suc.getFax());
         
-        contenido.replace("&COD_FAC&", factura.getCodFactura());
-        contenido.replace("&IMPORTENOIVA_FAC&", Tools.printBigDecimal(factura.getImporteSinIVA()) + " €");
-        contenido.replace("&IVA_FAC&", Integer.toString(factura.getIVA()) + " %");
-        contenido.replace("&IMPORTE_FAC&", Tools.printBigDecimal(factura.getImporte()) + " €");
-        contenido.replace("&FECHAEMISION_FAC&", Tools.printDate(factura.getFechaEmision()));
+        contenido = contenido.replace("&COD_FAC&", factura.getCodFactura());
+        contenido = contenido.replace("&IMPORTENOIVA_FAC&", Tools.printBigDecimal(factura.getImporteSinIVA()) + " €");
+        contenido = contenido.replace("&IVA_FAC&", Integer.toString(factura.getIVA()) + " %");
+        contenido = contenido.replace("&IMPORTE_FAC&", Tools.printBigDecimal(factura.getImporte()) + " €");
+        contenido = contenido.replace("&FECHAEMISION_FAC&", Tools.printDate(factura.getFechaEmision()));
         if (factura.isPagado()){
-            contenido.replace("&ESTADO_FAC&", "Pagada");
+            contenido = contenido.replace("&ESTADO_FAC&", "Pagada");
         }else{
-            contenido.replace("&ESTADO_FAC&", "Pendiente de pago");
+            contenido = contenido.replace("&ESTADO_FAC&", "Pendiente de pago");
         }
         
         HashMap<String, String> adjuntos = new HashMap<String, String>();

@@ -119,22 +119,22 @@ public class NewClientServlet extends HttpServlet {
         if (contenido == null){
             return false;
         }
-        contenido.replace("&NAME_CLI&", client.getName());
-        contenido.replace("&DNI_CLI&", client.getDni());
-        contenido.replace("&DIR_CLI&", client.getAddress());
-        contenido.replace("&TEL_CLI&", client.getTelephone());
-        contenido.replace("&MAIL_CLI&", client.getEmail());
+        contenido = contenido.replace("&NAME_CLI&", client.getName());
+        contenido = contenido.replace("&DNI_CLI&", client.getDni());
+        contenido = contenido.replace("&DIR_CLI&", client.getAddress());
+        contenido = contenido.replace("&TEL_CLI&", client.getTelephone());
+        contenido = contenido.replace("&MAIL_CLI&", client.getEmail());
         if (client.getCompany() == null){
-            contenido.replace("&COMPANY_CLI&", "Cliente Particular");
+            contenido = contenido.replace("&COMPANY_CLI&", "Cliente Particular");
         }else{
-            contenido.replace("&COMPANY_CLI&", client.getCompany());
+            contenido = contenido.replace("&COMPANY_CLI&", client.getCompany());
         }
-        contenido.replace("&AGE_CLI&", Integer.toString(client.getAge()));
+        contenido = contenido.replace("&AGE_CLI&", Integer.toString(client.getAge()));
         
-        contenido.replace("&NAME_SUC&", suc.getNombre());
-        contenido.replace("&DIR_SUC&", suc.getDir());
-        contenido.replace("&TEL_SUC&", suc.getTelefono());
-        contenido.replace("&FAX_SUC&", suc.getFax());
+        contenido = contenido.replace("&NAME_SUC&", suc.getNombre());
+        contenido = contenido.replace("&DIR_SUC&", suc.getDir());
+        contenido = contenido.replace("&TEL_SUC&", suc.getTelefono());
+        contenido = contenido.replace("&FAX_SUC&", suc.getFax());
         
         return Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido, null);
     }
