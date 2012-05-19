@@ -79,7 +79,7 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                             <% } %>
                         </ul>
                         <h2>Detalles de la factura completa</h2>
-                        <img src="/images/icons/pdf.png" alt="pdf"/><a title="Ver factura completa" target="_blank" href="/staf/billFolder/<%= bill.getCodFactura() %>.pdf">Ver Factura completa en PDF</a>
+                        <img src="/images/icons/pdf.png" alt="pdf"/><a title="Ver factura completa" href="/staf/billFolder/<%= bill.getCodFactura() %>.pdf">Ver Factura completa en PDF</a>
                         <% }else if(bill != null && !bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()){ %>
                         <blockquote class="exclamation">
                             <p>
