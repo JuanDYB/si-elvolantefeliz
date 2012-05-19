@@ -1,7 +1,6 @@
 package model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -35,7 +34,7 @@ public class Factura {
         this.fechaPago = fechaPago;
         this.pagado = pagado;
     }
-
+    
     public int getIVA() {
         return IVA;
     }

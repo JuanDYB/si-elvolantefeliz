@@ -257,6 +257,11 @@ table {
     margin:auto;
 }
 
+table img{
+    border:0px;
+    width: 25px;
+}
+
 table a img{
     border:0px;
     width:25px;

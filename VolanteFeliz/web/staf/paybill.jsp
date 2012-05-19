@@ -54,6 +54,7 @@
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Detalles de la factura</h1>
+                        <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Detalles generales</h2>
                         <ul>
                             <li><b>Codigo Factura: </b><%= bill.getCodFactura()%></li>
@@ -85,6 +86,7 @@
                                 <option value="cash">Efectivo</option>
                                 <option value="check">Talon bancario</option>
                             </select></p>
+                            <input type="hidden" name="bill" value="<%= bill.getCodFactura() %>" />
                             <p><input name="pay" type="submit" value="Confirmar pago" /></p>
                         </form>
                     </div>
@@ -99,7 +101,6 @@
                         </blockquote>
                     </div>
                     <% }%>
-                </div>
                 <!-- FIN BLOQUE GRADIENTE -->
                 <% } else if (bill != null && !bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {%>
                 <!-- Gradiente color dentro de la columna principal -->
