@@ -79,6 +79,7 @@ public class NewClientServlet extends HttpServlet {
                     return;
                 } else {
                     Tools.anadirMensaje(request, "Ha ocurrido un error al dar de alta el nuevo cliente", 'e');
+                    Tools.anadirMensaje(request, "Es posible que el cliente ya exista o el email este ya usado", 'e');
                 }
             } catch (IntrusionException ex) {
                 request.setAttribute("resultados", "Detectada una intrusión");

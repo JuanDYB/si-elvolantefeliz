@@ -64,7 +64,7 @@ public class PayBillServlet extends HttpServlet {
                     if (persistence.pagarFactura(codFactura, fechaActual, formaPago)) {
                         request.setAttribute("resultados", "Factura actualizada");
                         Tools.anadirMensaje(request, "La factura ha sido actualizada correctamente con el pago realizado", 'o');
-                        if (this.sendMail(request, facturaSinPagar, suc)){
+                        if (this.sendMail(request, facturaSinPagar, suc, formaPago, fechaActual)){
                             Tools.anadirMensaje(request, "Se ha enviado correctamente la confirmación de pago al cliente", 'o');
                         }else{
                             Tools.anadirMensaje(request, "Ha ocurrido un error al enviar al cliente la confirmación de pago", 'w');
@@ -107,7 +107,7 @@ public class PayBillServlet extends HttpServlet {
         return false;
     }
     
-    private boolean sendMail(HttpServletRequest request, Factura factura, Sucursal suc) {
+    private boolean sendMail(HttpServletRequest request, Factura factura, Sucursal suc, String formaPago, Date fechaActual) {
         String contenido = Tools.leerArchivoClassPath("/plantillaPago.html");
         if (contenido == null) {
             return false;
@@ -135,12 +135,12 @@ public class PayBillServlet extends HttpServlet {
         contenido = contenido.replace("&IMPORTE_FAC&", Tools.printBigDecimal(factura.getImporte()) + " €");
         contenido = contenido.replace("&FECHAEMISION_FAC&", Tools.printDate(factura.getFechaEmision()));
         
-        contenido = contenido.replace("&PAY_DATE&", Tools.printDate(factura.getFechaPago()));
-        contenido = contenido.replace("&PAY_WAY&", factura.getFormaPago());
+        contenido = contenido.replace("&PAY_DATE&", Tools.printDate(fechaActual));
+        contenido = contenido.replace("&PAY_WAY&", formaPago);
         
         HashMap<String, String> adjuntos = new HashMap<String, String>();
         adjuntos.put(request.getServletContext().getRealPath("/staf/billFolder/" + factura.getCodFactura() + ".pdf"), "Factura_" + factura.getCodFactura() + ".pdf");
-        return Tools.emailSend(request, "El Volante Feliz: Factura", factura.getCliente().getEmail(), contenido, adjuntos);
+        return Tools.emailSend(request, "El Volante Feliz: Pago recibido", factura.getCliente().getEmail(), contenido, adjuntos);
     }
 
     @Override
