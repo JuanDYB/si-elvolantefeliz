@@ -44,7 +44,7 @@ public interface PersistenceInterface {
     
     public Factura getFactura (String codFactura, Connection conexionExterna);
     
-    public HashMap <String, Incidencia> getIncidenciasAlquiler(String codAlquiler);
+    public HashMap <String, Incidencia> getIncidencias(String campo, String valor);
     
     public HashMap <String, Cliente> getClients (String campo, String valor);
     

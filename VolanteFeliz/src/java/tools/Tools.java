@@ -189,6 +189,11 @@ public class Tools {
         SimpleDateFormat formatedor = new SimpleDateFormat("dd '-' MMM '-' yyyy", Tools.getLocale());
         return formatedor.format(fecha);
     }
+    
+    public static int getMonthDate (Date fecha){
+        SimpleDateFormat formatedor = new SimpleDateFormat("MM", Tools.getLocale());
+        return Integer.parseInt(formatedor.format(fecha));
+    }
 
     public static String roundDouble(double input) {
         NumberFormat format = DecimalFormat.getNumberInstance();
