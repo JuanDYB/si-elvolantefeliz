@@ -74,7 +74,7 @@
                             <li><b>Pagado: </b>Factura pendiente de pago</li>
                         </ul>
                         <h2>Detalles de la factura completa</h2>
-                        <img src="/images/icons/pdf.png" alt="pdf"/><a title="Ver factura completa" target="_blank" href="/staf/billFolder/<%= bill.getCodFactura()%>.pdf">Ver Factura completa en PDF</a>
+                        <img src="/images/icons/pdf.png" alt="pdf"/><a title="Ver factura completa" href="/staf/billFolder/<%= bill.getCodFactura()%>.pdf">Ver Factura completa en PDF</a>
                     </div>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">

@@ -64,6 +64,11 @@ public class PayBillServlet extends HttpServlet {
                     if (persistence.pagarFactura(codFactura, fechaActual, formaPago)) {
                         request.setAttribute("resultados", "Factura actualizada");
                         Tools.anadirMensaje(request, "La factura ha sido actualizada correctamente con el pago realizado", 'o');
+                        if (this.sendMail(request, facturaSinPagar, suc)){
+                            Tools.anadirMensaje(request, "Se ha enviado correctamente la confirmación de pago al cliente", 'o');
+                        }else{
+                            Tools.anadirMensaje(request, "Ha ocurrido un error al enviar al cliente la confirmación de pago", 'w');
+                        }
                         request.getRequestDispatcher("/staf/viewbill.jsp?bill=" + codFactura).forward(request, response);
                     } else {
                         request.setAttribute("resultados", "Error actualizando factura");
@@ -100,6 +105,42 @@ public class PayBillServlet extends HttpServlet {
             }
         }
         return false;
+    }
+    
+    private boolean sendMail(HttpServletRequest request, Factura factura, Sucursal suc) {
+        String contenido = Tools.leerArchivoClassPath("/plantillaPago.html");
+        if (contenido == null) {
+            return false;
+        }
+        contenido = contenido.replace("&NAME_CLI&", factura.getCliente().getName());
+        contenido = contenido.replace("&DNI_CLI&", factura.getCliente().getDni());
+        contenido = contenido.replace("&DIR_CLI&", factura.getCliente().getAddress());
+        contenido = contenido.replace("&TEL_CLI&", factura.getCliente().getTelephone());
+        contenido = contenido.replace("&MAIL_CLI&", factura.getCliente().getEmail());
+        if (factura.getCliente().getCompany() == null){
+            contenido = contenido.replace("&COMPANY_CLI&", "Cliente Particular");
+        }else{
+            contenido = contenido.replace("&COMPANY_CLI&", factura.getCliente().getCompany());
+        }
+        contenido = contenido.replace("&AGE_CLI&", Integer.toString(factura.getCliente().getAge()));
+        
+        contenido = contenido.replace("&NAME_SUC&", suc.getNombre());
+        contenido = contenido.replace("&DIR_SUC&", suc.getDir());
+        contenido = contenido.replace("&TEL_SUC&", suc.getTelefono());
+        contenido = contenido.replace("&FAX_SUC&", suc.getFax());
+        
+        contenido = contenido.replace("&COD_FAC&", factura.getCodFactura());
+        contenido = contenido.replace("&IMPORTENOIVA_FAC&", Tools.printBigDecimal(factura.getImporteSinIVA()) + " €");
+        contenido = contenido.replace("&IVA_FAC&", Integer.toString(factura.getIVA()) + " %");
+        contenido = contenido.replace("&IMPORTE_FAC&", Tools.printBigDecimal(factura.getImporte()) + " €");
+        contenido = contenido.replace("&FECHAEMISION_FAC&", Tools.printDate(factura.getFechaEmision()));
+        
+        contenido = contenido.replace("&PAY_DATE&", Tools.printDate(factura.getFechaPago()));
+        contenido = contenido.replace("&PAY_WAY&", factura.getFormaPago());
+        
+        HashMap<String, String> adjuntos = new HashMap<String, String>();
+        adjuntos.put(request.getServletContext().getRealPath("/staf/billFolder/" + factura.getCodFactura() + ".pdf"), "Factura_" + factura.getCodFactura() + ".pdf");
+        return Tools.emailSend(request, "El Volante Feliz: Factura", factura.getCliente().getEmail(), contenido, adjuntos);
     }
 
     @Override

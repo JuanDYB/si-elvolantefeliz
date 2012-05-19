@@ -132,10 +132,10 @@
     </resource-ref>
     <error-page>
         <error-code>404</error-code>
-        <location>/WEB-INF/paginasError/error404.jsp</location>
+        <location>/WEB-INF/errorPage/error404.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/WEB-INF/paginasError/error500.jsp</location>
+        <location>/WEB-INF/errorPage/error500.jsp</location>
     </error-page>
 </web-app>
