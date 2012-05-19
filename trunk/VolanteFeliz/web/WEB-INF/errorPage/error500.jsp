@@ -35,8 +35,6 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
 
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
-
-
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Error 500 - Error interno</h1>
@@ -58,7 +56,7 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     </body>
 </html>
 
-<%! String menuInicio = "";%>
+<%! String menuInicio = "class=\"here\"";%>
 <%! String menuLogin = "";%>
 <%! String menuPreferencias = "";%>
 <%! String menuAbout = "";%>

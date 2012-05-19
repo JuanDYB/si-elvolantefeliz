@@ -58,7 +58,7 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     </body>
 </html>
 
-<%! String menuInicio = "";%>
+<%! String menuInicio = "class=\"here\"";%>
 <%! String menuLogin = "";%>
 <%! String menuPreferencias = "";%>
 <%! String menuAbout = "";%>
