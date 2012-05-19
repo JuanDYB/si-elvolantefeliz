@@ -1,5 +1,6 @@
 package tools;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -250,5 +251,10 @@ public class Tools {
         } else {
             return mailConfig.sendEmail(mensaje, mailSession);
         }
+    }
+    
+    public static boolean existeArchivo (String path){
+        File file = new File (path);
+        return file.exists();
     }
 }

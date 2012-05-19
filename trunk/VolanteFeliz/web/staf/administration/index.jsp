@@ -44,21 +44,13 @@
                     <div class="gradient">
                         <h1>El Volante Feliz - Zona de administraci&oacute;n</h1>
                         <h2>Informaci&oacute;n General de la sucursal</h2>
-                        <% if (suc != null) {%>
                         <ul>
                             <li><b>Sucursal: </b><%= suc.getNombre()%></li>
                             <li><b>Nombre: </b><%= suc.getDir() %></li>
                             <li><b>Teléfono: </b><%= suc.getTelefono() %></li>
                             <li><b>Fax: </b><%= suc.getFax() %></li>
                             <li><b>Direcci&oacute;n: </b><%= suc.getDir() %></li>
-                        </ul>
-                        <% } else {%>
-                        <blockquote class="stop">
-                            <p>
-                                Ha ocurrido un error obteniendo la sucursal al que pertenece el empleado
-                            </p>
-                        </blockquote>
-                        <% }%>
+                        </ul>           
                         <h2>Informaci&oacute;n General del Empleado</h2>
                         <ul>
                             <li><b>Nombre: </b><%= emplLogedIn.getName() %></li>
