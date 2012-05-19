@@ -44,33 +44,27 @@
                     <div class="gradient">
                         <h1>El Volante Feliz - Zona de Empleados</h1>
                         <h2>Informaci&oacute;n General de la sucursal</h2>
-                        <% if (suc != null) {%>
+
                         <ul>
                             <li><b>Sucursal: </b><%= suc.getNombre()%></li>
-                            <li><b>Nombre: </b><%= suc.getDir() %></li>
-                            <li><b>Teléfono: </b><%= suc.getTelefono() %></li>
-                            <li><b>Fax: </b><%= suc.getFax() %></li>
-                            <li><b>Direcci&oacute;n: </b><%= suc.getDir() %></li>
+                            <li><b>Nombre: </b><%= suc.getDir()%></li>
+                            <li><b>Teléfono: </b><%= suc.getTelefono()%></li>
+                            <li><b>Fax: </b><%= suc.getFax()%></li>
+                            <li><b>Direcci&oacute;n: </b><%= suc.getDir()%></li>
                         </ul>
-                        <% } else {%>
-                        <blockquote class="stop">
-                            <p>
-                                Ha ocurrido un error obteniendo la sucursal al que pertenece el empleado
-                            </p>
-                        </blockquote>
-                        <% }%>
+
                         <h2>Informaci&oacute;n General del Empleado</h2>
                         <ul>
-                            <li><b>Nombre: </b><%= emplLogedIn.getName() %></li>
-                            <li><b>Nombre de Usuario: </b><%= emplLogedIn.getUserName() %></li>
-                            <li><b>DNI: </b><%= emplLogedIn.getDni() %></li>
-                            <li><b>Dirección: </b><%= emplLogedIn.getAddress() %></li>
-                            <li><b>Tel&eacute;fono: </b><%= emplLogedIn.getTelephone() %></li>
-                            <% if (emplLogedIn.getPermisos() == 'a'){ %>
+                            <li><b>Nombre: </b><%= emplLogedIn.getName()%></li>
+                            <li><b>Nombre de Usuario: </b><%= emplLogedIn.getUserName()%></li>
+                            <li><b>DNI: </b><%= emplLogedIn.getDni()%></li>
+                            <li><b>Dirección: </b><%= emplLogedIn.getAddress()%></li>
+                            <li><b>Tel&eacute;fono: </b><%= emplLogedIn.getTelephone()%></li>
+                            <% if (emplLogedIn.getPermisos() == 'a') {%>
                             <li><b>Categoría </b>Administrador</li>
-                            <% } else if (emplLogedIn.getPermisos() == 'e'){ %>
+                            <% } else if (emplLogedIn.getPermisos() == 'e') {%>
                             <li><b>Categoría: </b>Empleado</li>
-                            <% } %>
+                            <% }%>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->

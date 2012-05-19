@@ -59,28 +59,22 @@ public class PayBillServlet extends HttpServlet {
             if (facturaSinPagar != null) {
                 Empleado emplSesion = (Empleado) request.getSession().getAttribute("empleado");
                 Sucursal suc = persistence.getSucursal(emplSesion.getCodSucursal());
-                if (suc != null){
-                    if (emplSesion.getCodSucursal().equals(facturaSinPagar.getCliente().getCodSucursal()) || suc.isCentral()) {
-                        Date fechaActual = Tools.getDate();
-                        if (persistence.pagarFactura(codFactura, fechaActual, formaPago)) {
-                            request.setAttribute("resultados", "Factura actualizada");
-                            Tools.anadirMensaje(request, "La factura ha sido actualizada correctamente con el pago realizado", 'o');
-                            request.getRequestDispatcher("/staf/viewbill.jsp?bill=" + codFactura).forward(request, response);
-                        } else {
-                            request.setAttribute("resultados", "Error actualizando factura");
-                            Tools.anadirMensaje(request, "Ha ocurrido un error actualizando la factura", 'e');
-                            request.getRequestDispatcher("/staf/paybill.jsp?bill=" + codFactura).forward(request, response);
-                        }
-                        return;
+                if (emplSesion.getCodSucursal().equals(facturaSinPagar.getCliente().getCodSucursal()) || suc.isCentral()) {
+                    Date fechaActual = Tools.getDate();
+                    if (persistence.pagarFactura(codFactura, fechaActual, formaPago)) {
+                        request.setAttribute("resultados", "Factura actualizada");
+                        Tools.anadirMensaje(request, "La factura ha sido actualizada correctamente con el pago realizado", 'o');
+                        request.getRequestDispatcher("/staf/viewbill.jsp?bill=" + codFactura).forward(request, response);
                     } else {
-                        request.setAttribute("resultados", "Permisos insuficientes");
-                        Tools.anadirMensaje(request, "No se pudo actualizar la factura, no pertenece a la sucursal de la factura y no esta en una sucursal central", 'w');
+                        request.setAttribute("resultados", "Error actualizando factura");
+                        Tools.anadirMensaje(request, "Ha ocurrido un error actualizando la factura", 'e');
+                        request.getRequestDispatcher("/staf/paybill.jsp?bill=" + codFactura).forward(request, response);
                     }
+                    return;
                 } else {
-                    request.setAttribute("resultados", "Error obteniendo sucursal");
-                    Tools.anadirMensaje(request, "No se ha encontrado la sucursal actual, no se puede completar la operacion", 'e');
+                    request.setAttribute("resultados", "Permisos insuficientes");
+                    Tools.anadirMensaje(request, "No se pudo actualizar la factura, no pertenece a la sucursal de la factura y no esta en una sucursal central", 'w');
                 }
-
             } else {
                 request.setAttribute("resultados", "Factura no encontrada");
                 Tools.anadirMensaje(request, "No se ha encontrado la factura que desea pagar", 'e');

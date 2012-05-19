@@ -46,7 +46,9 @@ public class StafFilter implements Filter {
         if (sesion.getAttribute("login") != null && sesion.getAttribute("empleado") != null && (Boolean) sesion.getAttribute("login")) {
             Empleado empl = persistence.getEmployee("codEmpleado", ((Empleado) sesion.getAttribute("empleado")).getCodEmpleado());
             if (empl != null && (empl.getPermisos() == 'a' || empl.getPermisos() == 'e')) {
-                return true;
+                if (persistence.getSucursal(empl.getCodSucursal()) != null){
+                    return true;
+                }
             }
         }
         return false;

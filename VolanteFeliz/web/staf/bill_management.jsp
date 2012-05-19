@@ -12,10 +12,10 @@
 <%@page import="model.Empleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<% 
-Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+<%
+    Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+    PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 <html>
     <head>
@@ -52,60 +52,54 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                         <ul>
                             <li><a href="/staf/clients-pendingfacture.jsp?central=0">Nueva Factura</a></li>
                             <li><a href="/staf/pending_paybill.jsp">Pagar Factura</a></li>
-                            <% if (suc.isCentral()){ %>
+                            <% if (suc.isCentral()) {%>
                             <li><b>Sucursal Central:</b> <a href="/staf/bill_management.jsp?all=1">Ver todas las facturas</a></li>
-                            <% } %>
+                            <% }%>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
+
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Facturas disponibles</h1>
-                        <%if (suc != null){ %>
+
                         <%
-                        HashMap <String, Factura> facturas;
-                        if (suc.isCentral() && request.getParameter("all") != null && request.getParameter("all").equals("1")){
-                            facturas = persistence.getFacturas ("1", "1", null);
-                        } else{
-                            facturas = persistence.getFacturas ("1", "1", emplLogedIn.getCodSucursal());
-                        }
-                        if (facturas != null){
+                            HashMap<String, Factura> facturas;
+                            if (suc.isCentral() && request.getParameter("all") != null && request.getParameter("all").equals("1")) {
+                                facturas = persistence.getFacturas("1", "1", null);
+                            } else {
+                                facturas = persistence.getFacturas("1", "1", emplLogedIn.getCodSucursal());
+                            }
+                            if (facturas != null) {
                         %>
                         <table>
                             <tr class="theader"><td>Cliente</td><td>Fecha</td><td>Importe</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                            <% for (Factura fact: facturas.values()){ %>
+                            <% for (Factura fact : facturas.values()) {%>
                             <tr>
-                                <td><%= fact.getCliente().getName() %></td>
-                                <td><%= Tools.printDate(fact.getFechaEmision()) %></td>
-                                <td><%= Tools.printBigDecimal(fact.getImporte()) %> €</td>
-                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura() %>">
+                                <td><%= fact.getCliente().getName()%></td>
+                                <td><%= Tools.printDate(fact.getFechaEmision())%></td>
+                                <td><%= Tools.printBigDecimal(fact.getImporte())%> €</td>
+                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura()%>">
                                         <img src="/images/icons/bill.png" alt="VerFactura"/>
                                     </a></td>
-                                <% if (fact.isPagado()){ %>
+                                    <% if (fact.isPagado()) {%>
                                 <td><img src="/images/icons/facPagada.png" alt="facPagada" title="Factura Pagada" /></td>
-                                <% } else{ %>
-                                <td><a title="Pagar Factura" href="/staf/paybill.jsp?bill=<%= fact.getCodFactura() %>">
-                                <img src="/images/icons/pay.png" alt="pagarFactura" />
-                            </a></td>
-                                <% }%>
+                                    <% } else {%>
+                                <td><a title="Pagar Factura" href="/staf/paybill.jsp?bill=<%= fact.getCodFactura()%>">
+                                        <img src="/images/icons/pay.png" alt="pagarFactura" />
+                                    </a></td>
+                                    <% }%>
                             </tr>
-                            <% } %>
+                            <% }%>
                         </table>
-                        <% } else{ %>
+                        <% } else {%>
                         <blockquote class="exclamation" >
                             <p>
                                 No se han encontrado facturas en el sistema
                             </p>
                         </blockquote>
-                        <% } %>
-                        <% } else{ %>
-                        <blockquote class="stop">
-                            <p>
-                                Ha ocurrido un error obteniendo la sucursal actual, no se puede completar la operación
-                            </p>
-                        </blockquote>
-                        <% } %>
+                        <% }%>
+
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

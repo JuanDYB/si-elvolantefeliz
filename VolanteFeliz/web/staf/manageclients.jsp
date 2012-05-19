@@ -50,9 +50,9 @@
                         <h2>Operaciones disponibles</h2>
                         <ul>
                             <li><a href="/staf/newclient.jsp">Dar de alta nuevo cliente</a></li>
-                            <% if (suc.isCentral()){ %>
+                            <% if (suc.isCentral()) {%>
                             <li><a href="/staf/manageclients.jsp?all=1">Mostrar todos los clientes</a></li>
-                            <% } %>
+                            <% }%>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
@@ -61,10 +61,9 @@
                     <div class="gradient">
                         <h1>Clientes disponibles</h1>
                         <% HashMap<String, Cliente> clientes = null;
-                        if (suc != null) {
-                            if (request.getParameter("all") != null && request.getParameter("all").equals("1") && suc.isCentral()){
+                            if (request.getParameter("all") != null && request.getParameter("all").equals("1") && suc.isCentral()) {
                                 clientes = persistence.getClients(null, null);
-                            }else{
+                            } else {
                                 clientes = persistence.getClients("codSucursal", suc.getCodSucursal());
                             }
                             if (clientes != null) {
@@ -76,22 +75,22 @@
 
                         <table>
                             <tr class="theader"><td>Nombre</td><td>DNI</td><td>Email</td><td>Empresa</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                           
-                            <% for (Cliente cli: clientes.values()){ %>
+
+                            <% for (Cliente cli : clientes.values()) {%>
                             <tr>
-                                <td><%= cli.getName() %></td>
-                                <td><%= cli.getDni() %></td>
-                                <td><%= cli.getEmail() %></td>
-                                <% if (cli.getCompany() == null){ %>
+                                <td><%= cli.getName()%></td>
+                                <td><%= cli.getDni()%></td>
+                                <td><%= cli.getEmail()%></td>
+                                <% if (cli.getCompany() == null) {%>
                                 <td>Cliente Particular</td>
-                                <% } else{ %>
-                                <td><%= cli.getCompany() %></td>
-                                <% } %>
-                                <td><a href="/staf/viewclient.jsp?cli=<%= cli.getCodCliente() %>"><img src="/images/icons/viewClient.png" alt="view" /></a></td>
-                                <td><a href="/staf/editclient.jsp?cli=<%= cli.getCodCliente() %>"><img src="/images/icons/editClient.png" alt="edit" /></td>
-                                <td><a href="/staf/delclient?cli=<%= cli.getCodCliente() %>"><img src="/images/icons/delete.png" alt="delete" /></td>
+                                <% } else {%>
+                                <td><%= cli.getCompany()%></td>
+                                <% }%>
+                                <td><a href="/staf/viewclient.jsp?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/viewClient.png" alt="view" /></a></td>
+                                <td><a href="/staf/editclient.jsp?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/editClient.png" alt="edit" /></td>
+                                <td><a href="/staf/delclient?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/delete.png" alt="delete" /></td>
                             </tr>
-                            <% } %>
+                            <% }%>
                         </table>
                         <% } else {%>
                         <blockquote class="exclamation">
@@ -100,13 +99,7 @@
                             </p>
                         </blockquote>
                         <% }%>
-                        <% } else {%>
-                        <blockquote class="stop">
-                            <p>
-                                Ocurrio un error al obtener la sucursal actual a la que está asignado el empleado activo
-                            </p>
-                        </blockquote>
-                        <% }%>
+
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
 
