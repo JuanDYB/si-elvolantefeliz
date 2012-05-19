@@ -446,15 +446,15 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public HashMap<String, Incidencia> getIncidenciasAlquiler(String codAlquiler) {
+    public HashMap<String, Incidencia> getIncidencias(String campo, String valor) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         HashMap<String, Incidencia> incidencias = new HashMap<String, Incidencia>();
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE codAlquiler=?");
-            select.setString(1, codAlquiler);
+            select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE " + campo + "=?");
+            select.setString(1, valor);
             rs = select.executeQuery();
             incidencias = new HashMap<String, Incidencia>();
             while (rs.next()) {
@@ -468,7 +468,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 }
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error obteniendo incidencias del alquiler: " + codAlquiler, ex);
+            logger.log(Level.SEVERE, "Error obteniendo incidencias", ex);
         } finally {
             cerrarResultSets(rs);
             cerrarConexionesYStatement(conexion, select);
@@ -756,8 +756,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             conexion = pool.getConnection();
             if (campo != null && valor != null) {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE " + campo + "=?");
-                select.setString(1, campo);
-                select.setString(2, valor);
+                select.setString(1, valor);
             } else {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler");
             }

@@ -48,12 +48,12 @@
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
 
-
+                    <% if (cli != null && (suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral())) {%>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Detalles Cliente</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        <% if (suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral()){ %>
+
                         <h2>Informaci&oacute;n General del Cliente</h2>
                         <ul>
 
@@ -62,28 +62,39 @@
                             <li><b>DNI: </b><%= cli.getDni()%></li>
                             <li><b>Dirección: </b><%= cli.getAddress()%></li>
                             <li><b>Tel&eacute;fono: </b><%= cli.getTelephone()%></li>
-                            <% if (cli.getCompany() == null){ %>
+                            <% if (cli.getCompany() == null) {%>
                             <li><b>Empresa: </b>Cliente Particular</li>
-                            <% } else{ %>
-                            <li><b>Empresa: </b><%= cli.getCompany() %></li>
-                            <% } %>
+                            <% } else {%>
+                            <li><b>Empresa: </b><%= cli.getCompany()%></li>
+                            <% }%>
                             <li><b>Edad: </b><%= cli.getAge()%></li>
 
                         </ul>
-                            <% } else{ %>
-                            <blockquote class="exclamation">
+                    </div>
+                            <div class="gradient">
+                                <h1>Acciones disponibles</h1>
+                                <ul>
+                                    <li><a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Ver elementos pendientes de facturar</a></li>
+                                    <li><a href="/staf/client_history.jsp?cli=<%= cli.getCodCliente() %>" >Ver historial del cliente</a></li>
+                                </ul>
+                            </div>
+                    <% } else if (cli != null && !suc.getCodSucursal().equals(cli.getCodSucursal()) && !suc.isCentral()) {%>
+                    <div class="gradient">
+                        <blockquote class="exclamation">
                             <p>
                                 No tiene permisos de ver los derechos de este cliente porque no pertenece a esta sucursal
                             </p>
                         </blockquote>
-                            <% } %>
-                        
                     </div>
+                    <% } else {%>
                     <div class="gradient">
-                        <a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Ver Elementos pendientes de facturar</a>
+                        <blockquote class="exclamation">
+                            <p>
+                                No se ha encontrado el cliente seleccionado
+                            </p>
+                        </blockquote>
                     </div>
-
-
+                    <% }%>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
