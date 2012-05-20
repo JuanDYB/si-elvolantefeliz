@@ -73,5 +73,7 @@ public interface PersistenceInterface {
     
     public boolean editClient (String codCliente, Cliente client);
     
-    public boolean deleteClient (String codCliente); //Terminar...
+    public boolean deleteClient (String codCliente); 
+    
+    public HashMap <String, Vehiculo> getVehiclesForRent (String codSucursal, String fechaInicio, String fechaFin);
 }

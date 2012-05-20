@@ -1151,6 +1151,39 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
+    /*SELECT ve.codVehiculo FROM Vehiculo ve, Alquiler alq 
+WHERE ve.codSucursal='7aa20ea5-5d92-4677-8129-d5bc267baa00' 
+AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM Alquiler) OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) 
+OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL 
+AND ((alq.FechaInicio>'2012/04/05' AND alq.FechaFin>'2012/04/05' AND alq.FechaInicio>'2012/04/19' AND alq.FechaFin>'2012/04/19') 
+OR (alq.FechaInicio<'2012/04/05' AND alq.FechaFin<'2012/04/05' AND alq.FechaInicio<'2012/04/19' AND alq.FechaFin<'2012/04/19'))))) 
+GROUP BY ve.codVehiculo
+     */
+    @Override
+    public HashMap <String, Vehiculo> getVehiclesForRent (String codSucursal, String fechaInicio, String fechaFin){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Vehiculo> vehiculos = new HashMap<String, Vehiculo>();
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("");
+            
+            
+            rs = select.executeQuery();
+            while (rs.next()){
+                Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("ve.codVehiculo"), conexion);
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Ocurrio un error obteniendo vehiculos disponibles para alquiler", ex);
+        }finally{
+            
+        }
+        if (vehiculos.isEmpty()){
+            return null;
+        }
+        return vehiculos;
+    }
 
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {
