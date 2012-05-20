@@ -58,6 +58,8 @@ public interface PersistenceInterface {
     
     public HashMap <String, Empleado> getEmpleados ();
     
+    public HashMap <String, Sucursal> getSucursales (boolean central);
+    
     public HashMap <String, Alquiler> getAlquileres (String campo, String valor);
     
     //Ha de ser una operación unitaria para evitar problemas de concurrencia (otro empleado factura 

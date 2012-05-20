@@ -1,6 +1,7 @@
 package persistence;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -745,6 +746,38 @@ public class PersistenceMySQL implements PersistenceInterface {
     public HashMap<String, Empleado> getEmpleados() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    @Override
+    public HashMap <String, Sucursal> getSucursales (boolean central){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Sucursal> sucursales = new HashMap<String, Sucursal>();
+        try {
+            conexion = pool.getConnection();
+            if (central) {
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Sucursal WHERE Central=?");
+                select.setBoolean(1, true);
+            } else {
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Sucursal");
+            }
+            rs = select.executeQuery();
+            while (rs.next()) {
+                Sucursal suc = new Sucursal(rs.getString("codSucursal"), rs.getString("Nombre"), rs.getString("Direccion")
+                        , rs.getString("Telefono"), rs.getString("Fax"), rs.getBoolean("Central"));
+                sucursales.put(suc.getCodSucursal(), suc);
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Ocurrio un error consultando las sucursales de la base de datos", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (sucursales.isEmpty()) {
+            return null;
+        }
+        return sucursales;
+    }
 
     @Override
     public HashMap<String, Alquiler> getAlquileres(String campo, String valor) {
@@ -761,7 +794,6 @@ public class PersistenceMySQL implements PersistenceInterface {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler");
             }
             rs = select.executeQuery();
-            alquileres = new HashMap<String, Alquiler>();
             while (rs.next()) {
                 String codAlquiler = rs.getString("codAlquiler");
                 Cliente cliAlquiler = this.getClient(rs.getString("codCliente"));
