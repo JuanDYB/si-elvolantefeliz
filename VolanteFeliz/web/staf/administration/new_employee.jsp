@@ -85,7 +85,7 @@
                             <p>
                                 <label>Sucursal</label>
                                 Debe seleccionar una sucursal a la que el nuevo empleado quedará asignado<br />
-                            <select name="suc">
+                            <select name="suc" class=":required :only_on_blur">
                                 <% for (Sucursal suc : sucursales.values()) {%>
                                 <option value="<%= suc.getCodSucursal()%>"><%= suc.getNombre()%></option>
                                 <% }%>
@@ -93,7 +93,7 @@
                             </p>
 
                             <p><label>Permisos de acceso</label>
-                                <select name="perm">
+                                <select name="perm" class=":required :only_on_blur">
                                     <option value="e">Empleado</option>
                                     <option value="a">Administrador</option>
                                 </select></p>

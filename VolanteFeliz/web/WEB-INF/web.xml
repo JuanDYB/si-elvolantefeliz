@@ -95,6 +95,10 @@
         <servlet-name>NewEmployeeServlet</servlet-name>
         <servlet-class>control.administration.NewEmployeeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NewRentStage1Servlet</servlet-name>
+        <servlet-class>control.staf.NewRentStage1Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -126,6 +130,10 @@
     <servlet-mapping>
         <servlet-name>NewEmployeeServlet</servlet-name>
         <url-pattern>/staf/administration/newempl</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewRentStage1Servlet</servlet-name>
+        <url-pattern>/staf/newrent_1</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
