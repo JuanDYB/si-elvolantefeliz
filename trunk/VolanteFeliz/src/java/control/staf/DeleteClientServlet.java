@@ -48,7 +48,7 @@ public class DeleteClientServlet extends HttpServlet {
                         request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                         return; 
                     }
-                    HashMap <String, Factura> facturasPendientes = persistence.getFacturasPendientesPago(cli);
+                    HashMap <String, Factura> facturasPendientes = persistence.getFacturasPendientesPago(cli.getCodCliente(), null);
                     if (facturasPendientes != null){
                         request.setAttribute("resultados", "Imposible borrar");
                         Tools.anadirMensaje(request, "El cliente seleccionado no se puede borra debido a que tiene facturas pendientes por abonar", 'w');

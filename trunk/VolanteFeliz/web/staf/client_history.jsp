@@ -31,11 +31,7 @@
 %>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
-        <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
-        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
-        
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
         <script type="text/javascript" src="/scripts/jquery-1.7.2.js"></script>
         <title>Historial de cliente</title>
     </head>

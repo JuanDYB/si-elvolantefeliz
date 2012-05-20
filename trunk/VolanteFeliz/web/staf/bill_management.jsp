@@ -19,10 +19,7 @@
 %>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
-        <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
-        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
         <title>Gestión de Facturas</title>
     </head>
     <body>
@@ -52,8 +49,10 @@
                         <ul>
                             <li><a href="/staf/clients-pendingfacture.jsp?central=0">Nueva Factura</a></li>
                             <li><a href="/staf/pending_paybill.jsp">Pagar Factura</a></li>
+                            <li><a href="/staf/pending_paybill.jsp" >Ver facturas pendientes de pago</a></li>
                             <% if (suc.isCentral()) {%>
-                            <li><b>Sucursal Central:</b> <a href="/staf/bill_management.jsp?all=1">Ver todas las facturas</a></li>
+                            <li><b>Sucursal Central: </b><a href="/staf/bill_management.jsp?all=1">Ver todas las facturas</a></li>
+                            <li><b>Sucursal Central: </b><a href="/staf/pending_paybill.jsp?all=1" ></a>Ver todas las facturas pendientes de pago</li>
                             <% }%>
                         </ul>
                     </div>
@@ -78,7 +77,7 @@
                             <tr>
                                 <td><%= fact.getCliente().getName()%></td>
                                 <td><%= Tools.printDate(fact.getFechaEmision())%></td>
-                                <td><%= Tools.printBigDecimal(fact.getImporte())%> €</td>
+                                <td><%= Tools.printBigDecimal(fact.getImporteSinIVA())%> €</td>
                                 <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura()%>">
                                         <img src="/images/icons/bill.png" alt="VerFactura"/>
                                     </a></td>
@@ -92,6 +91,7 @@
                             </tr>
                             <% }%>
                         </table>
+                        <p><b>NOTA: </b>Los importes se especifican sin el IVA incluido</p>
                         <% } else {%>
                         <blockquote class="exclamation" >
                             <p>
