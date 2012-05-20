@@ -743,12 +743,40 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public HashMap<String, Empleado> getEmpleados() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public HashMap<String, Empleado> getEmpleados(String campo, String valor) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Empleado> empleados = new HashMap<String, Empleado>();
+        try {
+            conexion = pool.getConnection();
+            if (campo == null && valor == null){
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Empleado");
+            }else{
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Empleado WHERE " + campo + "=?");
+                select.setString(1, valor);
+            }
+            rs = select.executeQuery();
+            while (rs.next()) {
+                Empleado empl = new Empleado(rs.getString("codEmpleado"), rs.getString("Nombre"), rs.getString("UserName"), 
+                        rs.getString("Pass"), rs.getString("DNI"), rs.getString("Telefono"), rs.getString("Direccion"), 
+                        rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
+                empleados.put (empl.getCodEmpleado(), empl);
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Ocurrio un error consultando los empleados de la base de datos", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (empleados.isEmpty()) {
+            return null;
+        }
+        return empleados;
     }
-    
+
     @Override
-    public HashMap <String, Sucursal> getSucursales (boolean central){
+    public HashMap<String, Sucursal> getSucursales(boolean central) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
@@ -763,8 +791,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             }
             rs = select.executeQuery();
             while (rs.next()) {
-                Sucursal suc = new Sucursal(rs.getString("codSucursal"), rs.getString("Nombre"), rs.getString("Direccion")
-                        , rs.getString("Telefono"), rs.getString("Fax"), rs.getBoolean("Central"));
+                Sucursal suc = new Sucursal(rs.getString("codSucursal"), rs.getString("Nombre"), rs.getString("Direccion"), rs.getString("Telefono"), rs.getString("Fax"), rs.getBoolean("Central"));
                 sucursales.put(suc.getCodSucursal(), suc);
             }
         } catch (SQLException ex) {
@@ -981,7 +1008,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "WHERE fac.codCliente=cli.codCliente AND cli.codSucursal=? AND Pagado=?");
                 select.setString(1, codSucursal);
                 select.setBoolean(2, false);
-            } else{
+            } else {
                 select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE AND Pagado=?");
                 select.setBoolean(1, false);
             }
