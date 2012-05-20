@@ -56,7 +56,7 @@ public interface PersistenceInterface {
     
     public HashMap <String, Incidencia> getIncidenciasClienteSinFacturar (Cliente cli);
     
-    public HashMap <String, Empleado> getEmpleados ();
+    public HashMap <String, Empleado> getEmpleados (String campo, String valor);
     
     public HashMap <String, Sucursal> getSucursales (boolean central);
     

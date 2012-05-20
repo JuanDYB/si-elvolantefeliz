@@ -42,6 +42,7 @@
             <ul>
                 <li><a href="/staf/administration/index.jsp" title="Inicio">Inicio</a></li>
                 <li><a href="/staf/administration/new_employee.jsp" title="Nuevo Empleado">Nuevo Empleado</a></li>
+                <li><a href="/staf/administration/manage_empl.jsp" title="Gestion empleados">Gestión de empleados</a></li>
             </ul>
         </li>
         <% } %>

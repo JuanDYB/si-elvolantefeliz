@@ -52,22 +52,26 @@
                         <p>
                             Puede usar el formulario que puede ver a continuación para dar de alta un nuevo empleado en el sistema
                         </p>
-                        <form name="newempl" method="POST" action="/staf/newempl">
+                        <form name="newempl" method="POST" action="/staf/administration/newempl">
                             <p>
                                 <label>Nombre</label>
                                 <input name="name" type="text" size="70" maxlength="200" class=":name :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Nombre de usuario</label>
-                                <input name="userName" type="text" size="70" maxlength="200" class=":user_name :required :only_on_blur" />
+                                <input name="userName" type="text" size="70" maxlength="50" class=":user_name :required :only_on_blur" />
+                            </p>
+                            <p>
+                                <label>DNI</label>
+                                <input name="dni" type="text" size="10" maxlength="9" class=":DNI :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Contraseña de acceso</label>
-                                <input name="pass" type="password" size="10" maxlength="9" class=":password :required :only_on_blur" />
+                                <input id="pass" name="pass" type="password" size="50" maxlength="50" class=":password :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Repita la contraseña de acceso</label>
-                                <input name="pass_rep" type="password" size="10" maxlength="9" class=":same_as;pass :required :only_on_blur" />
+                                <input name="pass_rep" type="password" size="50" maxlength="50" class=":same_as;pass :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Teléfono</label>
@@ -94,7 +98,7 @@
                                     <option value="a">Administrador</option>
                                 </select></p>
                             <p>
-                                <input name="send" type="submit" value="Confirmar Alta" />
+                                <input name="send" type="submit" value="Confirmar Alta Empleado" />
                             </p>
                         </form>
                         <% } else {%>
