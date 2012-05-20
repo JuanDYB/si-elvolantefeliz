@@ -12,12 +12,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="org.owasp.esapi.errors.ValidationException"%>
 <%@page import="tools.Tools"%>
+
 <!DOCTYPE html>
+
 <%
-Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
-boolean central = false;;
+boolean central = false;
 if (!this.validateEntry(request)){
     response.sendError(404);
 }else{
@@ -25,18 +24,15 @@ if (!this.validateEntry(request)){
         central = true;
     }
 }
+Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+
 %>
-<!DOCTYPE html>
+
 <html>
     <head>
-        <script type="text/javascript" src="/scripts/jquery-1.7.2.js"></script>
-        <script type="text/javascript" src="/scripts/vanadium.js"></script>
-        <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
-
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
-        <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
-        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
         <title>Clientes para facturar</title>
     </head>
     <body>

@@ -933,18 +933,23 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public HashMap<String, Factura> getFacturasPendientesPago(Cliente cli) {
+    public HashMap<String, Factura> getFacturasPendientesPago(String codCliente, String codSucursal) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         HashMap<String, Factura> facturas = new HashMap<String, Factura>();
         try {
             conexion = pool.getConnection();
-            if (cli != null) {
+            if (codCliente != null) {
                 select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE codCliente=? AND Pagado=?");
-                select.setString(1, cli.getCodCliente());
+                select.setString(1, codCliente);
                 select.setBoolean(2, false);
-            } else {
+            } else if (codCliente == null && codSucursal != null) {
+                select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura fac, " + nameBD + ".Cliente cli "
+                        + "WHERE fac.codCliente=cli.codCliente AND cli.codSucursal=? AND Pagado=?");
+                select.setString(1, codSucursal);
+                select.setBoolean(2, false);
+            } else{
                 select = conexion.prepareStatement("SELECT codFactura FROM " + nameBD + ".Factura WHERE AND Pagado=?");
                 select.setBoolean(1, false);
             }

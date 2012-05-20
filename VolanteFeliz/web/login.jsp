@@ -18,10 +18,7 @@
         <script type="text/javascript" src="/scripts/vanadium.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
 
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
-        <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
-        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
         <title>Login</title>
     </head>
     <body>

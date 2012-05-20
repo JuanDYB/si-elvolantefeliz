@@ -29,10 +29,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
-        <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
-        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
         <title>Facturacion cliente</title>
     </head>
     <body>

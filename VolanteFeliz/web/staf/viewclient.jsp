@@ -24,10 +24,7 @@
 %>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/html.css" media="screen, projection, tv " />
-        <link rel="stylesheet" type="text/css" href="/css/layout.css" media="screen, projection, tv" />
-        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
         <title>Detalles cliente</title>
     </head>
     <body>
@@ -74,8 +71,9 @@
                             <div class="gradient">
                                 <h1>Acciones disponibles</h1>
                                 <ul>
-                                    <li><a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Ver elementos pendientes de facturar</a></li>
-                                    <li><a href="/staf/client_history.jsp?cli=<%= cli.getCodCliente() %>" >Ver historial del cliente</a></li>
+                                    <li><a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Elementos pendientes de facturar</a></li>
+                                    <li><a href="/staf/pending_paybill.jsp?cli=<%= cli.getCodCliente()%>">Facturas pendientes de pago</a></li>
+                                    <li><a href="/staf/client_history.jsp?cli=<%= cli.getCodCliente() %>" >Historial completo del cliente</a></li>
                                 </ul>
                             </div>
                     <% } else if (cli != null && !suc.getCodSucursal().equals(cli.getCodSucursal()) && !suc.isCentral()) {%>
