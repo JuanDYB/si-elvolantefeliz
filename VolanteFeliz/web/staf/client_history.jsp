@@ -158,7 +158,7 @@
                             </tr>
                             <% } %>
                         </table>
-                        <p><b>NOTA: </b>El IVA aplicado en los precios es: <%= webConfig.getIVA() %> %</p>
+                        <p><b>NOTA: </b>El IVA aplicado en los precios es del <%= webConfig.getIVA() %> %</p>
                         <% } else{ %>
                         <blockquote class="exclamation">
                             <p>No se han encontrado facturas para el cliente actual</p>

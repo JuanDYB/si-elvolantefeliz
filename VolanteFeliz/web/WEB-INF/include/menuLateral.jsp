@@ -41,8 +41,8 @@
             Administraci&oacute;n
             <ul>
                 <li><a href="/staf/administration/index.jsp" title="Inicio">Inicio</a></li>
+                <li><a href="/staf/administration/new_employee.jsp" title="Nuevo Empleado">Nuevo Empleado</a></li>
             </ul>
-            <p>No se han implementado opciones de administrador</p>
         </li>
         <% } %>
         <% } %>
