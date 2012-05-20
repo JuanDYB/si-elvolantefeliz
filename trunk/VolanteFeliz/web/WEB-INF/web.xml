@@ -91,6 +91,10 @@
         <servlet-name>PayBillServlet</servlet-name>
         <servlet-class>control.staf.PayBillServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NewEmployeeServlet</servlet-name>
+        <servlet-class>control.administration.NewEmployeeServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -118,6 +122,10 @@
     <servlet-mapping>
         <servlet-name>PayBillServlet</servlet-name>
         <url-pattern>/staf/paybill</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewEmployeeServlet</servlet-name>
+        <url-pattern>/staf/administration/newempl</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
