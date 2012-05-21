@@ -1,16 +1,12 @@
 package control.staf;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cliente;
 import model.Empleado;
-import model.Sucursal;
-import model.Vehiculo;
 import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
@@ -20,7 +16,7 @@ import tools.Tools;
  *
  * @author Juan Díez-Yanguas Barber
  */
-public class NewRentStage1Servlet extends HttpServlet {
+public class NewRentStage2Servlet extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -52,41 +48,45 @@ public class NewRentStage1Servlet extends HttpServlet {
             throws ServletException, IOException {
         if (this.validateForm(request)) {
             try {
-                PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
-                Tools.validateUUID(request.getParameter("cliente"));
-                String codCliente = request.getParameter("cliente");
+                Tools.validateUUID(request.getParameter("cli"));
+                Tools.validateUUID(request.getParameter("vehiculo"));
+                String codVehiculo = request.getParameter("vehiculo");
+                String codCliente = request.getParameter("cli");
                 String fechaInicio = request.getParameter("fechainicio");
-                String fechaFin = request.getParameter("fechafin");
+                String fechafin = request.getParameter("fechafin");
+                String codTarifa = request.getParameter("tarifa");
+                PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Cliente cli = persistence.getClient(codCliente);
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 if (cli != null) {
                     if (cli.getCodSucursal().equals(empl.getCodSucursal())) {
-                        HashMap<String, Vehiculo> vehiculosDisponibles = persistence.getVehiclesForRent(cli.getCodSucursal(), fechaInicio, fechaFin, null, null);
-                        if (vehiculosDisponibles != null) {
-                            request.setAttribute("clientRent", cli);
-                            request.setAttribute("vehiclesRent", vehiculosDisponibles);
-                            request.setAttribute("fechaInicio", fechaInicio);
-                            request.setAttribute("fechaFin", fechaFin);
-                            request.getRequestDispatcher("/staf/newrent.jsp?st=2").forward(request, response);
+                        Boolean ok = persistence.newRent(empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechafin, codTarifa);
+                        if (ok == null) {
+                            request.setAttribute("resultados", "Vehículo no disponible");
+                            Tools.anadirMensaje(request, "El vehículo seleccionado ha dejado de estar disponible", 'w');
+                            request.getRequestDispatcher("/staf/manage_rent.jsp").forward(request, response);
                             return;
+                        } else if (ok) {
+                            request.setAttribute("resultados", "Alquiler añadido correctamente");
+                            Tools.anadirMensaje(request, "El alquiler ha sido dado de alta correctamente", 'o');
                         } else {
-                            request.setAttribute("resultados", "Vehiculos no disponibles");
-                            Tools.anadirMensaje(request, "No se han encontrado vehículos disponibles para las fechas seleccionadas", 'w');
+                            request.setAttribute("resultados", "Fallo de alta");
+                            Tools.anadirMensaje(request, "Se ha producido un error añadiendo el nuevo alquiler", 'e');
                         }
                     } else {
                         request.setAttribute("resultados", "No tiene permisos");
                         Tools.anadirMensaje(request, "No se puede escoger este cliente porque no pertenece a esta sucursal", 'w');
-
                     }
                 } else {
                     request.setAttribute("resultados", "Cliente no encontrado");
                     Tools.anadirMensaje(request, "El cliente seleccionado no ha sido encontrado", 'w');
                 }
+
             } catch (IntrusionException ex) {
                 request.setAttribute("resultados", "Intrusión detectada");
                 Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             } catch (ValidationException ex) {
-                request.setAttribute("resultados", "Validación fallida");
+                request.setAttribute("resultados", "Validación de parámetros fallida");
                 Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             }
         } else {
@@ -97,12 +97,11 @@ public class NewRentStage1Servlet extends HttpServlet {
     }
 
     private boolean validateForm(HttpServletRequest request) {
-        if (request.getParameterMap().size() >= 4 && request.getParameter("cliente") != null && request.getParameter("fechainicio") != null
-                && request.getParameter("fechafin") != null && request.getParameter("continue") != null) {
+        if (request.getParameterMap().size() >= 3 && request.getParameter("vehiculo") != null && request.getParameter("cli") != null
+                && request.getParameter("saveRent") != null) {
             return true;
         }
         return false;
-
     }
 
     /**
