@@ -194,7 +194,13 @@ public class Tools {
         SimpleDateFormat formatedor = new SimpleDateFormat("MM", Tools.getLocale());
         return Integer.parseInt(formatedor.format(fecha));
     }
-
+    
+    public static String reverseDate (String date){
+        final String [] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
+        String [] fechaEsp = date.split("/");
+        return fechaEsp [2] + " - " + meses[Integer.parseInt(fechaEsp [1]) - 1] + " - " + fechaEsp [0];
+    }
+    
     public static String roundDouble(double input) {
         NumberFormat format = DecimalFormat.getNumberInstance();
         format.setMaximumFractionDigits(2);

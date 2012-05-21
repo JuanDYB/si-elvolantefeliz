@@ -1083,7 +1083,7 @@ Vanadium.setupValidatorTypes = function() {
         //
         ['user_name', function (v) {
             return Vanadium.validators_types['empty'].test(v) || /^[a-z][a-z0-9_]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
-        }, 'Introduzca un nombre de usuario v&acute;lido'],
+        }, 'Introduzca un nombre de usuario v&aacute;lido'],
         //
         ['asciialpha', function (v) {
             return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
@@ -1095,7 +1095,7 @@ Vanadium.setupValidatorTypes = function() {
         ['date', function(v) {
             var test = new Date(v);
             return Vanadium.validators_types['empty'].test(v) || !isNaN(test);
-        }, 'Please enter a valid date.'],
+        }, 'Introduzca una fecha v&aacute;lida'],
         //
         ['email', function (v) {
             return (Vanadium.validators_types['empty'].test(v)

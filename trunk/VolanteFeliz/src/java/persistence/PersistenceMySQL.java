@@ -750,18 +750,18 @@ public class PersistenceMySQL implements PersistenceInterface {
         HashMap<String, Empleado> empleados = new HashMap<String, Empleado>();
         try {
             conexion = pool.getConnection();
-            if (campo == null && valor == null){
+            if (campo == null && valor == null) {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Empleado");
-            }else{
+            } else {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Empleado WHERE " + campo + "=?");
                 select.setString(1, valor);
             }
             rs = select.executeQuery();
             while (rs.next()) {
-                Empleado empl = new Empleado(rs.getString("codEmpleado"), rs.getString("Nombre"), rs.getString("UserName"), 
-                        rs.getString("Pass"), rs.getString("DNI"), rs.getString("Telefono"), rs.getString("Direccion"), 
+                Empleado empl = new Empleado(rs.getString("codEmpleado"), rs.getString("Nombre"), rs.getString("UserName"),
+                        rs.getString("Pass"), rs.getString("DNI"), rs.getString("Telefono"), rs.getString("Direccion"),
                         rs.getString("codSucursal"), rs.getString("Permisos").charAt(0));
-                empleados.put (empl.getCodEmpleado(), empl);
+                empleados.put(empl.getCodEmpleado(), empl);
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Ocurrio un error consultando los empleados de la base de datos", ex);
@@ -1151,38 +1151,159 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
-    /*SELECT ve.codVehiculo FROM Vehiculo ve, Alquiler alq 
-WHERE ve.codSucursal='7aa20ea5-5d92-4677-8129-d5bc267baa00' 
-AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM Alquiler) OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) 
-OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL 
-AND ((alq.FechaInicio>'2012/04/05' AND alq.FechaFin>'2012/04/05' AND alq.FechaInicio>'2012/04/19' AND alq.FechaFin>'2012/04/19') 
-OR (alq.FechaInicio<'2012/04/05' AND alq.FechaFin<'2012/04/05' AND alq.FechaInicio<'2012/04/19' AND alq.FechaFin<'2012/04/19'))))) 
-GROUP BY ve.codVehiculo
+
+    /*
+     * SELECT ve.codVehiculo FROM Vehiculo ve, Alquiler alq WHERE
+     * ve.codSucursal='7aa20ea5-5d92-4677-8129-d5bc267baa00' AND (ve.codVehiculo
+     * NOT IN (SELECT codVehiculo FROM Alquiler) OR
+     * (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) OR
+     * ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL AND
+     * ((alq.FechaInicio>'2012/04/05' AND alq.FechaFin>'2012/04/05' AND
+     * alq.FechaInicio>'2012/04/19' AND alq.FechaFin>'2012/04/19') OR
+     * (alq.FechaInicio<'2012/04/05' AND alq.FechaFin<'2012/04/05' AND
+     * alq.FechaInicio<'2012/04/19' AND alq.FechaFin<'2012/04/19'))))) GROUP BY
+     * ve.codVehiculo
      */
     @Override
-    public HashMap <String, Vehiculo> getVehiclesForRent (String codSucursal, String fechaInicio, String fechaFin){
+    public HashMap<String, Vehiculo> getVehiclesForRent(String codSucursal, String fechaInicio, String fechaFin, String codVehiculo, Connection conExterna) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         HashMap<String, Vehiculo> vehiculos = new HashMap<String, Vehiculo>();
-        try{
-            conexion = pool.getConnection();
-            select = conexion.prepareStatement("");
-            
-            
-            rs = select.executeQuery();
-            while (rs.next()){
-                Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("ve.codVehiculo"), conexion);
+        try {
+            if (conExterna == null) {
+                conexion = pool.getConnection();
+            } else {
+                conexion = conExterna;
             }
-        }catch (SQLException ex){
+            if (codVehiculo == null) {
+                select = conexion.prepareStatement("SELECT ve.codVehiculo FROM " + nameBD + ".Vehiculo ve, " + nameBD + ".Alquiler alq "
+                        + "WHERE ve.codSucursal=? "
+                        + "AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM " + nameBD + ".Alquiler) "
+                        + "OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) "
+                        + "OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
+                        + "AND ((alq.FechaInicio>? AND alq.FechaFin>? AND alq.FechaInicio>? AND alq.FechaFin>?) "
+                        + "OR (alq.FechaInicio<? AND alq.FechaFin<? AND alq.FechaInicio<? AND alq.FechaFin<?))))) "
+                        + "GROUP BY ve.codVehiculo");
+                select.setString(1, codSucursal);
+                select.setString(2, fechaInicio);
+                select.setString(3, fechaInicio);
+                select.setString(4, fechaFin);
+                select.setString(5, fechaFin);
+                select.setString(6, fechaInicio);
+                select.setString(7, fechaInicio);
+                select.setString(8, fechaFin);
+                select.setString(9, fechaFin);
+            } else {
+                select = conexion.prepareStatement("SELECT ve.codVehiculo FROM " + nameBD + ".Vehiculo ve, " + nameBD + ".Alquiler alq "
+                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=? "
+                        + "AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM " + nameBD + ".Alquiler) "
+                        + "OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) "
+                        + "OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
+                        + "AND ((alq.FechaInicio>? AND alq.FechaFin>? AND alq.FechaInicio>? AND alq.FechaFin>?) "
+                        + "OR (alq.FechaInicio<? AND alq.FechaFin<? AND alq.FechaInicio<? AND alq.FechaFin<?))))) "
+                        + "GROUP BY ve.codVehiculo");
+                select.setString(1, codSucursal);
+                select.setString(2, codVehiculo);
+                select.setString(3, fechaInicio);
+                select.setString(4, fechaInicio);
+                select.setString(5, fechaFin);
+                select.setString(6, fechaFin);
+                select.setString(7, fechaInicio);
+                select.setString(8, fechaInicio);
+                select.setString(9, fechaFin);
+                select.setString(10, fechaFin);
+            }
+
+            rs = select.executeQuery();
+            while (rs.next()) {
+                Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("ve.codVehiculo"), conexion);
+                vehiculos.put(vehicle.getCodVehiculo(), vehicle);
+            }
+        } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Ocurrio un error obteniendo vehiculos disponibles para alquiler", ex);
-        }finally{
-            
+        } finally {
+            if (conExterna == null) {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(conexion, select);
+            } else {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(null, select);
+            }
         }
-        if (vehiculos.isEmpty()){
+        if (vehiculos.isEmpty()) {
             return null;
         }
         return vehiculos;
+    }
+
+    @Override
+    public Boolean newRent(String codSucursal, String codCliente, String codVehiculo, String fechaInicio, String fechaFin, String codTarifa) {
+        Connection conexion = null;
+        PreparedStatement insert = null;
+        Boolean ok = false;
+        try {
+            conexion = pool.getConnection();
+            HashMap<String, Vehiculo> vehiculos = this.getVehiclesForRent(codSucursal, fechaInicio, fechaFin, codVehiculo, conexion);
+            if (vehiculos == null) {
+                ok = null;
+            } else {
+                insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Alquiler VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+                insert.setString(1, Tools.generaUUID());
+                insert.setString(2, codCliente);
+                insert.setString(3, codVehiculo);
+                insert.setString(4, codTarifa);
+                insert.setString(5, fechaInicio);
+                insert.setString(6, fechaFin);
+                insert.setNull(7, java.sql.Types.DATE);
+                insert.setNull(8, java.sql.Types.DECIMAL);
+                insert.setNull(9, java.sql.Types.INTEGER);
+                insert.setNull(10, java.sql.Types.INTEGER);
+                insert.setNull(11, java.sql.Types.INTEGER);
+                insert.setNull(12, java.sql.Types.OTHER);
+                if (insert.executeUpdate() == 1){
+                    ok = true;
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error insertando nuevo alquiler en la base de datos", ex);
+        } finally {
+            cerrarConexionesYStatement(conexion, insert);
+        }
+        return ok;
+    }
+    
+    @Override
+    public HashMap <String, Tarifa> getTarifas (String campo, String valor){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap <String, Tarifa> tarifas = new HashMap <String, Tarifa> ();
+        try {
+            conexion = pool.getConnection();
+            if (campo == null  && valor == null){
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Tarifa");
+            }else{
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Tarifa WHERE " + campo + "=?");
+                select.setString(1, valor);
+            }
+            rs = select.executeQuery();
+            while (rs.next()){
+                Tarifa tarif = new Tarifa(rs.getString("codTarifa"), rs.getString("Nombre"), rs.getString("Descripcion")
+                        , rs.getBigDecimal("PrecioBase"), rs.getBigDecimal("PrecioDia"), rs.getBigDecimal("PrecioDiaExtra")
+                        , rs.getBigDecimal("PrecioCombustible"));
+                tarifas.put(tarif.getCodTarifa(), tarif);
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error insertando nuevo alquiler en la base de datos", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (tarifas.isEmpty()){
+            return null;
+        }
+        return tarifas;
     }
 
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
