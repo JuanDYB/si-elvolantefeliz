@@ -59,11 +59,38 @@
                     <div class="gradient">
                         <h1>Finalizar Alquiler</h1>
                         <% Date today = Tools.getDate(); %>
+                        <h2>Información del Alquiler</h2>
                         <ul>
-                            <li><b>Fecha de Entrega: </b><%= Tools.printDate(today) %></li>
+                            <li><b>Código del alquiler: </b><%= alq.getCodAlquiler()%></li>
+                            <li><h3>Información del Vehículo</h3>
+                                <ul>
+                                    <li><b>Marca: </b><%= alq.getVehiculo().getMarca()%></li>
+                                    <li><b>Modelo: </b><%= alq.getVehiculo().getModelo()%></li>
+                                    <li><b>Matrícula: </b><%= alq.getVehiculo().getMatricula()%></li>
+                                </ul>
+                            </li>
+                            <li><b>Fecha de Inicio: </b><%= Tools.printDate(alq.getFechaInicio()) %></li>
+                            <li><b>Fecha de Fin: </b><%= Tools.printDate(alq.getFechaFin()) %></li>
+                            <li><b>Kilómetros iniciales: </b><%= alq.getKMInicio() %> Kilómetros</li>
+                            <li><h3>Estado del alquiler</h3>
+                                <ul>
+                                    <li><b>Fecha de Entrega: </b><%= Tools.printDate(today) %></li>
+                                </ul>
+                            </li>
+                            <li><h3>Información de la Tarifa</h3>
+                                <ul>
+                                    <li><b>Nombre: </b><%= alq.getTarifa().getNombre() %></li>
+                                    <li><b>Descripción: </b><%= alq.getTarifa().getDescripcion() %></li>
+                                    <li><b>Precio inicial: </b><%= Tools.printBigDecimal(alq.getTarifa().getPrecioBase()) %> €</li>
+                                    <li><b>Precio por día: </b><%= Tools.printBigDecimal(alq.getTarifa().getPrecioDia()) %> €</li>
+                                    <li><b>Precio por día extra: </b><%= Tools.printBigDecimal(alq.getTarifa().getPrecioDiaExtra()) %> €</li>
+                                    <li><b>Precio por litro de combustible: </b><%= Tools.printBigDecimal(alq.getTarifa().getPrecioCombustible()) %> €</li>
+                                </ul>
+                            </li>
                         </ul>
                         <h2>Datos de finalización</h2>
                         <form name="endrent" action="/staf/endrent" method="POST">
+                            <p>La fecha de entrega la puede ver señalada al inicio de la página. Se ha generado automáticamente conforme a la fecha actual</p>
                             <p>
                                 <label>Introduzca los kilómetros finales</label>
                                 <input type="text" name="KMFin" size="30" maxlength="10" class=":digits :required :only_on_blur" />

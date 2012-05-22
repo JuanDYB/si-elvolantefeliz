@@ -137,6 +137,12 @@ public class NewClientServlet extends HttpServlet {
         contenido = contenido.replace("&TEL_SUC&", suc.getTelefono());
         contenido = contenido.replace("&FAX_SUC&", suc.getFax());
         
-        return Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido, null);
+        Boolean ok = Tools.emailSend(request, "El Volante Feliz: Cliente registrado", client.getEmail(), contenido, null);
+        if (ok == null){
+            Tools.anadirMensaje(request, "No se ha podido enviar el correo por problemas con los archivos adjuntos", 'w');
+            return false;
+        }else{
+            return ok;
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -164,7 +165,7 @@ public class GeneratePDFBill {
 
     private void doBillContent() throws DocumentException {
         //Crear Tabla
-        float[] columnas = {70, 15, 15};
+        float[] columnas = {65, 22, 13};
         PdfPTable tablaContenido = this.generateTable(100, columnas, true);
 
         //Contenido
@@ -192,23 +193,41 @@ public class GeneratePDFBill {
                 PdfPCell celdaDescripcionAlquiler = new PdfPCell();
                 Paragraph descripcionAlquiler = new Paragraph();
                 descripcionAlquiler.add(new Phrase("Marca: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMarca() + "     ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMarca() + "    ", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Modelo: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getModelo() + "     ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(alq.getVehiculo().getModelo() + "    ", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Matrícula: ", fuenteNormalDestacado));
                 descripcionAlquiler.add(new Phrase(alq.getVehiculo().getMatricula() + "\n", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Salida: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaInicio()) + "     ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaInicio()) + "    ", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Fin: ", fuenteNormalDestacado));
                 descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaFin()) + "\n", fuenteNormal));
                 descripcionAlquiler.add(new Phrase("Fecha Entrega Vehiculo: ", fuenteNormalDestacado));
-                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaEntrega()) + "\n ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase(Tools.printDate(alq.getFechaEntrega()) + "     ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("Combustible final: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(alq.getCombustibleFin() + " l.\n",fuenteNormal));
+                descripcionAlquiler.add(new Phrase("KM Inicial: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(alq.getKMInicio() + " Km    ", fuenteNormal));
+                descripcionAlquiler.add(new Phrase("KM Entrega: ", fuenteNormalDestacado));
+                descripcionAlquiler.add(new Phrase(alq.getKMFin() + " Km", fuenteNormal));
 
-                Phrase tarifa = new Phrase(alq.getTarifa().getNombre());
-                Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €");
+                PdfPCell celdadescripcionTarifa = new PdfPCell();
+                Paragraph tarifa = new Paragraph();
+                tarifa.add(new Phrase(alq.getTarifa().getNombre() + "\n", fuenteNormalDestacado));
+                tarifa.add(new Phrase("Precio fijo: ", fuenteNormalDestacado));
+                tarifa.add(new Phrase(Tools.printBigDecimal(alq.getTarifa().getPrecioBase()) + " €\n", fuenteNormal));
+                tarifa.add(new Phrase("Precio día: ", fuenteNormalDestacado));
+                tarifa.add(new Phrase(Tools.printBigDecimal(alq.getTarifa().getPrecioDia()) + " €/día\n", fuenteNormal));
+                tarifa.add(new Phrase("Precio exceso: ", fuenteNormalDestacado));
+                tarifa.add(new Phrase(Tools.printBigDecimal(alq.getTarifa().getPrecioDia()) + " €/día\n", fuenteNormal));
+                tarifa.add(new Phrase("Combustible: ", fuenteNormalDestacado));
+                tarifa.add(new Phrase(Tools.printBigDecimal(alq.getTarifa().getPrecioCombustible()) + " €/l.", fuenteNormal));
+                Phrase precio = new Phrase(Tools.printBigDecimal(alq.getPrecio()) + " €", fuenteNormal);
+                
                 celdaDescripcionAlquiler.addElement(descripcionAlquiler);
+                celdadescripcionTarifa.addElement(tarifa);
                 tablaContenido.addCell(celdaDescripcionAlquiler);
-                tablaContenido.addCell(tarifa);
+                tablaContenido.addCell(celdadescripcionTarifa);
                 tablaContenido.addCell(precio);
             }
         }
@@ -242,7 +261,7 @@ public class GeneratePDFBill {
                 descripcionIncidencia.add(new Phrase(inc.getObservaciones() + "\n ", fuenteNormal));
                 celdaDescripcionIncidencia.setColspan(2);
                 celdaDescripcionIncidencia.addElement(descripcionIncidencia);
-                Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €");
+                Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €", fuenteNormal);
                 tablaContenido.addCell(celdaDescripcionIncidencia);
                 tablaContenido.addCell(precio);
             }

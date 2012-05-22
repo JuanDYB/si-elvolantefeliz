@@ -51,22 +51,33 @@ public class EndRentServlet extends HttpServlet {
                 Date fecha = new Date(Long.parseLong(request.getParameter("date")));
                 int KMFin = Tools.validateNumber(request.getParameter("KMFin"), "Kilómetros", Integer.MAX_VALUE);
                 int combustibleFin = Tools.validateNumber(request.getParameter("combustible_fin"), "Kilómetros", Integer.MAX_VALUE);
-                String observaciones = request.getParameter("observaciones");
                 Tools.validateUUID(request.getParameter("rent"));
                 String codAlquiler = request.getParameter("rent");
-                Tools.validateHTML(observaciones);
+                String observaciones = null;
+                if (request.getParameter("observaciones") != null && !request.getParameter("observaciones").isEmpty()) {
+                    observaciones = request.getParameter("observaciones");
+                    Tools.validateHTML(observaciones);
+                }
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Alquiler alq = persistence.getAlquiler(codAlquiler);
                 if (alq != null && alq.getFechaEntrega() == null) {
-                    boolean ok = persistence.endRent(alq, fecha, KMFin, combustibleFin, observaciones);
-                    if (ok) {
-                        request.setAttribute("resultados", "Alquiler actualizado correctamente");
-                        Tools.anadirMensaje(request, "Se ha finalizado correctamente el alquiler y el precio ha sido calculado", 'o');
-                        request.getRequestDispatcher("/staf/viewrent.jsp?rent=" + codAlquiler).forward(request, response);
-                        return;
+                    if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible() && KMFin > alq.getKMInicio()) {
+                        boolean ok = persistence.endRent(alq, fecha, KMFin, combustibleFin, observaciones);
+                        if (ok) {
+                            request.setAttribute("resultados", "Alquiler actualizado correctamente");
+                            Tools.anadirMensaje(request, "Se ha finalizado correctamente el alquiler y el precio ha sido calculado", 'o');
+                            request.getRequestDispatcher("/staf/viewrent.jsp?rent=" + codAlquiler).forward(request, response);
+                            return;
+                        } else {
+                            request.setAttribute("resultados", "Alquiler no finalizado");
+                            Tools.anadirMensaje(request, "Ocurrio un error finalizando el alquiler, disculpe las molestias", 'e');
+                        }
+                    } else if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible()) {
+                        request.setAttribute("resultados", "Datos incorrectos");
+                        Tools.anadirMensaje(request, "Ha introducido un kilometraje no válido, ha de ser mayor que los kilómetros de inicio del alquiler", 'w');
                     } else {
-                        request.setAttribute("resultados", "Alquiler no finalizado");
-                        Tools.anadirMensaje(request, "Ocurrio un error finalizando el alquiler, disculpe las molestias", 'e');
+                        request.setAttribute("resultados", "Datos incorrectos");
+                        Tools.anadirMensaje(request, "Ha introducido una cantidad de combustible no válida para el vehículo de alquiler", 'w');
                     }
                 } else if (alq != null) {
                     request.setAttribute("resultados", "Imposible finalizar");
