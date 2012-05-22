@@ -1284,6 +1284,11 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
+    
+    @Override
+    public Boolean endRent (String codAlquiler, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones){
+        return null;
+    }
 
     @Override
     public HashMap<String, Tarifa> getTarifas(String campo, String valor) {
