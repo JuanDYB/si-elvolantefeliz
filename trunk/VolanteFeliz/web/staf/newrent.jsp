@@ -126,7 +126,7 @@
                             <p>
                                 <input type="hidden" name="cli" value="<%= cli.getCodCliente()%>" />
                                 <input type="hidden" name="fechainicio" value="<%= request.getAttribute("fechaInicio")%>" />
-                                <input type="hidden" name="fechafin" value="<%= request.getAttribute("fechaInicio")%>" />
+                                <input type="hidden" name="fechafin" value="<%= request.getAttribute("fechaFin")%>" />
                                 <input type="submit" name="saveRent" value="Confirmar Alquiler" />
                             </p>
                         </form>

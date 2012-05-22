@@ -4,16 +4,17 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
-<%@page import="model.Factura"%>
+<%@page import="tools.Tools"%>
+<%@page import="model.Alquiler"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="model.Empleado"%>
+<%@page import="persistence.PersistenceInterface"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 
 <%
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 
 <html>
@@ -46,47 +47,44 @@
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Acciones disponibles</h2>
                         <ul>
-                            
+                            <li><a href="/staf/newrent.jsp?st=1">Nuevo Alquiler</a></li>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-
+                    <% HashMap <String, Alquiler> alquileres = persistence.getAlquileres(null, null, emplLogedIn.getCodSucursal(), null);
+                    if (alquileres != null){ %>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Facturas disponibles</h1>
-
-                        
+                        <h1>Alquileres disponibles</h1>
                         <table>
-                            <tr class="theader"><td>Cliente</td><td>Fecha</td><td>Importe</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                            <% for (Factura fact : facturas.values()) {%>
+                            <tr class="theader"><td>Marca</td><td width="130" >Modelo</td><td width="170" >Cliente</td><td>F. Inicio</td><td>F. Fin</td><td>&nbsp;</td></tr>
+                            <% for (Alquiler alq: alquileres.values()){ %>
                             <tr>
-                                <td><%= fact.getCliente().getName()%></td>
-                                <td><%= Tools.printDate(fact.getFechaEmision())%></td>
-                                <td><%= Tools.printBigDecimal(fact.getImporteSinIVA())%> €</td>
-                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fact.getCodFactura()%>">
-                                        <img src="/images/icons/bill.png" alt="VerFactura"/>
-                                    </a></td>
-                                    <% if (fact.isPagado()) {%>
-                                <td><img src="/images/icons/facPagada.png" alt="facPagada" title="Factura Pagada" /></td>
-                                    <% } else {%>
-                                <td><a title="Pagar Factura" href="/staf/paybill.jsp?bill=<%= fact.getCodFactura()%>">
-                                        <img src="/images/icons/pay.png" alt="pagarFactura" />
-                                    </a></td>
-                                    <% }%>
+                                <td><%= alq.getVehiculo().getMarca() %></td>
+                                <td><%= alq.getVehiculo().getModelo() %></td>
+                                <td><%= alq.getCliente().getName() %></td>
+                                <td><%= Tools.printDate(alq.getFechaInicio()) %></td>
+                                <% if (alq.getFechaEntrega() == null) { %>
+                                <td><%= Tools.printDate(alq.getFechaFin()) %></td>
+                                <% }else{ %>
+                                <td>Entregado<br /><%= Tools.printDate(alq.getFechaInicio()) %></td>
+                                <% } %>
+                                <td><a title="Detalles Alquiler" href="/staf/viewrent?rent=<%= alq.getCodAlquiler() %>"><img alq="verAlq" src="/images/icons/viewRent.png"/></a></td>
                             </tr>
-                            <% }%>
+                            <% } %>
                         </table>
-                        <p><b>NOTA: </b>Los importes se especifican sin el IVA incluido</p>
-                        <% } else {%>
-                        <blockquote class="exclamation" >
-                            <p>
-                                No se han encontrado facturas en el sistema
-                            </p>
-                        </blockquote>
-                        <% }%>
-
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
+                    <% } else{ %>
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <h1>Alquileres disponibles</h1>
+                        <blockquote class="exclamation">
+                            <p>No se han encontrado alquileres en esta sucursal</p>
+                        </blockquote>
+                    </div>
+                    <!-- FIN BLOQUE GRADIENTE -->
+                    <% } %>
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
 
