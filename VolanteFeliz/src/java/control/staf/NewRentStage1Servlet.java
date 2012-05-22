@@ -7,10 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Cliente;
-import model.Empleado;
-import model.Sucursal;
-import model.Vehiculo;
+import model.*;
 import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
@@ -61,24 +58,29 @@ public class NewRentStage1Servlet extends HttpServlet {
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 if (cli != null && cli.isActivo()) {
                     if (cli.getCodSucursal().equals(empl.getCodSucursal())) {
-                        HashMap<String, Vehiculo> vehiculosDisponibles = persistence.getVehiclesForRent(cli.getCodSucursal(), fechaInicio, fechaFin, null, null);
-                        if (vehiculosDisponibles != null) {
-                            request.setAttribute("clientRent", cli);
-                            request.setAttribute("vehiclesRent", vehiculosDisponibles);
-                            request.setAttribute("fechaInicio", fechaInicio);
-                            request.setAttribute("fechaFin", fechaFin);
-                            request.getRequestDispatcher("/staf/newrent.jsp?st=2").forward(request, response);
-                            return;
+                        HashMap<String, Alquiler> alquileresSinFinalizar = persistence.getAlquileres("codCliente", codCliente, null, false);
+                        if (cli.getCompany() != null || (cli.getCompany() == null && alquileresSinFinalizar == null)) {
+                            HashMap<String, Vehiculo> vehiculosDisponibles = persistence.getVehiclesForRent(cli.getCodSucursal(), fechaInicio, fechaFin, null, null);
+                            if (vehiculosDisponibles != null) {
+                                request.setAttribute("clientRent", cli);
+                                request.setAttribute("vehiclesRent", vehiculosDisponibles);
+                                request.setAttribute("fechaInicio", fechaInicio);
+                                request.setAttribute("fechaFin", fechaFin);
+                                request.getRequestDispatcher("/staf/newrent.jsp?st=2").forward(request, response);
+                                return;
+                            } else {
+                                request.setAttribute("resultados", "Vehiculos no disponibles");
+                                Tools.anadirMensaje(request, "No se han encontrado vehículos disponibles para las fechas seleccionadas", 'w');
+                            }
                         } else {
-                            request.setAttribute("resultados", "Vehiculos no disponibles");
-                            Tools.anadirMensaje(request, "No se han encontrado vehículos disponibles para las fechas seleccionadas", 'w');
+                            request.setAttribute("resultados", "Cliente Particular");
+                            Tools.anadirMensaje(request, "Los clientes particulares solo pueden contrarar un alquiler a la vez y este ya tiene uno contratado", 'w');
                         }
                     } else {
                         request.setAttribute("resultados", "No tiene permisos");
                         Tools.anadirMensaje(request, "No se puede escoger este cliente porque no pertenece a esta sucursal", 'w');
-
                     }
-                }else if (!cli.isActivo()){
+                } else if (!cli.isActivo()) {
                     request.setAttribute("resultados", "Cliente no disponible");
                     Tools.anadirMensaje(request, "El cliente seleccionado se ha dado de baja del sistema", 'w');
                 } else {
