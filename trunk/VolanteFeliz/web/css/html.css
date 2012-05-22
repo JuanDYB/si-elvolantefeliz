@@ -234,7 +234,7 @@ blockquote.go {
  **************************************************************/
 
 img.floatRight {
-  margin: 5px 0px 10px 15px;  
+  margin: 5px 0px 10px 15px;
 }
 
 img.floatLeft {
@@ -251,9 +251,13 @@ a:hover img {
   border: 2px solid #8BE6FA;*/
 }
 
+/**************************************************************
+   Images
+ **************************************************************/
+
 table {
     border:0px solid white; 
-    width:98% ;
+    width:99% ;
     margin:auto;
 }
 
@@ -264,7 +268,7 @@ table img{
 
 table a img{
     border:0px;
-    width:25px;
+    width:35px;
 }
 
 table a:hover img{
@@ -278,7 +282,7 @@ table tr,table td{
 }
 
 table tr:hover{
-     background-color: #FAAA25; 
+     background-color: #FAAA25;
 }
 
 table .theader{

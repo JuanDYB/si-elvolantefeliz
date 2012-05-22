@@ -1,6 +1,7 @@
 package tools;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,10 +15,12 @@ import javax.mail.Authenticator;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Validator;
 import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
+import org.owasp.validator.html.*;
 
 /**
  *
@@ -267,5 +270,47 @@ public class Tools {
     public static boolean existeArchivo (String path){
         File file = new File (path);
         return file.exists();
+    }
+    
+    public static String getContentTextArea(Part input) {
+        Scanner sc = null;
+        StringBuilder sb = null;
+        try {
+            sc = new Scanner(input.getInputStream(), "UTF-8");
+            sb = new StringBuilder("");
+            while (sc.hasNext()) {
+                sb.append(sc.nextLine());
+                sb.append("\n");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, ex.getMessage());
+            sb = null;
+        }finally{
+            sc.close();
+        }
+        if (sb == null){
+            return null;
+        }else{
+            return sb.toString();
+        }
+    }
+    
+    public static void validateHTML(String input) {
+        try {
+            if (input.equals("") == true) {
+                throw new IntrusionException("No se admite el campo vacío", "");
+            }
+            Policy politica = Policy.getInstance(Tools.class.getResource("/antisamy-tinymce-1.4.4.xml"));
+            AntiSamy validator = new AntiSamy();
+            CleanResults cr = validator.scan(ESAPI.encoder().canonicalize(input), politica);
+            if (cr.getNumberOfErrors() != 0) {
+                throw new IntrusionException("Ha introducido código HTML que no está permitido",
+                        cr.getErrorMessages().get(0).toString());
+            }
+        } catch (PolicyException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, ex.getMessage());
+        } catch (ScanException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, ex.getMessage());
+        }
     }
 }

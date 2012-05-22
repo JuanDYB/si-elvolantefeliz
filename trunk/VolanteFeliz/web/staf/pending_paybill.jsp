@@ -59,7 +59,8 @@
                 <div class="width75 floatRight">
 
 
-                    <% if (suc != null && request.getParameter("cli") != null && cli != null && (cli.getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())) {
+                    <% if (suc != null && request.getParameter("cli") != null && cli != null && cli.isActivo() 
+                    && (cli.getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())) {
                             facturasSinPagar = persistence.getFacturasPendientesPago(cli.getCodCliente(), null);
                             continuar = true;%>
                     <!-- Gradiente color dentro de la columna principal -->
@@ -81,11 +82,18 @@
 
                         </ul>
                     </div>
-                    <% } else if (suc != null && request.getParameter("cli") != null && cli != null && !cli.getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {%>
+                    <% } else if (suc != null && request.getParameter("cli") != null && cli != null && cli.isActivo() && !cli.getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {%>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <blockquote class="exclamation">
                             <p>No tiene permisos para consultar este cliente, no pertenece a su sucursal y la sucursal no es central</p>
+                        </blockquote>
+                    </div>
+                    <% } else if (suc != null && request.getParameter("cli") != null && !cli.isActivo()) {%>
+                    <!-- Gradiente color dentro de la columna principal -->
+                    <div class="gradient">
+                        <blockquote class="stop">
+                            <p>El cliente seleccionado ha sido dado de baja del sistema</p>
                         </blockquote>
                     </div>
                     <% } else if (suc != null && request.getParameter("cli") != null) {%>
@@ -145,7 +153,7 @@
                     <% } else if (continuar && facturasSinPagar == null) {%>
                     <div class="gradient">
                         <h1>Facturas pendientes de pago</h1>
-                        <blockquote class="exclamation">
+                        <blockquote class="go">
                             <p>No se han encontrado facturas pendientes de pago</p>
                         </blockquote>
                     </div>
