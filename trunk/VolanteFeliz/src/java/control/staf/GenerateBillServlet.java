@@ -168,6 +168,13 @@ public class GenerateBillServlet extends HttpServlet {
         
         HashMap<String, String> adjuntos = new HashMap<String, String>();
         adjuntos.put(request.getServletContext().getRealPath("/staf/billFolder/" + factura.getCodFactura() + ".pdf"), "Factura_" + factura.getCodFactura() + ".pdf");
-        return Tools.emailSend(request, "El Volante Feliz: Factura", factura.getCliente().getEmail(), contenido, adjuntos);
+        
+        Boolean ok = Tools.emailSend(request, "El Volante Feliz: Factura", factura.getCliente().getEmail(), contenido, adjuntos);
+        if (ok == null){
+            Tools.anadirMensaje(request, "No se ha podido enviar el correo por problemas con los archivos adjuntos", 'w');
+            return false;
+        }else{
+            return ok;
+        }
     }
 }

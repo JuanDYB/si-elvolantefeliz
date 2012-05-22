@@ -242,7 +242,7 @@ public class Tools {
         return numFormat.format(input);
     }
 
-    public static boolean emailSend(HttpServletRequest request, String subject, String destination, String contenido, HashMap<String, String> adjuntos) {
+    public static Boolean emailSend(HttpServletRequest request, String subject, String destination, String contenido, HashMap<String, String> adjuntos) {
         MailSender mailConfig = (MailSender) request.getServletContext().getAttribute("emailSender");
         Session mailSession = null;
         if (mailConfig == null) {
@@ -257,6 +257,13 @@ public class Tools {
         if (adjuntos == null) {
             mensaje = mailConfig.newMail(subject, destination, contenido, mailSession);
         } else {
+            for (String factura : adjuntos.values()){
+                int fin = factura.lastIndexOf(".pdf");
+                PDFAutoGeneration generator = new PDFAutoGeneration(request, factura.substring(fin - 36, fin));
+                if (!generator.validateAccessAndGenerate()){
+                    return null;
+                }
+            }
             mensaje = mailConfig.newMail(adjuntos, subject, destination, contenido, mailSession);
         }
 
