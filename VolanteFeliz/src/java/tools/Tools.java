@@ -272,29 +272,6 @@ public class Tools {
         return file.exists();
     }
     
-    public static String getContentTextArea(Part input) {
-        Scanner sc = null;
-        StringBuilder sb = null;
-        try {
-            sc = new Scanner(input.getInputStream(), "UTF-8");
-            sb = new StringBuilder("");
-            while (sc.hasNext()) {
-                sb.append(sc.nextLine());
-                sb.append("\n");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, ex.getMessage());
-            sb = null;
-        }finally{
-            sc.close();
-        }
-        if (sb == null){
-            return null;
-        }else{
-            return sb.toString();
-        }
-    }
-    
     public static void validateHTML(String input) {
         try {
             if (input.equals("") == true) {

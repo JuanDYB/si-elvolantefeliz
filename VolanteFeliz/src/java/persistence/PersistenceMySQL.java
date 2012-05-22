@@ -12,6 +12,7 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import model.*;
+import tools.CalculateRentPrice;
 import tools.GenerateBill;
 import tools.GeneratePDFBill;
 import tools.Tools;
@@ -1286,8 +1287,32 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
     
     @Override
-    public Boolean endRent (String codAlquiler, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones){
-        return null;
+    public boolean endRent (Alquiler alq, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones){
+        Connection conexion = null;
+        PreparedStatement update = null;
+        boolean ok = false;
+        CalculateRentPrice calculator = new CalculateRentPrice(alq, fechaEntrega, combustibleFin);
+        BigDecimal importe = calculator.calculateRentPrice();
+        try{
+            conexion = pool.getConnection();
+            update = conexion.prepareStatement("UPDATE " + nameBD + ".Alquiler "
+                    + "SET FechaEntrega=?, KMFin=?, CombustibleFin=?, Observaciones=?, Importe=? "
+                    + "WHERE codAlquiler=? AND FechaEntrega IS NULL");
+            update.setDate(1, new java.sql.Date(fechaEntrega.getTime()));
+            update.setInt(2, KMFin);
+            update.setInt(3, combustibleFin);
+            update.setString(4, observaciones);
+            update.setBigDecimal(5, importe);
+            update.setString(6, alq.getCodAlquiler());
+            if (update.executeUpdate() == 1){
+                ok = true;
+            }
+        }catch(SQLException ex){
+            logger.log(Level.SEVERE, "Error finalizando alquiler en la base de datos", ex);
+        }finally{
+            cerrarConexionesYStatement(conexion, update);
+        }
+        return ok;
     }
 
     @Override
