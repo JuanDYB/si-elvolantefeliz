@@ -1,15 +1,16 @@
 <%-- 
-    Document   : viewclient
-    Created on : 16-abr-2012, 19:02:32
-    Author     : Juan Díez-Yanguas Barber
+    Document   : viewrent
+    Created on : 22-may-2012, 10:30:37
+    Author     : JuanDYB
 --%>
 
-<%@page import="model.Sucursal"%>
-<%@page import="persistence.PersistenceInterface"%>
-<%@page import="tools.Tools"%>
-<%@page import="org.owasp.esapi.errors.ValidationException"%>
+<%@page import="model.Alquiler"%>
 <%@page import="model.Empleado"%>
 <%@page import="model.Cliente"%>
+<%@page import="model.Sucursal"%>
+<%@page import="persistence.PersistenceInterface"%>
+<%@page import="org.owasp.esapi.errors.ValidationException"%>
+<%@page import="tools.Tools"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
@@ -21,11 +22,12 @@
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     Cliente cli = persistence.getClient(request.getParameter("cli"));
     Sucursal suc = persistence.getSucursal(cli.getCodSucursal());
+    Alquiler alq = persistence.getAlquiler(request.getParameter("rent"));
 %>
 <html>
     <head>
         <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
-        <title>Detalles cliente</title>
+        <title>Detalles alquiler</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -45,19 +47,13 @@
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
 
-                    <% if (cli != null && (suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral())) {%>
+                    <% if (alq != null) {%>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Detalles Cliente</h1>
+                        <h1>Detalles Alquiler</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        <% if (!cli.isActivo()) {%>
-                        <blockquote class="exclamation">
-                            <p><b>ATENCIÓN: </b>Este cliente se ha dado de baja de la empresa</p>
-                            <p>Esta viendo únicamente al cliente porque sus datos son necesarios para el historial de la empresa</p>
-                        </blockquote>
-                        <h2>Informaci&oacute;n General del Cliente</h2>
 
-                        <% }%>
+                        <h2>Informaci&oacute;n General del Cliente</h2>
                         <ul>
 
                             <li><b>Nombre: </b><%= cli.getName()%></li>
@@ -74,14 +70,14 @@
 
                         </ul>
                     </div>
-                    <div class="gradient">
-                        <h1>Acciones disponibles</h1>
-                        <ul>
-                            <li><a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Elementos pendientes de facturar</a></li>
-                            <li><a href="/staf/pending_paybill.jsp?cli=<%= cli.getCodCliente()%>">Facturas pendientes de pago</a></li>
-                            <li><a href="/staf/client_history.jsp?cli=<%= cli.getCodCliente()%>" >Historial completo del cliente</a></li>
-                        </ul>
-                    </div>
+                            <div class="gradient">
+                                <h1>Acciones disponibles</h1>
+                                <ul>
+                                    <li><a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Elementos pendientes de facturar</a></li>
+                                    <li><a href="/staf/pending_paybill.jsp?cli=<%= cli.getCodCliente()%>">Facturas pendientes de pago</a></li>
+                                    <li><a href="/staf/client_history.jsp?cli=<%= cli.getCodCliente() %>" >Historial completo del cliente</a></li>
+                                </ul>
+                            </div>
                     <% } else if (cli != null && !suc.getCodSucursal().equals(cli.getCodSucursal()) && !suc.isCentral()) {%>
                     <div class="gradient">
                         <blockquote class="exclamation">
@@ -115,7 +111,7 @@
 </html>
 
 <%! private boolean validateForm(HttpServletRequest request) {
-        if (request.getParameterMap().size() >= 1 && request.getParameter("cli") != null) {
+        if (request.getParameterMap().size() >= 1 && request.getParameter("rent") != null) {
             try {
                 Tools.validateUUID(request.getParameter("cli"));
                 return true;

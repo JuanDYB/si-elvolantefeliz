@@ -13,14 +13,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
-PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-Cliente cli = persistence.getClient(request.getParameter("cli"));
-Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 if (!this.validateForm(request)){
     response.sendError(404);
     return;
 }
+PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
+Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+Cliente cli = persistence.getClient(request.getParameter("cli"));
+Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 <html>
     <head>
@@ -55,7 +55,7 @@ if (!this.validateForm(request)){
                         <h1>Gesti&oacute;n de Clientes</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Editar cliente</h2>
-                        <% if (cli != null && (cli.getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())){ %>
+                        <% if (cli != null && cli.isActivo() && (cli.getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())){ %>
                         <p>
                             Tiene a su disposición el siguiente formulario para editar el cliente seleccionado
                         </p>

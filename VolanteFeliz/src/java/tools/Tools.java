@@ -186,7 +186,7 @@ public class Tools {
 //    }
     
     public static String printDate (Date fecha){
-        SimpleDateFormat formatedor = new SimpleDateFormat("dd '-' MMM '-' yyyy", Tools.getLocale());
+        SimpleDateFormat formatedor = new SimpleDateFormat("dd'-'MMM'-'yyyy", Tools.getLocale());
         return formatedor.format(fecha);
     }
     

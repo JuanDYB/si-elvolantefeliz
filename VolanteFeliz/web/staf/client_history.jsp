@@ -54,7 +54,7 @@
                 <div class="width75 floatRight">
 
 
-                    <% if (suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral()) {%>
+                    <% if (cli != null && suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral()) {%>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Detalles Cliente</h1>
@@ -77,107 +77,127 @@
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
+
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Historial de Alquileres</h1>
                         <%
-                            HashMap <String, Alquiler> alquileresCliente = persistence.getAlquileres("codCliente", cli.getCodCliente());
-                            int [] alqMes = new int [12];
-                            if (alquileresCliente != null){ %>
+                            HashMap<String, Alquiler> alquileresCliente = persistence.getAlquileres("codCliente", cli.getCodCliente(), null, null);
+                            int[] alqMes = new int[12];
+                            if (alquileresCliente != null) {%>
                         <table>
                             <tr class="theader"><td>Marca</td><td>Modelo</td><td>Fechas</td><td>Importe</td></tr>
-                            <% for (Alquiler alq: alquileresCliente.values()){ 
-                                alqMes[Tools.getMonthDate(alq.getFechaInicio()) - 1] ++; %>
+                            <% for (Alquiler alq : alquileresCliente.values()) {
+                                    alqMes[Tools.getMonthDate(alq.getFechaInicio()) - 1]++;%>
                             <tr>
-                                <td><%= alq.getVehiculo().getMarca() %></td>
-                                <td><%= alq.getVehiculo().getModelo() %></td>
-                                <td><%= Tools.printDate(alq.getFechaInicio()) %> a <%= Tools.printDate(alq.getFechaEntrega()) %></td>
-                                <td><%= Tools.printBigDecimal(alq.getPrecio()) %> €</td>
+                                <td><%= alq.getVehiculo().getMarca()%></td>
+                                <td><%= alq.getVehiculo().getModelo()%></td>
+                                <% if (alq.getFechaEntrega() != null) {%>
+                                <td><%= Tools.printDate(alq.getFechaInicio())%> a <%= Tools.printDate(alq.getFechaEntrega())%></td>
+                                <td><%= Tools.printBigDecimal(alq.getPrecio())%> €</td>
+                                <% } else {%>
+                                <td><%= Tools.printDate(alq.getFechaInicio())%> a <%= Tools.printDate(alq.getFechaFin())%></td>
+                                <td>No finalizado</td>
+                                <% }%>
+
                             </tr>
-                            <% } %>
+                            <% }%>
                         </table>
                         <p><b>Nota: </b>Los importes no tienen el IVA incluido</p>
-                        <% } else{ %>
+                        <% } else {%>
                         <blockquote class="exclamation">
                             <p>No se han encontrado alquileres para el cliente actual</p>
                         </blockquote>
-                        <% } %>
+                        <% }%>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
+
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Historial de Incidencias</h1>
                         <%
-                            HashMap <String, Incidencia> incidenciasCliente = persistence.getIncidencias ("codCliente", cli.getCodCliente());
-                            int [] incMes = new int [12];
-                            if (alquileresCliente != null){ %>
+                            HashMap<String, Incidencia> incidenciasCliente = persistence.getIncidencias("codCliente", cli.getCodCliente());
+                            int[] incMes = new int[12];
+                            if (incidenciasCliente != null) {%>
                         <table>
                             <tr class="theader"><td>Observaciones</td><td>Fecha</td><td>Importe</td></tr>
-                            <% for (Incidencia inc: incidenciasCliente.values()){ 
-                                incMes[Tools.getMonthDate(inc.getFecha()) - 1] ++; %>
+                            <% for (Incidencia inc : incidenciasCliente.values()) {
+                                    incMes[Tools.getMonthDate(inc.getFecha()) - 1]++;%>
                             <tr>
-                                <td><b><%= inc.getTipoIncidencia().getNombre() %>: </b><%= inc.getObservaciones() %></td>
-                                <td><%= Tools.printDate(inc.getFecha()) %></td>
-                                <td><%= Tools.printBigDecimal(inc.getPrecio()) %> €</td>
+                                <td><b><%= inc.getTipoIncidencia().getNombre()%>: </b><%= inc.getObservaciones()%></td>
+                                <td><%= Tools.printDate(inc.getFecha())%></td>
+                                <td><%= Tools.printBigDecimal(inc.getPrecio())%> €</td>
                             </tr>
-                            <% } %>
+                            <% }%>
                         </table>
                         <p><b>Nota: </b>Los importes no tienen el IVA incluido</p>
-                        <% } else{ %>
+                        <% } else {%>
                         <blockquote class="exclamation">
                             <p>No se han encontrado incidencias para el cliente actual</p>
                         </blockquote>
-                        <% } %>
+                        <% }%>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
+
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Historial de Facturación</h1>
                         <%
-                            HashMap <String, Factura> facturasCliente = persistence.getFacturas("codCliente", cli.getCodCliente(), null);
-                            ArrayList <BigDecimal> facMes = new ArrayList <BigDecimal>(12);
-                            for (int i = 0; i < 12; i++) facMes.add(BigDecimal.ZERO);
-                            if (facturasCliente != null){
+                            HashMap<String, Factura> facturasCliente = persistence.getFacturas("codCliente", cli.getCodCliente(), null);
+                            ArrayList<BigDecimal> facMes = new ArrayList<BigDecimal>(12);
+                            for (int i = 0; i < 12; i++) {
+                                facMes.add(BigDecimal.ZERO);
+                            }
+                            if (facturasCliente != null) {
                         %>
                         <table>
                             <tr class="theader"><td>Fecha</td><td>Importe</td><td>Importe + IVA</td><td>Estado</td></tr>
-                            <% for (Factura fac: facturasCliente.values()){ 
-                                facMes.set(Tools.getMonthDate(fac.getFechaEmision()) - 1, facMes.get(Tools.getMonthDate(fac.getFechaEmision()) - 1).add(fac.getImporteSinIVA())); %>
+                            <% for (Factura fac : facturasCliente.values()) {
+                                    facMes.set(Tools.getMonthDate(fac.getFechaEmision()) - 1, facMes.get(Tools.getMonthDate(fac.getFechaEmision()) - 1).add(fac.getImporteSinIVA()));%>
                             <tr>
-                                <td><%= Tools.printDate(fac.getFechaEmision()) %></td>
-                                <td><%= Tools.printBigDecimal(fac.getImporteSinIVA()) %> €</td>
-                                <td><%= Tools.printBigDecimal(fac.getImporte()) %> €</td>
-                                <% if(!fac.isPagado()){ %>
+                                <td><%= Tools.printDate(fac.getFechaEmision())%></td>
+                                <td><%= Tools.printBigDecimal(fac.getImporteSinIVA())%> €</td>
+                                <td><%= Tools.printBigDecimal(fac.getImporte())%> €</td>
+                                <% if (!fac.isPagado()) {%>
                                 <td>Sin Pagar</td>
-                                <% } else{ %>
-                                <td>Pagada: <%= Tools.printDate(fac.getFechaPago()) %></td>
-                                <% } %>
+                                <% } else {%>
+                                <td>Pagada: <%= Tools.printDate(fac.getFechaPago())%></td>
+                                <% }%>
                             </tr>
-                            <% } %>
+                            <% }%>
                         </table>
-                        <p><b>NOTA: </b>El IVA aplicado en los precios es del <%= webConfig.getIVA() %> %</p>
-                        <% } else{ %>
+                        <p><b>NOTA: </b>El IVA aplicado en los precios es del <%= webConfig.getIVA()%> %</p>
+                        <% } else {%>
                         <blockquote class="exclamation">
                             <p>No se han encontrado facturas para el cliente actual</p>
                         </blockquote>
-                        <% } %>
+                        <% }%>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
+
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Informes Gráficos</h1>
+                        <% if (alquileresCliente != null || incidenciasCliente != null) {%>
                         <%@include file="/WEB-INF/include/chart_AlquileresIncidenciasCliente.jsp" %>
+                        <% } else {%>
+                        <blockquote class="exclamation">
+                            <p>Imposible generar la gráfica al no haber datos ni de alquileres ni de incidencias para el cliente</p>
+                        </blockquote>
+                        <% }%>
                         <br />
+                        <% if (facturasCliente != null) {%>
                         <%@include file="/WEB-INF/include/chart_FacturacionCliente.jsp" %>
+                        <% } else {%>
+                        <blockquote class="exclamation">
+                            <p>Imposible generar gráfica, no se han encontrado facturas para el cliente</p>
+                        </blockquote>
+                        <% }%>
                         <%@include file="/WEB-INF/include/chartRequired.jsp" %>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
-                    
-                    <% } else if (cli != null && !suc.getCodSucursal().equals(cli.getCodSucursal()) && !suc.isCentral()){%>
+
+                    <% } else if (cli != null && !suc.getCodSucursal().equals(cli.getCodSucursal()) && !suc.isCentral()) {%>
                     <div class="gradient">
                         <blockquote class="exclamation">
                             <p>
@@ -185,7 +205,7 @@
                             </p>
                         </blockquote>
                     </div>
-                    <% }else{ %>
+                    <% } else {%>
                     <div class="gradient">
                         <blockquote class="exclamation">
                             <p>
@@ -193,7 +213,7 @@
                             </p>
                         </blockquote>
                     </div>
-                    <% } %>
+                    <% }%>
                 </div>
                 <!-- FIN COLUMNA PRINCIPAL -->
 

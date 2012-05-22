@@ -201,7 +201,7 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".Cliente "
-                    + "WHERE codCliente=? AND Activo='1'");
+                    + "WHERE codCliente=?");
             select.setString(1, codCliente);
             rs = select.executeQuery();
             while (rs.next()) {
@@ -657,7 +657,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                     + "FROM (SELECT codAlquiler FROM " + nameBD + ".Alquiler WHERE codAlquiler "
                     + "NOT IN (SELECT codAlquiler FROM " + nameBD + ".AlquilerFactura)) AlqNotFact, "
                     + nameBD + ".Alquiler alq "
-                    + "WHERE alq.codCliente=? AND AlqNotFact.codAlquiler=alq.codAlquiler");
+                    + "WHERE alq.codCliente=? AND AlqNotFact.codAlquiler=alq.codAlquiler AND alq.FechaEntrega IS NOT NULL");
             select.setString(1, cli.getCodCliente());
             rs = select.executeQuery();
             alquileresCliente = new HashMap<String, Alquiler>();
@@ -807,26 +807,36 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public HashMap<String, Alquiler> getAlquileres(String campo, String valor) {
+    public HashMap<String, Alquiler> getAlquileres(String campo, String valor, String codSucursal, Boolean finalizado) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         HashMap<String, Alquiler> alquileres = new HashMap<String, Alquiler>();
         try {
             conexion = pool.getConnection();
-            if (campo != null && valor != null) {
-                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE " + campo + "=?");
+            if (campo != null && valor != null && finalizado == null) {
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq WHERE alq." + campo + "=?");
                 select.setString(1, valor);
+            } else if (campo != null && valor != null && finalizado != null) {
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq "
+                        + "WHERE alq.FechaEntrega IS NULL AND alq." + campo + "=?");
+                select.setString(1, valor);
+            } else if (campo == null && valor == null && codSucursal != null) {
+                select = conexion.prepareStatement("SELECT alq.codAlquiler, alq.codCliente, alq.codVehiculo, alq.codTarifa, alq.FechaInicio, "
+                        + "alq.FechaFin, alq.FechaEntrega, alq.Importe, alq.KMInicio, alq.KMFin, alq.CombustibleFin, alq.Observaciones "
+                        + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Cliente cli "
+                        + "WHERE cli.codSucursal=? AND alq.codCliente= cli.codCliente");
+                select.setString(1, codSucursal);
             } else {
-                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler");
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq");
             }
             rs = select.executeQuery();
             while (rs.next()) {
-                String codAlquiler = rs.getString("codAlquiler");
-                Cliente cliAlquiler = this.getClient(rs.getString("codCliente"));
-                Vehiculo vehiculo = this.getVehiculo("codVehiculo", rs.getString("codVehiculo"), null);
-                Tarifa tarifa = this.getTarifa(rs.getString("codTarifa"), null);
-                Alquiler alquiler = new Alquiler(codAlquiler, cliAlquiler, vehiculo, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin"), rs.getDate("FechaEntrega"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio"), rs.getInt("KMFin"), rs.getInt("combustibleFin"), rs.getString("Observaciones"));
+                String codAlquiler = rs.getString("alq.codAlquiler");
+                Cliente cliAlquiler = this.getClient(rs.getString("alq.codCliente"));
+                Vehiculo vehiculo = this.getVehiculo("codVehiculo", rs.getString("alq.codVehiculo"), null);
+                Tarifa tarifa = this.getTarifa(rs.getString("alq.codTarifa"), null);
+                Alquiler alquiler = new Alquiler(codAlquiler, cliAlquiler, vehiculo, tarifa, rs.getDate("alq.FechaInicio"), rs.getDate("alq.FechaFin"), rs.getDate("alq.FechaEntrega"), rs.getBigDecimal("alq.Importe"), rs.getInt("alq.KMInicio"), rs.getInt("alq.KMFin"), rs.getInt("alq.combustibleFin"), rs.getString("alq.Observaciones"));
                 alquileres.put(codAlquiler, alquiler);
             }
         } catch (SQLException ex) {
@@ -1139,13 +1149,14 @@ public class PersistenceMySQL implements PersistenceInterface {
         boolean ok = false;
         try {
             conexion = pool.getConnection();
-            delete = conexion.prepareStatement("DELETE FROM " + nameBD + ".Cliente WHERE codCliente=?");
-            delete.setString(1, codCliente);
+            delete = conexion.prepareStatement("UPDATE " + nameBD + ".Cliente SET Activo=? WHERE codCliente=?");
+            delete.setBoolean(1, false);
+            delete.setString(2, codCliente);
             if (delete.executeUpdate() <= 1) {
                 ok = true;
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error borrando cliente de la base de datos", ex.getMessage());
+            logger.log(Level.SEVERE, "Error borrando cliente de la base de datos", ex);
         } finally {
             cerrarConexionesYStatement(conexion, delete);
         }
@@ -1261,7 +1272,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insert.setNull(10, java.sql.Types.INTEGER);
                 insert.setNull(11, java.sql.Types.INTEGER);
                 insert.setNull(12, java.sql.Types.OTHER);
-                if (insert.executeUpdate() == 1){
+                if (insert.executeUpdate() == 1) {
                     ok = true;
                 }
             }
@@ -1272,26 +1283,24 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
-    
+
     @Override
-    public HashMap <String, Tarifa> getTarifas (String campo, String valor){
+    public HashMap<String, Tarifa> getTarifas(String campo, String valor) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
-        HashMap <String, Tarifa> tarifas = new HashMap <String, Tarifa> ();
+        HashMap<String, Tarifa> tarifas = new HashMap<String, Tarifa>();
         try {
             conexion = pool.getConnection();
-            if (campo == null  && valor == null){
+            if (campo == null && valor == null) {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Tarifa");
-            }else{
+            } else {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Tarifa WHERE " + campo + "=?");
                 select.setString(1, valor);
             }
             rs = select.executeQuery();
-            while (rs.next()){
-                Tarifa tarif = new Tarifa(rs.getString("codTarifa"), rs.getString("Nombre"), rs.getString("Descripcion")
-                        , rs.getBigDecimal("PrecioBase"), rs.getBigDecimal("PrecioDia"), rs.getBigDecimal("PrecioDiaExtra")
-                        , rs.getBigDecimal("PrecioCombustible"));
+            while (rs.next()) {
+                Tarifa tarif = new Tarifa(rs.getString("codTarifa"), rs.getString("Nombre"), rs.getString("Descripcion"), rs.getBigDecimal("PrecioBase"), rs.getBigDecimal("PrecioDia"), rs.getBigDecimal("PrecioDiaExtra"), rs.getBigDecimal("PrecioCombustible"));
                 tarifas.put(tarif.getCodTarifa(), tarif);
             }
         } catch (SQLException ex) {
@@ -1300,7 +1309,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             cerrarResultSets(rs);
             cerrarConexionesYStatement(conexion, select);
         }
-        if (tarifas.isEmpty()){
+        if (tarifas.isEmpty()) {
             return null;
         }
         return tarifas;

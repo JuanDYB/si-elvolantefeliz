@@ -42,6 +42,13 @@ public class DeleteClientServlet extends HttpServlet {
                 if (cli != null) {
                     HashMap<String, Alquiler> alquileresPendientes = persistence.getAlquileresClienteSinFacturar(cli);
                     HashMap<String, Incidencia> incidenciasPendientes = persistence.getIncidenciasClienteSinFacturar(cli);
+                    HashMap<String, Alquiler> alquileresSinFinalizar = persistence.getAlquileres("codCliente", codCliente, null, false);
+                    if (alquileresSinFinalizar != null){
+                        request.setAttribute("resultados", "Imposible borrar");
+                        Tools.anadirMensaje(request, "El cliente seleccionado tiene alquileres pendientes de finalizar", 'w');
+                        request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
+                        return; 
+                    }
                     if (alquileresPendientes != null || incidenciasPendientes != null){
                         request.setAttribute("resultados", "Imposible borrar");
                         Tools.anadirMensaje(request, "El cliente seleccionado no se puede borrar porque tiene alquileres o incidencias pendientes de facturar", 'w');

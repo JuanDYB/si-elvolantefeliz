@@ -71,7 +71,7 @@
                         </p>
 
                         <table>
-                            <tr class="theader"><td>Nombre</td><td>DNI</td><td>Email</td><td>Empresa</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            <tr class="theader"><td width="150" >Nombre</td><td>DNI</td><td width="100" >Email</td><td>Empresa</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 
                             <% for (Cliente cli : clientes.values()) {%>
                             <tr>
@@ -83,9 +83,14 @@
                                 <% } else {%>
                                 <td><%= cli.getCompany()%></td>
                                 <% }%>
-                                <td><a href="/staf/viewclient.jsp?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/viewClient.png" alt="view" /></a></td>
-                                <td><a href="/staf/editclient.jsp?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/editClient.png" alt="edit" /></td>
-                                <td><a href="/staf/delclient?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/delete.png" alt="delete" /></td>
+                                <td><a title="Detalles Cliente" href="/staf/viewclient.jsp?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/viewClient.png" alt="view" /></a></td>
+                                <% if (cli.isActivo()){ %>
+                                <td><a title="Editar Cliente" href="/staf/editclient.jsp?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/editClient.png" alt="edit" /></td>
+                                <td><a title="Borrar Cliente" href="/staf/delclient?cli=<%= cli.getCodCliente()%>"><img src="/images/icons/delete.png" alt="delete" /></td>
+                                <% }else{ %>
+                                <td><img src="/images/icons/alert.png" alt="alerta" title="Cliente Borrado"/></td>
+                                <td><img src="/images/icons/alert.png" alt="alerta" title="Cliente Borrado"/></td>
+                                <% } %>
                             </tr>
                             <% }%>
                         </table>
