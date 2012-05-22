@@ -81,5 +81,7 @@ public interface PersistenceInterface {
     
     public boolean endRent (Alquiler alq, Date fechaEntrega, int KMFin, int combustibleFin, String observaciones);
     
+    public boolean addInciencia (Incidencia inc);
+    
     public HashMap <String, Tarifa> getTarifas (String campo, String valor);
 }

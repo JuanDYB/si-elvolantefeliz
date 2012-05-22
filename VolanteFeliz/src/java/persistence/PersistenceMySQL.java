@@ -1314,6 +1314,33 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
+    
+    @Override
+    public boolean addInciencia (Incidencia inc){
+        Connection conexion = null;
+        PreparedStatement insert = null;
+        boolean ok = false;
+        try{
+            conexion = pool.getConnection();
+            insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Incidencia VALUES (?,?,?,?,?,?,?)");
+            insert.setString(1, inc.getCodIncidencia());
+            insert.setString(2, inc.getCodIncidencia());
+            insert.setString(3, inc.getCodAlquiler());
+            insert.setString(4, inc.getCodCliente());
+            insert.setDate(5, new java.sql.Date(inc.getFecha().getTime()));
+            insert.setString(6, inc.getObservaciones());
+            insert.setBigDecimal(7, inc.getPrecio());
+            
+            if (insert.executeUpdate() == 1){
+                ok = true;
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error en alta de incidencia en la base de datos", ex);
+        }finally{
+            cerrarConexionesYStatement(conexion, insert);
+        }
+        return ok;
+    }
 
     @Override
     public HashMap<String, Tarifa> getTarifas(String campo, String valor) {
