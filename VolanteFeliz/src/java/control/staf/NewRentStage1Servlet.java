@@ -59,7 +59,7 @@ public class NewRentStage1Servlet extends HttpServlet {
                 String fechaFin = request.getParameter("fechafin");
                 Cliente cli = persistence.getClient(codCliente);
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
-                if (cli != null) {
+                if (cli != null && cli.isActivo()) {
                     if (cli.getCodSucursal().equals(empl.getCodSucursal())) {
                         HashMap<String, Vehiculo> vehiculosDisponibles = persistence.getVehiclesForRent(cli.getCodSucursal(), fechaInicio, fechaFin, null, null);
                         if (vehiculosDisponibles != null) {
@@ -78,6 +78,9 @@ public class NewRentStage1Servlet extends HttpServlet {
                         Tools.anadirMensaje(request, "No se puede escoger este cliente porque no pertenece a esta sucursal", 'w');
 
                     }
+                }else if (!cli.isActivo()){
+                    request.setAttribute("resultados", "Cliente no disponible");
+                    Tools.anadirMensaje(request, "El cliente seleccionado se ha dado de baja del sistema", 'w');
                 } else {
                     request.setAttribute("resultados", "Cliente no encontrado");
                     Tools.anadirMensaje(request, "El cliente seleccionado no ha sido encontrado", 'w');

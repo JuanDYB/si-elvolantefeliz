@@ -39,7 +39,7 @@ public class DeleteClientServlet extends HttpServlet {
                 Tools.validateUUID(codCliente);
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Cliente cli = persistence.getClient(codCliente);
-                if (cli != null) {
+                if (cli != null && cli.isActivo()) {
                     HashMap<String, Alquiler> alquileresPendientes = persistence.getAlquileresClienteSinFacturar(cli);
                     HashMap<String, Incidencia> incidenciasPendientes = persistence.getIncidenciasClienteSinFacturar(cli);
                     HashMap<String, Alquiler> alquileresSinFinalizar = persistence.getAlquileres("codCliente", codCliente, null, false);
@@ -69,6 +69,12 @@ public class DeleteClientServlet extends HttpServlet {
                     } else {
                         Tools.anadirMensaje(request, "Ocurrieron errores al eliminar el cliente", 'e');
                     }
+                }else if (cli != null){
+                    request.setAttribute("resultados", "Cliente ya borrado");
+                    Tools.anadirMensaje(request, "El cliente que intenta borrar ya ha sido desactivado previamente", 'w');
+                }else{
+                    request.setAttribute("resultados", "Cliente no encontrado");
+                    Tools.anadirMensaje(request, "No se ha encontrado el cliente, no se ha podido eliminar", 'w');
                 }
             } catch (ValidationException ex) {
                 request.setAttribute("resultados", "Validacion de parámetros fallida");

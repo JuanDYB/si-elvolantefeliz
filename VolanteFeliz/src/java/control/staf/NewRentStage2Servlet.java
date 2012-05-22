@@ -55,12 +55,13 @@ public class NewRentStage2Servlet extends HttpServlet {
                 String fechaInicio = request.getParameter("fechainicio");
                 String fechafin = request.getParameter("fechafin");
                 String codTarifa = request.getParameter("tarifa");
+                int KMInicio = Tools.validateNumber(request.getParameter("KMInicio"), "Kilómetros de inicio", Integer.MAX_VALUE);
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Cliente cli = persistence.getClient(codCliente);
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
-                if (cli != null) {
+                if (cli != null && cli.isActivo()) {
                     if (cli.getCodSucursal().equals(empl.getCodSucursal())) {
-                        Boolean ok = persistence.newRent(empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechafin, codTarifa);
+                        Boolean ok = persistence.newRent(empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechafin, codTarifa, KMInicio);
                         if (ok == null) {
                             request.setAttribute("resultados", "Vehículo no disponible");
                             Tools.anadirMensaje(request, "El vehículo seleccionado ha dejado de estar disponible", 'w');
@@ -77,6 +78,9 @@ public class NewRentStage2Servlet extends HttpServlet {
                         request.setAttribute("resultados", "No tiene permisos");
                         Tools.anadirMensaje(request, "No se puede escoger este cliente porque no pertenece a esta sucursal", 'w');
                     }
+                } else if (!cli.isActivo()){
+                    request.setAttribute("resultados", "Cliente no disponible");
+                    Tools.anadirMensaje(request, "El cliente ha sido dado de baja del sistema", 'w');
                 } else {
                     request.setAttribute("resultados", "Cliente no encontrado");
                     Tools.anadirMensaje(request, "El cliente seleccionado no ha sido encontrado", 'w');
@@ -97,8 +101,8 @@ public class NewRentStage2Servlet extends HttpServlet {
     }
 
     private boolean validateForm(HttpServletRequest request) {
-        if (request.getParameterMap().size() >= 3 && request.getParameter("vehiculo") != null && request.getParameter("cli") != null
-                && request.getParameter("saveRent") != null) {
+        if (request.getParameterMap().size() >= 4 && request.getParameter("vehiculo") != null && request.getParameter("cli") != null
+                && request.getParameter("KMInicio")!= null && request.getParameter("saveRent") != null) {
             return true;
         }
         return false;

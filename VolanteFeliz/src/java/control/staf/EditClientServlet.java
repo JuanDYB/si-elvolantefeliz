@@ -59,7 +59,11 @@ public class EditClientServlet extends HttpServlet {
                     request.setAttribute("resultados", "Cliente no encontrado");
                     Tools.anadirMensaje(request, "El cliente que desea editar no se encuentra dado de alta en el sistema", 'w');
                     request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
-                } else if (clienteOriginal != null && !clienteOriginal.getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {
+                }else if (!clienteOriginal.isActivo()){
+                    request.setAttribute("resultados", "Cliente desactivado");
+                    Tools.anadirMensaje(request, "El cliente que desea editar se ha dado de baja del sistema", 'w');
+                    request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
+                }else if (clienteOriginal != null && !clienteOriginal.getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {
                     request.setAttribute("resultados", "Imposible editar cliente");
                     Tools.anadirMensaje(request, "No se puede editar el cliente seleccionado porque no pertenece a la sucursal actual", 'w');
                     request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
@@ -77,7 +81,7 @@ public class EditClientServlet extends HttpServlet {
                         Tools.anadirMensaje(request, "El cliente ha sido editado correctamente", 'o');
                         request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                     } else{
-                        Tools.anadirMensaje(request, "ha ocurrido un error editando el cliente", 'e');
+                        Tools.anadirMensaje(request, "Ha ocurrido un error editando el cliente", 'e');
                         request.getRequestDispatcher("/staf/editclient.jsp?cli=" + codCliente).forward(request, response);
                     }
                 }

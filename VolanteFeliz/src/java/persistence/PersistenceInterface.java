@@ -77,7 +77,9 @@ public interface PersistenceInterface {
     
     public HashMap <String, Vehiculo> getVehiclesForRent (String codSucursal, String fechaInicio, String fechaFin, String codVehiculo, Connection conExterna);
     
-    public Boolean newRent (String codSucursal, String cliente, String codVehiculo, String fechaInicio, String fechaFin, String codTarifa);
+    public Boolean newRent (String codSucursal, String cliente, String codVehiculo, String fechaInicio, String fechaFin, String codTarifa, int KMInicio);
+    
+    public Boolean endRent (String codAlquiler, Date fechaEntrega, int KMFin, int Combustible Fin, String observaciones);
     
     public HashMap <String, Tarifa> getTarifas (String campo, String valor);
 }

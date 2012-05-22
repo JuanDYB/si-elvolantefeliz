@@ -94,13 +94,19 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                                 <input name="send" type="submit" value="Confirmar Edici&oacute;n" />
                             </p>
                         </form>
-                        <% } else if (cli != null && !emplLogedIn.getCodSucursal().equals(cli.getCodSucursal())){ %>
+                        <% } else if (cli != null && cli.isActivo() && !emplLogedIn.getCodSucursal().equals(cli.getCodSucursal())){ %>
                         <blockquote class="exclamation" >
                             <p>
                                 No puede editar el cliente seleccionado porque no pertenece a esta sucursal
                             </p>
                         </blockquote>
-                        <% } else{ %>
+                        <% } else if (cli != null){ %>
+                        <blockquote class="exclamation" >
+                            <p>
+                                No se puede editar el cliente porque se ha dado de baja del sistema y está descativado
+                            </p>
+                        </blockquote>
+                        <% }else{ %>
                         <blockquote class="exclamation" >
                             <p>
                                 No se puede editar el cliente seleccionado porque no se ha encontrado dado de alta en el sistema

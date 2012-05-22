@@ -67,17 +67,19 @@
                                 <label>Seleccione un cliente</label>
                                 <select name ="cliente" class=":required : only_on_blur">
                                     <% for (Cliente cli : clientes.values()) {%>
+                                    <% if (cli.isActivo()) {%>
                                     <option value="<%= cli.getCodCliente()%>"><%= cli.getName()%>: <%= cli.getDni()%></option>
+                                    <% }%>
                                     <% }%>
                                 </select>
                             </p>
                             <p>
                                 <label>Seleccione una fecha de inicio</label>
-                                <input type="text" name="fechainicio" id="fechainicio" readonly="readonly" size="12" class=":required" />
+                                <input type="text" name="fechainicio" id="fechainicio" readonly="readonly" size="12" class=":required :only_on_submit" />
                             </p>
                             <p>
                                 <label>Seleccione una fecha de fin</label>
-                                <input type="text" name="fechafin" id="fechafin" readonly="readonly" size="12" class=":required" />
+                                <input type="text" name="fechafin" id="fechafin" readonly="readonly" size="12" class=":required :only_on_submit" />
                             </p>
                             <p>
                                 <input type="submit" name="continue" value="Continuar>>" />
@@ -122,6 +124,10 @@
                                     <option title="<%= tarif.getDescripcion()%>: <%= Tools.printBigDecimal(tarif.getPrecioDia())%> €/día" value="<%= tarif.getCodTarifa()%>"><%= tarif.getNombre()%></option>
                                     <% }%>
                                 </select>
+                            </p>
+                            <p>
+                                <label>Inserte los kilómetros actuales del vehículo</label>
+                                <input type="text" name="KMInicio" size="30" maxlength="10" class=":digits :required :only_on_blur" />
                             </p>
                             <p>
                                 <input type="hidden" name="cli" value="<%= cli.getCodCliente()%>" />

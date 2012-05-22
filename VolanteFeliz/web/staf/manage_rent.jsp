@@ -57,7 +57,7 @@
                     <div class="gradient">
                         <h1>Alquileres disponibles</h1>
                         <table>
-                            <tr class="theader"><td>Marca</td><td width="130" >Modelo</td><td width="170" >Cliente</td><td>F. Inicio</td><td>F. Fin</td><td>&nbsp;</td></tr>
+                            <tr class="theader"><td>Marca</td><td width="130" >Modelo</td><td width="170" >Cliente</td><td>F. Inicio</td><td>F. Fin</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                             <% for (Alquiler alq: alquileres.values()){ %>
                             <tr>
                                 <td><%= alq.getVehiculo().getMarca() %></td>
@@ -66,10 +66,12 @@
                                 <td><%= Tools.printDate(alq.getFechaInicio()) %></td>
                                 <% if (alq.getFechaEntrega() == null) { %>
                                 <td><%= Tools.printDate(alq.getFechaFin()) %></td>
+                                <td><a title="Finalizar Alquiler" href="/staf/endrent.jsp?rent=<%= alq.getCodAlquiler() %>"><img alt="fin" src="/images/icons/endRent.png"/></a></td>
                                 <% }else{ %>
                                 <td>Entregado<br /><%= Tools.printDate(alq.getFechaInicio()) %></td>
+                                <td><img title="Alquiler Finalizado" alt="fin" src="/images/icons/ok.png"/></td>
                                 <% } %>
-                                <td><a title="Detalles Alquiler" href="/staf/viewrent?rent=<%= alq.getCodAlquiler() %>"><img alq="verAlq" src="/images/icons/viewRent.png"/></a></td>
+                                <td><a title="Detalles Alquiler" href="/staf/viewrent.jsp?rent=<%= alq.getCodAlquiler() %>"><img alq="verAlq" src="/images/icons/viewRent.png"/></a></td>
                             </tr>
                             <% } %>
                         </table>

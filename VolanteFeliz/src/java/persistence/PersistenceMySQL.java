@@ -372,7 +372,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("codVehiculo"), null);
                 Tarifa tarifa = this.getTarifa(rs.getString("codTarifa"), null);
                 if (cli != null && vehicle != null && tarifa != null) {
-                    alq = new Alquiler(codAlquiler, cli, vehicle, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin"), rs.getDate("FechaFin"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio"), rs.getInt("KMFin"), rs.getInt("CombustibleFin"), rs.getString("Observaciones"));
+                    alq = new Alquiler(codAlquiler, cli, vehicle, tarifa, rs.getDate("FechaInicio"), rs.getDate("FechaFin"), rs.getDate("FechaEntrega"), rs.getBigDecimal("Importe"), rs.getInt("KMInicio"), rs.getInt("KMFin"), rs.getInt("CombustibleFin"), rs.getString("Observaciones"));
                 }
             }
         } catch (SQLException ex) {
@@ -1149,9 +1149,10 @@ public class PersistenceMySQL implements PersistenceInterface {
         boolean ok = false;
         try {
             conexion = pool.getConnection();
-            delete = conexion.prepareStatement("UPDATE " + nameBD + ".Cliente SET Activo=? WHERE codCliente=?");
+            delete = conexion.prepareStatement("UPDATE " + nameBD + ".Cliente SET Activo=? WHERE codCliente=? AND Activo=?");
             delete.setBoolean(1, false);
             delete.setString(2, codCliente);
+            delete.setBoolean(3, true);
             if (delete.executeUpdate() <= 1) {
                 ok = true;
             }
@@ -1249,7 +1250,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Boolean newRent(String codSucursal, String codCliente, String codVehiculo, String fechaInicio, String fechaFin, String codTarifa) {
+    public Boolean newRent(String codSucursal, String codCliente, String codVehiculo, String fechaInicio, String fechaFin, String codTarifa, int KMInicio) {
         Connection conexion = null;
         PreparedStatement insert = null;
         Boolean ok = false;
@@ -1268,7 +1269,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insert.setString(6, fechaFin);
                 insert.setNull(7, java.sql.Types.DATE);
                 insert.setNull(8, java.sql.Types.DECIMAL);
-                insert.setNull(9, java.sql.Types.INTEGER);
+                insert.setInt(9, KMInicio);
                 insert.setNull(10, java.sql.Types.INTEGER);
                 insert.setNull(11, java.sql.Types.INTEGER);
                 insert.setNull(12, java.sql.Types.OTHER);
