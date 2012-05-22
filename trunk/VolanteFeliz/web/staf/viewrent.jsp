@@ -4,6 +4,8 @@
     Author     : JuanDYB
 --%>
 
+<%@page import="model.Incidencia"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="model.Alquiler"%>
 <%@page import="model.Empleado"%>
 <%@page import="model.Cliente"%>
@@ -114,6 +116,27 @@
                                 <% if(alq.getObservaciones() != null){ %>
                                 <h3>Observaciones</h3>
                                 <p><%= alq.getObservaciones() %></p>
+                                <% } %>
+                    </div>
+                    <div class="gradient">
+                        <h1>Incidencias asociadas</h1>
+                                <% HashMap <String, Incidencia> incidenciasAlquiler = persistence.getIncidencias("codAlquiler", alq.getCodAlquiler());
+                                if (incidenciasAlquiler != null){ %>
+                                <table>
+                                    <tr class="theader"><td>Tipo</td><td>Descripción</td><td>Fecha</td><td>Importe</td></tr>
+                                    <% for (Incidencia inc: incidenciasAlquiler.values()) { %>
+                                    <tr>
+                                        <td><%= inc.getTipoIncidencia().getNombre() %></td>
+                                        <td><%= inc.getObservaciones() %></td>
+                                        <td><%= Tools.printDate(inc.getFecha()) %></td>
+                                        <td><%= Tools.printBigDecimal(inc.getPrecio()) %> €</td>
+                                    </tr>
+                                    <% } %>
+                                </table>
+                                <% }else{ %>
+                                <blockquote class="go">
+                                    <p>El alquiler actual no tiene incidencias asociadas</p>
+                                </blockquote>
                                 <% } %>
                     </div>
                     <% } else if (alq != null && !alq.getCliente().getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {%>

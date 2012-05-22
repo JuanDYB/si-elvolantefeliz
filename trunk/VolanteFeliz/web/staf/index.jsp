@@ -44,10 +44,14 @@
 
                         <ul>
                             <li><b>Sucursal: </b><%= suc.getNombre()%></li>
-                            <li><b>Nombre: </b><%= suc.getDir()%></li>
                             <li><b>Teléfono: </b><%= suc.getTelefono()%></li>
                             <li><b>Fax: </b><%= suc.getFax()%></li>
                             <li><b>Direcci&oacute;n: </b><%= suc.getDir()%></li>
+                            <% if (suc.isCentral()){ %>
+                            <li><b>Sucursal Central: </b>Si</li>
+                            <% }else{ %>
+                            <li><b>Sucursal Central: </b>No</li>
+                            <% } %>
                         </ul>
 
                         <h2>Informaci&oacute;n General del Empleado</h2>
