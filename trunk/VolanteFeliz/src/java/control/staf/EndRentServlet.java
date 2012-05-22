@@ -1,7 +1,6 @@
 package control.staf;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,38 +46,51 @@ public class EndRentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (this.validateForm(request)){
-            try{
-                Date fecha = new Date (Long.parseLong(request.getParameter("date")));
+        if (this.validateForm(request)) {
+            try {
+                Date fecha = new Date(Long.parseLong(request.getParameter("date")));
                 int KMFin = Tools.validateNumber(request.getParameter("KMFin"), "Kilómetros", Integer.MAX_VALUE);
                 int combustibleFin = Tools.validateNumber(request.getParameter("combustible_fin"), "Kilómetros", Integer.MAX_VALUE);
-                String observaciones = Tools.getContentTextArea(request.getPart("observaciones"));
+                String observaciones = request.getParameter("observaciones");
                 Tools.validateUUID(request.getParameter("rent"));
                 String codAlquiler = request.getParameter("rent");
                 Tools.validateHTML(observaciones);
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Alquiler alq = persistence.getAlquiler(codAlquiler);
-                
-                if (alq != null && alq.getFechaEntrega() == null){
-                    
-                }else if (alq != null){
-                    
-                }else{
-                    
+                if (alq != null && alq.getFechaEntrega() == null) {
+                    boolean ok = persistence.endRent(alq, fecha, KMFin, combustibleFin, observaciones);
+                    if (ok) {
+                        request.setAttribute("resultados", "Alquiler actualizado correctamente");
+                        Tools.anadirMensaje(request, "Se ha finalizado correctamente el alquiler y el precio ha sido calculado", 'o');
+                        request.getRequestDispatcher("/staf/viewrent.jsp?rent=" + codAlquiler).forward(request, response);
+                        return;
+                    } else {
+                        request.setAttribute("resultados", "Alquiler no finalizado");
+                        Tools.anadirMensaje(request, "Ocurrio un error finalizando el alquiler, disculpe las molestias", 'e');
+                    }
+                } else if (alq != null) {
+                    request.setAttribute("resultados", "Imposible finalizar");
+                    Tools.anadirMensaje(request, "El alquiler ha sido finalizado previamente, no se puede continuar", 'w');
+                } else {
+                    request.setAttribute("resultados", "Alquiler no encontrado");
+                    Tools.anadirMensaje(request, "El alquiler que desea finalizar no ha sido encontrado", 'e');
                 }
-                
-            }catch (IntrusionException ex){
-                
-            }catch (ValidationException ex){
-                
+            } catch (IntrusionException ex) {
+                request.setAttribute("resultados", "Detectada una intrusión");
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
+            } catch (ValidationException ex) {
+                request.setAttribute("resultados", "Validacion de parametros fallida");
+                Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
             }
-        }else{
-            
+        } else {
+            request.setAttribute("resultados", "Formulario no esperado");
+            Tools.anadirMensaje(request, "El formulario recibido no se esperaba", 'e');
         }
+        request.getRequestDispatcher("/staf/manage_rent.jsp").forward(request, response);
     }
 
     private boolean validateForm(HttpServletRequest request) {
-        if (request.getParameterMap().size() >= 5 && request.getParameter("KMFin") != null && request.getParameter("combustible_fin") != null 
+        if (request.getParameterMap().size() >= 5 && request.getParameter("KMFin") != null && request.getParameter("combustible_fin") != null
                 && request.getParameter("date") != null && request.getParameter("endrent") != null) {
             return true;
         }
