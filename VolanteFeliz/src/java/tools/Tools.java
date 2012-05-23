@@ -162,16 +162,7 @@ public class Tools {
             return false;
         }
     }
-
-    public static Locale getLocale() {
-        return new Locale("es", "ES");
-    }
-
-    public static Date getDate() {
-        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance(Tools.getLocale());
-        return cal.getTime();
-    }
-
+    
 //    public static String printDate(Date fecha) {
 //        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
 //        cal.setTime(fecha);
@@ -185,22 +176,6 @@ public class Tools {
 //        String[] date = cal.getTime().toString().split(" ");
 //        return date[2] + "-" + date[1] + "-" + date[5];
 //    }
-    
-    public static String printDate (Date fecha){
-        SimpleDateFormat formatedor = new SimpleDateFormat("dd'-'MMM'-'yyyy", Tools.getLocale());
-        return formatedor.format(fecha);
-    }
-    
-    public static int getMonthDate (Date fecha){
-        SimpleDateFormat formatedor = new SimpleDateFormat("MM", Tools.getLocale());
-        return Integer.parseInt(formatedor.format(fecha));
-    }
-    
-    public static String reverseDate (String date){
-        final String [] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
-        String [] fechaEsp = date.split("/");
-        return fechaEsp [2] + " - " + meses[Integer.parseInt(fechaEsp [1]) - 1] + " - " + fechaEsp [0];
-    }
     
     public static String roundDouble(double input) {
         NumberFormat format = DecimalFormat.getNumberInstance();
@@ -296,15 +271,63 @@ public class Tools {
         }
     }
     
+    public static Locale getLocale() {
+        return new Locale("es", "ES");
+    }
+
+    public static Date getDate() {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance(Tools.getLocale());
+        return cal.getTime();
+    }
+    
     public static boolean compareDate (String fechaInicio, String fechaFin){
-        String [] fInicio = fechaInicio.split("/");
-        String [] fFin = fechaFin.split("/");
-        GregorianCalendar calInicio = new GregorianCalendar(Integer.parseInt(fInicio[0]), Integer.parseInt(fInicio[1]), Integer.parseInt(fInicio[2]));
-        GregorianCalendar calFin = new GregorianCalendar(Integer.parseInt(fFin[0]), Integer.parseInt(fFin[1]), Integer.parseInt(fFin[2]));
-        
-        if (calFin.getTime().getTime() > calInicio.getTime().getTime()){ //FECHA FIN MAS GRANDE QUE LA DE INICIO
+        if (Tools.stringToDate_ES(fechaFin).getTime() > Tools.stringToDate_ES(fechaInicio).getTime()){ //FECHA FIN MAS GRANDE QUE LA DE INICIO
             return true;
         }
         return false;        
+    }
+    
+    public static boolean compareDate (Date fechaInicio, Date fechaFin){
+        if (fechaFin.getTime() > fechaInicio.getTime()){ //FECHA FIN MAS GRANDE QUE LA DE INICIO
+            return true;
+        }
+        return false;        
+    }
+    
+    public static String printDate (Date fecha){
+        SimpleDateFormat formatedor = new SimpleDateFormat("dd'-'MMM'-'yyyy", Tools.getLocale());
+        return formatedor.format(fecha);
+    }
+    
+    public static String printDate_numMonth (Date fecha){
+        SimpleDateFormat formatedor = new SimpleDateFormat("dd'-'MM'-'yyyy", Tools.getLocale());
+        return formatedor.format(fecha);
+    }
+    
+    public static int getMonthDate (Date fecha){
+        SimpleDateFormat formatedor = new SimpleDateFormat("MM", Tools.getLocale());
+        return Integer.parseInt(formatedor.format(fecha));
+    }
+    
+    public static Date stringToDate_EEUU (String fecha){
+        String [] fechaEsp = fecha.split("-");
+        GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(fechaEsp[0]), Integer.parseInt(fechaEsp[1]) - 1, Integer.parseInt(fechaEsp[2]));
+        return cal.getTime();
+    }
+    
+    public static Date stringToDate_ES (String fecha){
+        String [] fechaEsp = fecha.split("-");
+        GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(fechaEsp[2]), Integer.parseInt(fechaEsp[1]) - 1, Integer.parseInt(fechaEsp[0]));
+        return cal.getTime();
+    }
+    
+    public static String transformDate (String date){
+        return Tools.printDate(Tools.stringToDate_ES(date));
+    }
+    
+    public static Date validateDate(String input, String context) throws IntrusionException, ValidationException {
+        Validator validador = ESAPI.validator();
+        SimpleDateFormat formatedor = new SimpleDateFormat("dd'-'MM'-'yyyy", Tools.getLocale());
+        return validador.getValidDate(context, input, formatedor, false);
     }
 }

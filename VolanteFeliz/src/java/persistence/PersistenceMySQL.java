@@ -1178,7 +1178,7 @@ public class PersistenceMySQL implements PersistenceInterface {
      * ve.codVehiculo
      */
     @Override
-    public HashMap<String, Vehiculo> getVehiclesForRent(String codSucursal, String fechaInicio, String fechaFin, String codVehiculo, Connection conExterna) {
+    public HashMap<String, Vehiculo> getVehiclesForRent(String codSucursal, java.util.Date fechaInicio, java.util.Date fechaFin, String codVehiculo, Connection conExterna) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
@@ -1191,7 +1191,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             }
             if (codVehiculo == null) {
                 select = conexion.prepareStatement("SELECT ve.codVehiculo FROM " + nameBD + ".Vehiculo ve, " + nameBD + ".Alquiler alq "
-                        + "WHERE ve.codSucursal=? "
+                        + "WHERE ve.codSucursal=? AND ?>? "
                         + "AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM " + nameBD + ".Alquiler) "
                         + "OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) "
                         + "OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
@@ -1199,17 +1199,19 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "OR (alq.FechaInicio<? AND alq.FechaFin<? AND alq.FechaInicio<? AND alq.FechaFin<?))))) "
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
-                select.setString(2, fechaInicio);
-                select.setString(3, fechaInicio);
-                select.setString(4, fechaFin);
-                select.setString(5, fechaFin);
-                select.setString(6, fechaInicio);
-                select.setString(7, fechaInicio);
-                select.setString(8, fechaFin);
-                select.setString(9, fechaFin);
+                select.setDate(2, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(3, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(5, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(6, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(7, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(8, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(9, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(10, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(11, new java.sql.Date(fechaFin.getTime()));
             } else {
                 select = conexion.prepareStatement("SELECT ve.codVehiculo FROM " + nameBD + ".Vehiculo ve, " + nameBD + ".Alquiler alq "
-                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=? "
+                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=? AND ?>?"
                         + "AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM " + nameBD + ".Alquiler) "
                         + "OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) "
                         + "OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
@@ -1218,14 +1220,16 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
                 select.setString(2, codVehiculo);
-                select.setString(3, fechaInicio);
-                select.setString(4, fechaInicio);
-                select.setString(5, fechaFin);
-                select.setString(6, fechaFin);
-                select.setString(7, fechaInicio);
-                select.setString(8, fechaInicio);
-                select.setString(9, fechaFin);
-                select.setString(10, fechaFin);
+                select.setDate(3, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(5, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(6, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(7, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(8, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(9, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(10, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(11, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(12, new java.sql.Date(fechaFin.getTime()));
             }
 
             rs = select.executeQuery();
@@ -1251,7 +1255,7 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Boolean newRent(String codSucursal, String codCliente, String codVehiculo, String fechaInicio, String fechaFin, String codTarifa, int KMInicio) {
+    public Boolean newRent(String codSucursal, String codCliente, String codVehiculo, java.util.Date fechaInicio, java.util.Date fechaFin, String codTarifa, int KMInicio) {
         Connection conexion = null;
         PreparedStatement insert = null;
         Boolean ok = false;
@@ -1266,8 +1270,8 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insert.setString(2, codCliente);
                 insert.setString(3, codVehiculo);
                 insert.setString(4, codTarifa);
-                insert.setString(5, fechaInicio);
-                insert.setString(6, fechaFin);
+                insert.setDate(5, new java.sql.Date(fechaInicio.getTime()));
+                insert.setDate(6, new java.sql.Date(fechaFin.getTime()));
                 insert.setNull(7, java.sql.Types.DATE);
                 insert.setNull(8, java.sql.Types.DECIMAL);
                 insert.setInt(9, KMInicio);

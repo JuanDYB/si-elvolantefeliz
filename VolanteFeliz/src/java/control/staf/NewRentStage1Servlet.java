@@ -1,7 +1,7 @@
 package control.staf;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,8 +52,8 @@ public class NewRentStage1Servlet extends HttpServlet {
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Tools.validateUUID(request.getParameter("cliente"));
                 String codCliente = request.getParameter("cliente");
-                String fechaInicio = request.getParameter("fechainicio");
-                String fechaFin = request.getParameter("fechafin");
+                Date fechaInicio = Tools.validateDate(request.getParameter("fechainicio"), "Fecha de inicio");
+                Date fechaFin = Tools.validateDate(request.getParameter("fechafin"), "Fecha de fin");
                 //------VALIDAR FECHAS-------//
                 if (!Tools.compareDate(fechaInicio, fechaFin)){
                     request.setAttribute("resultados", "Fechas no válidas");

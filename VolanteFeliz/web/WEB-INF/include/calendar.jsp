@@ -29,14 +29,15 @@ jQuery(function($){
 });
 $(document).ready(function() {
            $("#fechainicio, #fechafin").datepicker({
-               numberOfMonths: 2,
+               numberOfMonths: 1,
                autoSize: true,
-               showAnim: 'fadeIn',
+               showAnim: 'show',
                changeMonth: true,
                showOn: 'button',
                buttonImageOnly: true,
                buttonImage: '/images/icons/datepicker.png',
-               dateFormat: 'yy/mm/dd'
+               buttonText: "Seleccione la fecha",
+               dateFormat: 'dd-mm-yy'
            });
         });
     </script>
