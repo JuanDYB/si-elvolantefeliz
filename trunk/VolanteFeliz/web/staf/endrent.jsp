@@ -105,7 +105,7 @@
                             </p>
                             <p>
                                 <input type="hidden" name="rent" value="<%= alq.getCodAlquiler() %>" />
-                                <input type="hidden" name="date" value="<%= today.getTime() %>" />
+                                <input type="hidden" name="date" value="<%= Tools.printDate_numMonth(today) %>" />
                                 <input type="submit" name="endrent" value="Confirmar fin de alquiler" />
                             </p>
                         </form>

@@ -1,7 +1,7 @@
 <%-- 
     Document   : clients_rentingfacture
     Created on : 09-abr-2012, 10:22:33
-    Author     : Juan Jose Olivares
+    Author     : Juan Díez-Yanguas Barber
 --%>
 
 <%@page import="model.Empleado"%>

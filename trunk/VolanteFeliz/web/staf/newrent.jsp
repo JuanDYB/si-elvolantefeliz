@@ -4,6 +4,7 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="java.util.Date"%>
 <%@page import="tools.Tools"%>
 <%@page import="model.Tarifa"%>
 <%@page import="model.Vehiculo"%>
@@ -75,11 +76,11 @@
                             </p>
                             <p>
                                 <label>Seleccione una fecha de inicio</label>
-                                <input type="text" name="fechainicio" id="fechainicio" readonly="readonly" size="12" class=":required :only_on_submit" />
+                                <input type="text" name="fechainicio" id="fechainicio" readonly="readonly" size="12" class=":date_au :required :only_on_submit" />
                             </p>
                             <p>
                                 <label>Seleccione una fecha de fin</label>
-                                <input type="text" name="fechafin" id="fechafin" readonly="readonly" size="12" class=":required :only_on_submit" />
+                                <input type="text" name="fechafin" id="fechafin" readonly="readonly" size="12" class=":date_au :required :only_on_submit" />
                             </p>
                             <p>
                                 <input type="submit" name="continue" value="Continuar>>" />
@@ -105,8 +106,8 @@
                         <ul>
                             <li><b>Cliente: </b><%= cli.getName()%></li>
                             <li><b>DNI: </b><%= cli.getDni()%></li>
-                            <li><b>Fecha Inicio: </b><%= Tools.reverseDate((String) request.getAttribute("fechaInicio"))%></li>
-                            <li><b>Fecha Fin: </b><%= Tools.reverseDate((String) request.getAttribute("fechaFin"))%></li>
+                            <li><b>Fecha Inicio: </b><%= Tools.printDate((Date)request.getAttribute("fechaInicio"))%></li>
+                            <li><b>Fecha Fin: </b><%= Tools.printDate((Date)request.getAttribute("fechaFin"))%></li>
                         </ul>
                         <form name="sel_veh" method="POST" action="/staf/newrent_2">
                             <p>
@@ -131,8 +132,8 @@
                             </p>
                             <p>
                                 <input type="hidden" name="cli" value="<%= cli.getCodCliente()%>" />
-                                <input type="hidden" name="fechainicio" value="<%= request.getAttribute("fechaInicio")%>" />
-                                <input type="hidden" name="fechafin" value="<%= request.getAttribute("fechaFin")%>" />
+                                <input type="hidden" name="fechainicio" value="<%= Tools.printDate_numMonth((Date)request.getAttribute("fechaInicio")) %>" />
+                                <input type="hidden" name="fechafin" value="<%= Tools.printDate_numMonth((Date)request.getAttribute("fechaFin")) %>" />
                                 <input type="submit" name="saveRent" value="Confirmar Alquiler" />
                             </p>
                         </form>

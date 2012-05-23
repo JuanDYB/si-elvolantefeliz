@@ -48,7 +48,7 @@ public class EndRentServlet extends HttpServlet {
             throws ServletException, IOException {
         if (this.validateForm(request)) {
             try {
-                Date fecha = new Date(Long.parseLong(request.getParameter("date")));
+                Date fecha = Tools.validateDate(request.getParameter("date"), "Fecha de Entrega");
                 int KMFin = Tools.validateNumber(request.getParameter("KMFin"), "Kilómetros", Integer.MAX_VALUE);
                 int combustibleFin = Tools.validateNumber(request.getParameter("combustible_fin"), "Kilómetros", Integer.MAX_VALUE);
                 Tools.validateUUID(request.getParameter("rent"));

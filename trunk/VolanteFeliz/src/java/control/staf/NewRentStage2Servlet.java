@@ -1,6 +1,7 @@
 package control.staf;
 
 import java.io.IOException;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +53,16 @@ public class NewRentStage2Servlet extends HttpServlet {
                 Tools.validateUUID(request.getParameter("vehiculo"));
                 String codVehiculo = request.getParameter("vehiculo");
                 String codCliente = request.getParameter("cli");
-                String fechaInicio = request.getParameter("fechainicio");
-                String fechafin = request.getParameter("fechafin");
+                Date fechaInicio = Tools.validateDate(request.getParameter("fechainicio"), "Fecha de inicio");
+                Date fechaFin = Tools.validateDate(request.getParameter("fechafin"), "Fecha de fin");
+                //------VALIDAR FECHAS-------//
+                if (!Tools.compareDate(fechaInicio, fechaFin)){
+                    request.setAttribute("resultados", "Fechas no válidas");
+                    Tools.anadirMensaje(request, "Ha introducido una fecha de fin que no es mayor que la de inicio", 'w');
+                    request.getRequestDispatcher("/staf/newrent.jsp?st=1").forward(request, response);
+                    return;
+                }
+                //------VALIDAR FECHAS-------//
                 String codTarifa = request.getParameter("tarifa");
                 int KMInicio = Tools.validateNumber(request.getParameter("KMInicio"), "Kilómetros de inicio", Integer.MAX_VALUE);
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
@@ -61,15 +70,15 @@ public class NewRentStage2Servlet extends HttpServlet {
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 if (cli != null && cli.isActivo()) {
                     if (cli.getCodSucursal().equals(empl.getCodSucursal())) {
-                        Boolean ok = persistence.newRent(empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechafin, codTarifa, KMInicio);
+                        Boolean ok = persistence.newRent(empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechaFin, codTarifa, KMInicio);
                         if (ok == null) {
                             request.setAttribute("resultados", "Vehículo no disponible");
                             Tools.anadirMensaje(request, "El vehículo seleccionado ha dejado de estar disponible", 'w');
-                            request.getRequestDispatcher("/staf/manage_rent.jsp").forward(request, response);
-                            return;
                         } else if (ok) {
                             request.setAttribute("resultados", "Alquiler añadido correctamente");
                             Tools.anadirMensaje(request, "El alquiler ha sido dado de alta correctamente", 'o');
+                            request.getRequestDispatcher("/staf/manage_rent.jsp").forward(request, response);
+                            return;
                         } else {
                             request.setAttribute("resultados", "Fallo de alta");
                             Tools.anadirMensaje(request, "Se ha producido un error añadiendo el nuevo alquiler", 'e');
