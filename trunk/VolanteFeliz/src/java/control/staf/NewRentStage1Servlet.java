@@ -54,6 +54,14 @@ public class NewRentStage1Servlet extends HttpServlet {
                 String codCliente = request.getParameter("cliente");
                 String fechaInicio = request.getParameter("fechainicio");
                 String fechaFin = request.getParameter("fechafin");
+                //------VALIDAR FECHAS-------//
+                if (!Tools.compareDate(fechaInicio, fechaFin)){
+                    request.setAttribute("resultados", "Fechas no válidas");
+                    Tools.anadirMensaje(request, "Ha introducido una fecha de fin que no es mayor que la de inicio", 'w');
+                    request.getRequestDispatcher("/staf/newrent.jsp?st=1").forward(request, response);
+                    return;
+                }
+                //------VALIDAR FECHAS-------//
                 Cliente cli = persistence.getClient(codCliente);
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 if (cli != null && cli.isActivo()) {
