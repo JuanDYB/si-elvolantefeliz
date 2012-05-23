@@ -1,7 +1,6 @@
 package tools;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,7 +14,6 @@ import javax.mail.Authenticator;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Validator;
 import org.owasp.esapi.errors.IntrusionException;
@@ -296,5 +294,17 @@ public class Tools {
         } catch (ScanException ex) {
             Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, ex.getMessage());
         }
+    }
+    
+    public static boolean compareDate (String fechaInicio, String fechaFin){
+        String [] fInicio = fechaInicio.split("/");
+        String [] fFin = fechaFin.split("/");
+        GregorianCalendar calInicio = new GregorianCalendar(Integer.parseInt(fInicio[0]), Integer.parseInt(fInicio[1]), Integer.parseInt(fInicio[2]));
+        GregorianCalendar calFin = new GregorianCalendar(Integer.parseInt(fFin[0]), Integer.parseInt(fFin[1]), Integer.parseInt(fFin[2]));
+        
+        if (calFin.getTime().getTime() > calInicio.getTime().getTime()){ //FECHA FIN MAS GRANDE QUE LA DE INICIO
+            return true;
+        }
+        return false;        
     }
 }
