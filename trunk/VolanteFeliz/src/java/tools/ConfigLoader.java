@@ -108,7 +108,13 @@ public class ConfigLoader {
             try{
                 Tools.validateHost(propiedades.get("smtp.host"));
                 Tools.validateNumber(propiedades.get("smtp.port"), "Puerto SMTP", Integer.MAX_VALUE);
-                Tools.validateUserName(propiedades.get("smtp.user"));
+                try{
+                    Tools.validateUserName(propiedades.get("smtp.user"));
+                }catch(ValidationException ex){
+                    Logger.getLogger(ConfigLoader.class.getName()).log(Level.INFO, "Validacion Fallida de nombre de usuario mail. Probando a validar como email");
+                    Logger.getLogger(ConfigLoader.class.getName()).log(Level.INFO, ex.getLogMessage(), ex);
+                    Tools.validateEmail(propiedades.get("smtp.user"));
+                }
                 Tools.validateBool(propiedades.get("smtp.tsl"));
                 Tools.validateBool(propiedades.get("smtp.auth"));
                 Tools.validateEmail(propiedades.get("smtp.from"));

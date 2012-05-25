@@ -826,7 +826,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 select = conexion.prepareStatement("SELECT alq.codAlquiler, alq.codCliente, alq.codVehiculo, alq.codTarifa, alq.FechaInicio, "
                         + "alq.FechaFin, alq.FechaEntrega, alq.Importe, alq.KMInicio, alq.KMFin, alq.CombustibleFin, alq.Observaciones "
                         + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Cliente cli "
-                        + "WHERE cli.codSucursal=? AND alq.codCliente= cli.codCliente");
+                        + "WHERE cli.codSucursal=? AND alq.codCliente=cli.codCliente");
                 select.setString(1, codSucursal);
             } else {
                 select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler alq");
@@ -1195,41 +1195,39 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM " + nameBD + ".Alquiler) "
                         + "OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) "
                         + "OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
-                        + "AND ((alq.FechaInicio>? AND alq.FechaFin>? AND alq.FechaInicio>? AND alq.FechaFin>?) "
-                        + "OR (alq.FechaInicio<? AND alq.FechaFin<? AND alq.FechaInicio<? AND alq.FechaFin<?))))) "
+                        + "AND ((?>alq.FechaFin AND ?>alq.FechaFin) "
+                        + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio))))) "
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
+                
                 select.setDate(2, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(3, new java.sql.Date(fechaInicio.getTime()));
+                
                 select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(5, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(6, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(5, new java.sql.Date(fechaFin.getTime()));
+                
+                select.setDate(6, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(7, new java.sql.Date(fechaFin.getTime()));
-                select.setDate(8, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(9, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(10, new java.sql.Date(fechaFin.getTime()));
-                select.setDate(11, new java.sql.Date(fechaFin.getTime()));
             } else {
                 select = conexion.prepareStatement("SELECT ve.codVehiculo FROM " + nameBD + ".Vehiculo ve, " + nameBD + ".Alquiler alq "
-                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=? AND ?>?"
+                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=? AND ?>? "
                         + "AND (ve.codVehiculo NOT IN (SELECT codVehiculo FROM " + nameBD + ".Alquiler) "
                         + "OR (alq.codVehiculo=ve.codVehiculo AND alq.FechaEntrega IS NOT NULL) "
                         + "OR ((ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
-                        + "AND ((alq.FechaInicio>? AND alq.FechaFin>? AND alq.FechaInicio>? AND alq.FechaFin>?) "
-                        + "OR (alq.FechaInicio<? AND alq.FechaFin<? AND alq.FechaInicio<? AND alq.FechaFin<?))))) "
+                        + "AND ((?>alq.FechaFin AND ?>alq.FechaFin) "
+                        + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio))))) "
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
                 select.setString(2, codVehiculo);
+                
                 select.setDate(3, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
+                
                 select.setDate(5, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(6, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(7, new java.sql.Date(fechaFin.getTime()));
-                select.setDate(8, new java.sql.Date(fechaFin.getTime()));
-                select.setDate(9, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(10, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(11, new java.sql.Date(fechaFin.getTime()));
-                select.setDate(12, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(6, new java.sql.Date(fechaFin.getTime()));
+                
+                select.setDate(7, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(8, new java.sql.Date(fechaFin.getTime()));         
             }
 
             rs = select.executeQuery();
