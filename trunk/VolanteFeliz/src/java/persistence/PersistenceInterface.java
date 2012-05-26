@@ -40,7 +40,7 @@ public interface PersistenceInterface {
     
     public Sucursal getSucursal (String codSucursal);
     
-    public Alquiler getAlquiler (String codAlquiler);
+    public Alquiler getAlquiler (String codAlquiler, Connection conExterna);
     
     public Factura getFactura (String codFactura, Connection conexionExterna);
     
@@ -82,6 +82,10 @@ public interface PersistenceInterface {
     public boolean endRent (Alquiler alq, Date fechaEntrega, int KMFin, int combustibleFin, String observaciones);
     
     public boolean addInciencia (Incidencia inc);
+    
+    public HashMap <String, Alquiler> getAlquileresPosiblesIncidencia (Date fecha, String matricula, String codAlquiler, Connection conexionExterna);
+    
+    public HashMap <String, TipoIncidencia> getTiposIncidencia ();
     
     public HashMap <String, Tarifa> getTarifas (String campo, String valor);
 }

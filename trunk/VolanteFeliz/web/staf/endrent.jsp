@@ -20,7 +20,7 @@
     }
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-    Alquiler alq = persistence.getAlquiler(request.getParameter("rent"));
+    Alquiler alq = persistence.getAlquiler(request.getParameter("rent"), null);
 %>
 
 <html>

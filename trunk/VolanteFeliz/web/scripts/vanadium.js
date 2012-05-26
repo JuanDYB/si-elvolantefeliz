@@ -1066,6 +1066,10 @@ Vanadium.setupValidatorTypes = function() {
             return Vanadium.validators_types['empty'].test(v) || /^[0-9]{2,3}$/.test(v)
         }, 'Introduzca una edad v&aacute;lida'],
         //
+        ['matricula', function (v) {
+            return Vanadium.validators_types['empty'].test(v) || /^([A-Z]{1,2}-[0-9]{4}-[A-Z]{2})|([0-9]{4}-[A-Z]{3})$/.test(v)
+        }, 'Introduzca Matrícula válida'],
+        //
         ['dir', function (v) {
             return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z0-9 \,\º\-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+\ [0-9]{5}-[a-zA-Z \-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
         }, 'Introduzca una direcci&oacute;n v&aacute;lida'],

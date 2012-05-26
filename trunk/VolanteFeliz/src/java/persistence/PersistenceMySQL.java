@@ -358,13 +358,17 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Alquiler getAlquiler(String codAlquiler) {
+    public Alquiler getAlquiler(String codAlquiler, Connection conExterna) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         Alquiler alq = null;
         try {
-            conexion = pool.getConnection();
+            if (conExterna == null){
+                conexion = pool.getConnection();
+            }else{
+                conexion = conExterna;
+            }
             select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE codAlquiler=?");
             select.setString(1, codAlquiler);
             rs = select.executeQuery();
@@ -379,8 +383,13 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un alquiler de la Base de Datos", rs);
         } finally {
+            if (conExterna == null){
             cerrarResultSets(rs);
             cerrarConexionesYStatement(conexion, select);
+            }else{
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(null, select);
+            }
         }
         return alq;
     }
@@ -410,7 +419,7 @@ public class PersistenceMySQL implements PersistenceInterface {
                 selectElementoFactura.setString(1, codFactura);
                 rsElementoFactura = selectElementoFactura.executeQuery();
                 while (rsElementoFactura.next()) {
-                    Alquiler alq = this.getAlquiler(rsElementoFactura.getString("codAlquiler"));
+                    Alquiler alq = this.getAlquiler(rsElementoFactura.getString("codAlquiler"), null);
                     if (alq != null) {
                         alquileresFactura.put(alq.getCodAlquiler(), alq);
                     }
@@ -1199,13 +1208,13 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio))))) "
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
-                
+
                 select.setDate(2, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(3, new java.sql.Date(fechaInicio.getTime()));
-                
+
                 select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(5, new java.sql.Date(fechaFin.getTime()));
-                
+
                 select.setDate(6, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(7, new java.sql.Date(fechaFin.getTime()));
             } else {
@@ -1219,15 +1228,15 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
                 select.setString(2, codVehiculo);
-                
+
                 select.setDate(3, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
-                
+
                 select.setDate(5, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(6, new java.sql.Date(fechaFin.getTime()));
-                
+
                 select.setDate(7, new java.sql.Date(fechaInicio.getTime()));
-                select.setDate(8, new java.sql.Date(fechaFin.getTime()));         
+                select.setDate(8, new java.sql.Date(fechaFin.getTime()));
             }
 
             rs = select.executeQuery();
@@ -1287,15 +1296,15 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
-    
+
     @Override
-    public boolean endRent (Alquiler alq, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones){
+    public boolean endRent(Alquiler alq, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones) {
         Connection conexion = null;
         PreparedStatement update = null;
         boolean ok = false;
         CalculateRentPrice calculator = new CalculateRentPrice(alq, fechaEntrega, combustibleFin);
         BigDecimal importe = calculator.calculateRentPrice();
-        try{
+        try {
             conexion = pool.getConnection();
             update = conexion.prepareStatement("UPDATE " + nameBD + ".Alquiler "
                     + "SET FechaEntrega=?, KMFin=?, CombustibleFin=?, Observaciones=?, Importe=? "
@@ -1306,42 +1315,125 @@ public class PersistenceMySQL implements PersistenceInterface {
             update.setString(4, observaciones);
             update.setBigDecimal(5, importe);
             update.setString(6, alq.getCodAlquiler());
-            if (update.executeUpdate() == 1){
+            if (update.executeUpdate() == 1) {
                 ok = true;
             }
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error finalizando alquiler en la base de datos", ex);
-        }finally{
+        } finally {
             cerrarConexionesYStatement(conexion, update);
         }
         return ok;
     }
-    
+
     @Override
-    public boolean addInciencia (Incidencia inc){
+    public boolean addInciencia(Incidencia inc) {
         Connection conexion = null;
         PreparedStatement insert = null;
         boolean ok = false;
-        try{
+        try {
             conexion = pool.getConnection();
             insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Incidencia VALUES (?,?,?,?,?,?,?)");
             insert.setString(1, inc.getCodIncidencia());
-            insert.setString(2, inc.getCodIncidencia());
+            insert.setString(2, inc.getTipoIncidencia().getCodTipoIncidencia());
             insert.setString(3, inc.getCodAlquiler());
             insert.setString(4, inc.getCodCliente());
             insert.setDate(5, new java.sql.Date(inc.getFecha().getTime()));
             insert.setString(6, inc.getObservaciones());
             insert.setBigDecimal(7, inc.getPrecio());
-            
-            if (insert.executeUpdate() == 1){
+
+            if (insert.executeUpdate() == 1) {
                 ok = true;
             }
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error en alta de incidencia en la base de datos", ex);
-        }finally{
+        } finally {
             cerrarConexionesYStatement(conexion, insert);
         }
         return ok;
+    }
+
+    @Override
+    public HashMap<String, Alquiler> getAlquileresPosiblesIncidencia(java.util.Date fecha, String matricula, String codAlquiler, Connection conexionExterna) {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Alquiler> alquileres = new HashMap<String, Alquiler>();
+        try {
+            if (conexionExterna == null) {
+                conexion = pool.getConnection();
+            } else {
+                conexion = conexionExterna;
+            }
+            if (codAlquiler == null) {
+                select = conexion.prepareStatement("SELECT alq.codAlquiler "
+                        + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
+                        + "WHERE ve.Matricula=? AND alq.codVehiculo=ve.codVehiculo "
+                        + "AND ((? BETWEEN alq.FechaInicio AND alq.FechaFin) OR (? BETWEEN alq.FechaInicio AND alq.FechaEntrega))");
+                select.setString(1, matricula);
+                select.setDate(2, new java.sql.Date(fecha.getTime()));
+                select.setDate(3, new java.sql.Date(fecha.getTime()));
+            } else {
+                select = conexion.prepareStatement("SELECT alq.codAlquiler "
+                        + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
+                        + "WHERE ve.Matricula=? AND alq.codVehiculo=ve.codVehiculo AND alq.codAlquiler=? "
+                        + "AND ((? BETWEEN alq.FechaInicio AND alq.FechaFin) OR (? BETWEEN alq.FechaInicio AND alq.FechaEntrega))");
+                select.setString(1, matricula);
+                select.setString(2, codAlquiler);
+                select.setDate(3, new java.sql.Date(fecha.getTime()));
+                select.setDate(4, new java.sql.Date(fecha.getTime()));
+            }
+            rs = select.executeQuery();
+            while (rs.next()){
+                Alquiler alq = this.getAlquiler(rs.getString("alq.codAlquiler"), conexion);
+                if (alq != null){
+                    alquileres.put(alq.getCodAlquiler(), alq);
+                }else{
+                    alquileres.clear();
+                    break;
+                }
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo los alquileres posibles para una incidencia", ex);
+        } finally {
+            if (conexionExterna == null) {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(conexion, select);
+            } else {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(null, select);
+            }
+        }
+        if (alquileres.isEmpty()) {
+            return null;
+        }
+        return alquileres;
+    }
+
+    @Override
+    public HashMap<String, TipoIncidencia> getTiposIncidencia() {
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, TipoIncidencia> tiposIncidencias = new HashMap<String, TipoIncidencia>();
+        try {
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT * FROM " + nameBD + ".TipoIncidencia");
+            rs = select.executeQuery();
+            while (rs.next()) {
+                TipoIncidencia tipoIncidencia = new TipoIncidencia(rs.getString("codTipoIncidencia"), rs.getString("Nombre"), rs.getString("Descripcion"), rs.getBoolean("AbonaCliente"));
+                tiposIncidencias.put(tipoIncidencia.getCodTipoIncidencia(), tipoIncidencia);
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error obteniendo los tipos de incidencia", ex);
+        } finally {
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (tiposIncidencias.isEmpty()) {
+            return null;
+        }
+        return tiposIncidencias;
     }
 
     @Override
