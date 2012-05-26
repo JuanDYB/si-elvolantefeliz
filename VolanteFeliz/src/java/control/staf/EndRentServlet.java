@@ -48,7 +48,7 @@ public class EndRentServlet extends HttpServlet {
             throws ServletException, IOException {
         if (this.validateForm(request)) {
             try {
-                Date fecha = Tools.validateDate(request.getParameter("date"), "Fecha de Entrega");
+                Date fechaEntrega = Tools.validateDate(request.getParameter("date"), "Fecha de Entrega");
                 int KMFin = Tools.validateNumber(request.getParameter("KMFin"), "Kilómetros", Integer.MAX_VALUE);
                 int combustibleFin = Tools.validateNumber(request.getParameter("combustible_fin"), "Kilómetros", Integer.MAX_VALUE);
                 Tools.validateUUID(request.getParameter("rent"));
@@ -60,9 +60,14 @@ public class EndRentServlet extends HttpServlet {
                 }
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Alquiler alq = persistence.getAlquiler(codAlquiler, null);
+                Date fechaFin = alq.getFechaFin();
                 if (alq != null && alq.getFechaEntrega() == null) {
                     if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible() && KMFin > alq.getKMInicio()) {
-                        boolean ok = persistence.endRent(alq, fecha, KMFin, combustibleFin, observaciones);
+                        if (fechaFin.getTime() > fechaEntrega.getTime()){
+                            fechaFin = fechaEntrega;
+                            Tools.anadirMensaje(request, "Se ha detectado que la fecha de entrega es anterior a la fecha prevista, la fecha de fin ha sido modificada deacuerdo con la fecha de entrega", 'w');
+                        }
+                        boolean ok = persistence.endRent(alq, fechaFin, fechaEntrega, KMFin, combustibleFin, observaciones);
                         if (ok) {
                             request.setAttribute("resultados", "Alquiler actualizado correctamente");
                             Tools.anadirMensaje(request, "Se ha finalizado correctamente el alquiler y el precio ha sido calculado", 'o');

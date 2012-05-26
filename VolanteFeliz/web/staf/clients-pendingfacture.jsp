@@ -57,6 +57,9 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Clientes con elementos pendientes de facturar</h1>
+                        <br />
+                        <h2>Seleccione un cliente</h2>
+                        <p>Puede ver aquí todos aquellos cliente que tengan algún elemento pendiente de facturar</p>
                         <% if (suc.isCentral()){ %>
                         <ul>
                             <li><a href="/staf/clients-pendingfacture.jsp?central=0">Mostrar clientes con facturacion pendiente para esta sucursal</a></li>

@@ -364,9 +364,9 @@ public class PersistenceMySQL implements PersistenceInterface {
         ResultSet rs = null;
         Alquiler alq = null;
         try {
-            if (conExterna == null){
+            if (conExterna == null) {
                 conexion = pool.getConnection();
-            }else{
+            } else {
                 conexion = conExterna;
             }
             select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Alquiler WHERE codAlquiler=?");
@@ -383,10 +383,10 @@ public class PersistenceMySQL implements PersistenceInterface {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un alquiler de la Base de Datos", rs);
         } finally {
-            if (conExterna == null){
-            cerrarResultSets(rs);
-            cerrarConexionesYStatement(conexion, select);
-            }else{
+            if (conExterna == null) {
+                cerrarResultSets(rs);
+                cerrarConexionesYStatement(conexion, select);
+            } else {
                 cerrarResultSets(rs);
                 cerrarConexionesYStatement(null, select);
             }
@@ -1210,11 +1210,11 @@ public class PersistenceMySQL implements PersistenceInterface {
 
                 select.setDate(6, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(7, new java.sql.Date(fechaInicio.getTime()));
-                
+
                 select.setString(8, codSucursal);
                 select.setDate(9, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(10, new java.sql.Date(fechaFin.getTime()));
-                 
+
             } else {
                 select = conexion.prepareStatement("SELECT ve.codVehiculo "
                         + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
@@ -1240,7 +1240,7 @@ public class PersistenceMySQL implements PersistenceInterface {
 
                 select.setDate(7, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(8, new java.sql.Date(fechaInicio.getTime()));
-                
+
                 select.setString(9, codSucursal);
                 select.setDate(10, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(11, new java.sql.Date(fechaFin.getTime()));
@@ -1249,9 +1249,9 @@ public class PersistenceMySQL implements PersistenceInterface {
             rs = select.executeQuery();
             while (rs.next()) {
                 Vehiculo vehicle = this.getVehiculo("codVehiculo", rs.getString("ve.codVehiculo"), conexion);
-                if (vehicle != null){
+                if (vehicle != null) {
                     vehiculos.put(vehicle.getCodVehiculo(), vehicle);
-                }else{
+                } else {
                     vehiculos.clear();
                     break;
                 }
@@ -1274,15 +1274,34 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public Boolean newRent(String codSucursal, String codCliente, String codVehiculo, java.util.Date fechaInicio, java.util.Date fechaFin, String codTarifa, int KMInicio) {
+    public boolean newRent(HttpServletRequest request, String codSucursal, String codCliente, String codVehiculo, java.util.Date fechaInicio, java.util.Date fechaFin, String codTarifa, int KMInicio) {
         Connection conexion = null;
         PreparedStatement insert = null;
+        PreparedStatement selectKM = null;
+        ResultSet rs = null;
         Boolean ok = false;
+        Integer KMFinUltimoAlquiler = null;
         try {
             conexion = pool.getConnection();
+            conexion.setAutoCommit(false);
             HashMap<String, Vehiculo> vehiculos = this.getVehiclesForRent(codSucursal, fechaInicio, fechaFin, codVehiculo, conexion);
+            selectKM = conexion.prepareStatement("SELECT KMFin FROM " + nameBD + ".Alquiler "
+                    + "WHERE FechaEntrega IS NOT NULL AND codVehiculo=? "
+                    + "ORDER BY FechaEntrega DESC LIMIT 1");
+            selectKM.setString(1, codVehiculo);
+            rs = selectKM.executeQuery();
+            while (rs.next()) {
+                KMFinUltimoAlquiler = rs.getInt("KMFin");
+            }
+
             if (vehiculos == null) {
-                ok = null;
+                request.setAttribute("resultados", "Vehículo no disponible");
+                Tools.anadirMensaje(request, "El vehículo seleccionado ha dejado de estar disponible", 'w');
+                conexion.rollback();
+            } else if (KMFinUltimoAlquiler != null && KMInicio < KMFinUltimoAlquiler) {
+                request.setAttribute("resultados", "Kilómetros de inicio incorrectos");
+                Tools.anadirMensaje(request, "Ha introducido unos kilómetros de inicio menores que con los que se entregó la última vez", 'w');
+                conexion.rollback();
             } else {
                 insert = conexion.prepareStatement("INSERT INTO " + nameBD + ".Alquiler VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
                 insert.setString(1, Tools.generaUUID());
@@ -1299,18 +1318,31 @@ public class PersistenceMySQL implements PersistenceInterface {
                 insert.setNull(12, java.sql.Types.OTHER);
                 if (insert.executeUpdate() == 1) {
                     ok = true;
+                    conexion.commit();
+                } else {
+                    conexion.rollback();
                 }
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error insertando nuevo alquiler en la base de datos", ex);
+            try {
+                conexion.rollback();
+            } catch (SQLException ex1) {
+                logger.log(Level.SEVERE, "Error haciendo rollback de transacción de nuevo alquiler", ex1);
+            }
         } finally {
-            cerrarConexionesYStatement(conexion, insert);
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, insert, selectKM);
+        }
+        if (!ok) {
+            request.setAttribute("resultados", "Fallo de alta");
+            Tools.anadirMensaje(request, "Se ha producido un error añadiendo el nuevo alquiler", 'e');
         }
         return ok;
     }
 
     @Override
-    public boolean endRent(Alquiler alq, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones) {
+    public boolean endRent(Alquiler alq, java.util.Date fechaFin, java.util.Date fechaEntrega, int KMFin, int combustibleFin, String observaciones) {
         Connection conexion = null;
         PreparedStatement update = null;
         boolean ok = false;
@@ -1319,14 +1351,15 @@ public class PersistenceMySQL implements PersistenceInterface {
         try {
             conexion = pool.getConnection();
             update = conexion.prepareStatement("UPDATE " + nameBD + ".Alquiler "
-                    + "SET FechaEntrega=?, KMFin=?, CombustibleFin=?, Observaciones=?, Importe=? "
+                    + "SET FechaFin=? FechaEntrega=?, KMFin=?, CombustibleFin=?, Observaciones=?, Importe=? "
                     + "WHERE codAlquiler=? AND FechaEntrega IS NULL");
-            update.setDate(1, new java.sql.Date(fechaEntrega.getTime()));
-            update.setInt(2, KMFin);
-            update.setInt(3, combustibleFin);
-            update.setString(4, observaciones);
-            update.setBigDecimal(5, importe);
-            update.setString(6, alq.getCodAlquiler());
+            update.setDate(1, new java.sql.Date(fechaFin.getTime()));
+            update.setDate(2, new java.sql.Date(fechaEntrega.getTime()));
+            update.setInt(3, KMFin);
+            update.setInt(4, combustibleFin);
+            update.setString(5, observaciones);
+            update.setBigDecimal(6, importe);
+            update.setString(7, alq.getCodAlquiler());
             if (update.executeUpdate() == 1) {
                 ok = true;
             }
@@ -1396,11 +1429,11 @@ public class PersistenceMySQL implements PersistenceInterface {
                 select.setDate(4, new java.sql.Date(fecha.getTime()));
             }
             rs = select.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 Alquiler alq = this.getAlquiler(rs.getString("alq.codAlquiler"), conexion);
-                if (alq != null){
+                if (alq != null) {
                     alquileres.put(alq.getCodAlquiler(), alq);
-                }else{
+                } else {
                     alquileres.clear();
                     break;
                 }
