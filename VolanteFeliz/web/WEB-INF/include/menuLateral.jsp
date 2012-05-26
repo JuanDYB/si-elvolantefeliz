@@ -36,6 +36,7 @@
                 <li><a href="/staf/bill_management.jsp" title="Gestion Facturacion">Gesti&oacute;n Facturaci&oacute;n</a></li>
                 <li><a href="/staf/newrent.jsp?st=1" title="Nuevo Alquiler">Nuevo Alquiler</a></li>
                 <li><a href="/staf/manage_rent.jsp" title="Gestionar alquileres">Gestión Alquileres</a></li>
+                <li><a href="/staf/newincidence.jsp" title="Nueva Incidencia">Nueva Incidencia</a></li>
             </ul>
         </li>
         <% if(emplLogedIn.getPermisos() == 'a'){ %>

@@ -55,11 +55,11 @@ public class EndRentServlet extends HttpServlet {
                 String codAlquiler = request.getParameter("rent");
                 String observaciones = null;
                 if (request.getParameter("observaciones") != null && !request.getParameter("observaciones").isEmpty()) {
-                    observaciones = request.getParameter("observaciones");
+                    observaciones = request.getParameter("observaciones").replaceAll("\n", "<br />");
                     Tools.validateHTML(observaciones);
                 }
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
-                Alquiler alq = persistence.getAlquiler(codAlquiler);
+                Alquiler alq = persistence.getAlquiler(codAlquiler, null);
                 if (alq != null && alq.getFechaEntrega() == null) {
                     if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible() && KMFin > alq.getKMInicio()) {
                         boolean ok = persistence.endRent(alq, fecha, KMFin, combustibleFin, observaciones);

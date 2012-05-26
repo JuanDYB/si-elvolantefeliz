@@ -74,6 +74,11 @@ public class Tools {
         }
     }
 
+    public static String validateMatricula(String input) throws IntrusionException, ValidationException {
+        Validator validador = ESAPI.validator();
+        return validador.getValidInput("Matricula", input, "Matricula", 10, false);
+    }
+    
     public static String validateEmail(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Email", input, "Email", 60, false);
