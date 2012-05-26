@@ -70,18 +70,12 @@ public class NewRentStage2Servlet extends HttpServlet {
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 if (cli != null && cli.isActivo()) {
                     if (cli.getCodSucursal().equals(empl.getCodSucursal())) {
-                        Boolean ok = persistence.newRent(empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechaFin, codTarifa, KMInicio);
-                        if (ok == null) {
-                            request.setAttribute("resultados", "Vehículo no disponible");
-                            Tools.anadirMensaje(request, "El vehículo seleccionado ha dejado de estar disponible", 'w');
-                        } else if (ok) {
+                        boolean ok = persistence.newRent(request, empl.getCodSucursal(), codCliente, codVehiculo, fechaInicio, fechaFin, codTarifa, KMInicio);
+                        if (ok) {
                             request.setAttribute("resultados", "Alquiler añadido correctamente");
                             Tools.anadirMensaje(request, "El alquiler ha sido dado de alta correctamente", 'o');
                             request.getRequestDispatcher("/staf/manage_rent.jsp").forward(request, response);
                             return;
-                        } else {
-                            request.setAttribute("resultados", "Fallo de alta");
-                            Tools.anadirMensaje(request, "Se ha producido un error añadiendo el nuevo alquiler", 'e');
                         }
                     } else {
                         request.setAttribute("resultados", "No tiene permisos");

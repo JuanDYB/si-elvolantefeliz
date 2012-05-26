@@ -49,7 +49,6 @@
                         <ul>
                             <li><a href="/staf/clients-pendingfacture.jsp?central=0">Nueva Factura</a></li>
                             <li><a href="/staf/pending_paybill.jsp">Pagar Factura</a></li>
-                            <li><a href="/staf/pending_paybill.jsp" >Ver facturas pendientes de pago</a></li>
                             <% if (suc.isCentral()) {%>
                             <li><b>Sucursal Central: </b><a href="/staf/bill_management.jsp?all=1">Ver todas las facturas</a></li>
                             <li><b>Sucursal Central: </b><a href="/staf/pending_paybill.jsp?all=1" ></a>Ver todas las facturas pendientes de pago</li>
