@@ -68,7 +68,7 @@ public class ConfirmIncidenceServlet extends HttpServlet {
                 if (persistence.addInciencia(incidencia)){
                     request.setAttribute("resultados", "Incidencia añadida");
                     Tools.anadirMensaje(request, "Incidencia dada de alta correctamente", 'o');
-                    request.getRequestDispatcher("/staf/index.jsp").forward(request, response);
+                    request.getRequestDispatcher("/staf/manage_incidence.jsp").forward(request, response);
                     return;
                 }else{
                     request.setAttribute("resultados", "Error añadiendo incidencia");
