@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -7,7 +8,7 @@ import java.util.Date;
  *
  * @author Juan Díez-Yanguas Barber
  */
-public class Alquiler {
+public class Alquiler implements Serializable{
     private String codAlquiler;
     private Cliente cliente;
     private Vehiculo vehiculo;
