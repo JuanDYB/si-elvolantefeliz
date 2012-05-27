@@ -120,7 +120,7 @@
                     </div>
                     <div class="gradient">
                         <h1>Incidencias asociadas</h1>
-                                <% HashMap <String, Incidencia> incidenciasAlquiler = persistence.getIncidencias("codAlquiler", alq.getCodAlquiler());
+                                <% HashMap <String, Incidencia> incidenciasAlquiler = persistence.getIncidencias("codAlquiler", alq.getCodAlquiler(), null);
                                 if (incidenciasAlquiler != null){ %>
                                 <table>
                                     <tr class="theader"><td>Tipo</td><td>Descripción</td><td>Fecha</td><td>Importe</td></tr>
