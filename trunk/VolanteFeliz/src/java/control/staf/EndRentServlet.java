@@ -62,7 +62,8 @@ public class EndRentServlet extends HttpServlet {
                 Alquiler alq = persistence.getAlquiler(codAlquiler, null);
                 Date fechaFin = alq.getFechaFin();
                 if (alq != null && alq.getFechaEntrega() == null) {
-                    if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible() && KMFin > alq.getKMInicio()) {
+                    if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible() && KMFin > alq.getKMInicio() 
+                            && fechaEntrega.getTime() > alq.getFechaInicio().getTime()) {
                         if (fechaFin.getTime() > fechaEntrega.getTime()){
                             fechaFin = fechaEntrega;
                             Tools.anadirMensaje(request, "Se ha detectado que la fecha de entrega es anterior a la fecha prevista, la fecha de fin ha sido modificada deacuerdo con la fecha de entrega", 'w');
@@ -77,7 +78,11 @@ public class EndRentServlet extends HttpServlet {
                             request.setAttribute("resultados", "Alquiler no finalizado");
                             Tools.anadirMensaje(request, "Ocurrio un error finalizando el alquiler, disculpe las molestias", 'e');
                         }
-                    } else if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible()) {
+                    }else if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible() && KMFin > alq.getKMInicio()){
+                        request.setAttribute("resultados", "Datos incorrectos");
+                        Tools.anadirMensaje(request, "Se ha detectado que la fecha de entrega es anterior a la fecha de inicio. Esto no es posible. Alquiler no finalizado", 'w');
+                    }
+                    else if (combustibleFin <= alq.getVehiculo().getCapacidadCombustible()) {
                         request.setAttribute("resultados", "Datos incorrectos");
                         Tools.anadirMensaje(request, "Ha introducido un kilometraje no válido, ha de ser mayor que los kilómetros de inicio del alquiler", 'w');
                     } else {

@@ -178,6 +178,7 @@
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Informes Gráficos</h1>
+                        <h2>Grafíca de alquileres e incidencias mensuales por cliente</h2>
                         <% if (alquileresCliente != null || incidenciasCliente != null) {%>
                         <%@include file="/WEB-INF/include/chart_AlquileresIncidenciasCliente.jsp" %>
                         <% } else {%>
@@ -186,6 +187,7 @@
                         </blockquote>
                         <% }%>
                         <br />
+                        <h2>Grafíca de facturación mensual por cliente</h2>
                         <% if (facturasCliente != null) {%>
                         <%@include file="/WEB-INF/include/chart_FacturacionCliente.jsp" %>
                         <% } else {%>
@@ -194,6 +196,7 @@
                         </blockquote>
                         <% }%>
                         <%@include file="/WEB-INF/include/chartRequired.jsp" %>
+                        <p><b>NOTA: </b>La facturación indicada en la gráfica no incluye el IVA</p>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
 

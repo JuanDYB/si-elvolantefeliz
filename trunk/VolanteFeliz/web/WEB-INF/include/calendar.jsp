@@ -28,7 +28,7 @@ jQuery(function($){
 	$.datepicker.setDefaults($.datepicker.regional['es']);
 });
 $(document).ready(function() {
-           $("#fechainicio, #fechafin, #fechainc").datepicker({
+           $("#fechainicio, #fechafin, #fechainc, #fechaentrega").datepicker({
                numberOfMonths: 1,
                autoSize: true,
                showAnim: 'show',

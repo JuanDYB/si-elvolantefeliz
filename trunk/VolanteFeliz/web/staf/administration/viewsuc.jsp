@@ -155,6 +155,7 @@
                     </div>
                     <div class="gradient">
                         <h1>Informes Gráficos</h1>
+                        <h2>Grafíca de alquileres e incidencias mensuales por sucursal</h2>
                         <% if (alquileresSucursal != null || incidenciasSuc != null) {%>
                         <%@include file="/WEB-INF/include/chart_AlquileresIncidenciasSucursal.jsp" %>
                         <% } else {%>
@@ -163,6 +164,7 @@
                         </blockquote>
                         <% }%>
                         <br />
+                        <h2>Grafíca de facturación mensual por sucursal</h2>
                         <% if (facturasSucursal != null) {%>
                         <%@include file="/WEB-INF/include/chart_FacturacionSucursal.jsp" %>
                         <% } else {%>
@@ -171,6 +173,7 @@
                         </blockquote>
                         <% }%>
                         <%@include file="/WEB-INF/include/chartRequired.jsp" %>
+                        <p><b>NOTA: </b>La facturación indicada en la gráfica no incluye el IVA</p>
                     </div>
 
                     <% } else if (suc != null && !suc.getCodSucursal().equals(emplLogedIn.getCodSucursal()) && !sucActual.isCentral()) {%>

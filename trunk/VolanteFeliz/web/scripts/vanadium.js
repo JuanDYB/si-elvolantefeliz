@@ -1086,8 +1086,12 @@ Vanadium.setupValidatorTypes = function() {
         }, 'Introduzca un DNI v&aacute;lido'],
         //
         ['user_name', function (v) {
-            return Vanadium.validators_types['empty'].test(v) || /^[a-z][a-z0-9_]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+            return Vanadium.validators_types['empty'].test(v) || /^[a-z][a-z0-9_.-]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
         }, 'Introduzca un nombre de usuario v&aacute;lido'],
+        //
+        ['password', function (v) {
+            return Vanadium.validators_types['empty'].test(v) || /^[A-Za-z0-9._$%&/()= -#@áÁéÉíÍóÓúÚüÜñÑ]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+        }, 'Introduzca una contraseña válida'],
         //
         ['asciialpha', function (v) {
             return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)

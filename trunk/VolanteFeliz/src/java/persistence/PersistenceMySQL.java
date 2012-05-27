@@ -1353,12 +1353,12 @@ public class PersistenceMySQL implements PersistenceInterface {
         Connection conexion = null;
         PreparedStatement update = null;
         boolean ok = false;
-        CalculateRentPrice calculator = new CalculateRentPrice(alq, fechaEntrega, combustibleFin);
+        CalculateRentPrice calculator = new CalculateRentPrice(alq, fechaFin, fechaEntrega, combustibleFin);
         BigDecimal importe = calculator.calculateRentPrice();
         try {
             conexion = pool.getConnection();
             update = conexion.prepareStatement("UPDATE " + nameBD + ".Alquiler "
-                    + "SET FechaFin=? FechaEntrega=?, KMFin=?, CombustibleFin=?, Observaciones=?, Importe=? "
+                    + "SET FechaFin=?, FechaEntrega=?, KMFin=?, CombustibleFin=?, Observaciones=?, Importe=? "
                     + "WHERE codAlquiler=? AND FechaEntrega IS NULL");
             update.setDate(1, new java.sql.Date(fechaFin.getTime()));
             update.setDate(2, new java.sql.Date(fechaEntrega.getTime()));
