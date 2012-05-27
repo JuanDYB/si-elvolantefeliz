@@ -120,13 +120,14 @@
                             int[] incMes = new int[12];
                             if (incidenciasCliente != null) {%>
                         <table>
-                            <tr class="theader"><td>Observaciones</td><td>Fecha</td><td>Importe</td></tr>
+                            <tr class="theader"><td>Observaciones</td><td>Fecha</td><td>Importe</td><td>&nbsp;</td></tr>
                             <% for (Incidencia inc : incidenciasCliente.values()) {
                                     incMes[Tools.getMonthDate(inc.getFecha()) - 1]++;%>
                             <tr>
                                 <td><b><%= inc.getTipoIncidencia().getNombre()%>: </b><%= inc.getObservaciones()%></td>
                                 <td><%= Tools.printDate(inc.getFecha())%></td>
                                 <td><%= Tools.printBigDecimal(inc.getPrecio())%> €</td>
+                                <td><a title="Detalles Incidencia"  href="/staf/viewincidence.jsp?inc=<%= inc.getCodIncidencia() %>"><img src="/images/icons/view_incidence.png" alt="ver incidencia" /></a></td>
                             </tr>
                             <% }%>
                         </table>

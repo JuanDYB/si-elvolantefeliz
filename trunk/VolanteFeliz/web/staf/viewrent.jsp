@@ -123,13 +123,14 @@
                                 <% HashMap <String, Incidencia> incidenciasAlquiler = persistence.getIncidencias("codAlquiler", alq.getCodAlquiler(), null);
                                 if (incidenciasAlquiler != null){ %>
                                 <table>
-                                    <tr class="theader"><td>Tipo</td><td>Descripción</td><td>Fecha</td><td>Importe</td></tr>
+                                    <tr class="theader"><td>Tipo</td><td>Descripción</td><td>Fecha</td><td>Importe</td><td>&nbsp;</td></tr>
                                     <% for (Incidencia inc: incidenciasAlquiler.values()) { %>
                                     <tr>
                                         <td><%= inc.getTipoIncidencia().getNombre() %></td>
                                         <td><%= inc.getObservaciones() %></td>
                                         <td><%= Tools.printDate(inc.getFecha()) %></td>
                                         <td><%= Tools.printBigDecimal(inc.getPrecio()) %> €</td>
+                                        <td><a title="Detalles Incidencia"  href="/staf/viewincidence.jsp?inc=<%= inc.getCodIncidencia() %>"><img src="/images/icons/view_incidence.png" alt="ver incidencia" /></a></td>
                                     </tr>
                                     <% } %>
                                 </table>
