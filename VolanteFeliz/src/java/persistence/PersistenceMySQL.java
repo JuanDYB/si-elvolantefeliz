@@ -457,15 +457,22 @@ public class PersistenceMySQL implements PersistenceInterface {
     }
 
     @Override
-    public HashMap<String, Incidencia> getIncidencias(String campo, String valor) {
+    public HashMap<String, Incidencia> getIncidencias(String campo, String valor, String codSucursal) {
         Connection conexion = null;
         PreparedStatement select = null;
         ResultSet rs = null;
         HashMap<String, Incidencia> incidencias = new HashMap<String, Incidencia>();
         try {
             conexion = pool.getConnection();
-            select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE " + campo + "=?");
+            if (campo != null && valor != null){
+                select = conexion.prepareStatement("SELECT codIncidencia FROM " + nameBD + ".Incidencia WHERE " + campo + "=?");
             select.setString(1, valor);
+            }else{
+                select = conexion.prepareStatement("SELECT codIncidencia "
+                        + "FROM " + nameBD + ".Incidencia inc, " + nameBD + ".Cliente cli "
+                        + "WHERE cli.codCliente=? AND inc.codCliente=cli.codCliente");
+                select.setString(1, codSucursal);
+            }
             rs = select.executeQuery();
             incidencias = new HashMap<String, Incidencia>();
             while (rs.next()) {
