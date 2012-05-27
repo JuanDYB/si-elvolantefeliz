@@ -26,7 +26,6 @@
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     Sucursal suc = persistence.getSucursal(request.getParameter("suc"));
-    Sucursal sucActual = persistence.getSucursal(emplLogedIn.getCodSucursal());
     WebConfig webConfig = (WebConfig) application.getAttribute("appConfig");
 %>
 <html>
@@ -52,7 +51,7 @@
 
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
-                    <% if (suc != null && (suc.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || sucActual.isCentral())) {%>
+                    <% if (suc != null) {%>
                     <div class="gradient">
                         <h1>Detalles de Sucursal</h1>
                         <h2>Detalles generales</h2>
@@ -70,11 +69,11 @@
                     </div>
                     <div class="gradient">
                         <h1>Alquileres de la sucursal</h1>
-                        <% HashMap<String, Alquiler> alquileresSucursal = persistence.getAlquileres(null, null, emplLogedIn.getCodSucursal(), null);
+                        <% HashMap<String, Alquiler> alquileresSucursal = persistence.getAlquileres(null, null, suc.getCodSucursal(), null);
                                 int[] alqMes = new int[12];
                                 if (alquileresSucursal != null) {%>
                         <table>
-                            <tr class="theader"><td>Marca</td><td>Modelo</td><td>Fechas</td><td>Importe</td></tr>
+                            <tr class="theader"><td>Marca</td><td>Modelo</td><td>Fechas</td><td>Importe</td><td></td></tr>
                             <% for (Alquiler alq : alquileresSucursal.values()) {
                                     alqMes[Tools.getMonthDate(alq.getFechaInicio()) - 1]++;%>
                             <tr>
@@ -87,6 +86,7 @@
                                 <td><%= Tools.printDate(alq.getFechaInicio())%> a <%= Tools.printDate(alq.getFechaFin())%></td>
                                 <td>No finalizado</td>
                                 <% }%>
+                                <td><a title="Detalles Alquiler" href="/staf/viewrent.jsp?rent=<%= alq.getCodAlquiler() %>"><img alq="verAlq" src="/images/icons/viewRent.png"/></a></td>
                             </tr>
                             <% }%>
                         </table>
@@ -100,7 +100,7 @@
                     </div> 
                     <div class="gradient">
                         <h1>Incidencias de la sucursal</h1>
-                        <% HashMap<String, Incidencia> incidenciasSuc = persistence.getIncidencias(null, null, emplLogedIn.getCodSucursal());
+                        <% HashMap<String, Incidencia> incidenciasSuc = persistence.getIncidencias(null, null, suc.getCodSucursal());
                                     int[] incMes = new int[12];
                                     if (incidenciasSuc != null) {%>
                         <table>
@@ -124,14 +124,14 @@
                     <div class="gradient">
                         <h1>Registro de Facturación</h1>
                         <%
-                            HashMap<String, Factura> facturasSucursal = persistence.getFacturas("1", "1", emplLogedIn.getCodSucursal());
+                            HashMap<String, Factura> facturasSucursal = persistence.getFacturas("1", "1", suc.getCodSucursal());
                             ArrayList<BigDecimal> facMes = new ArrayList<BigDecimal>(12);
                             for (int i = 0; i < 12; i++) {
                                 facMes.add(BigDecimal.ZERO);
                             }
                             if (facturasSucursal != null) { %>
                             <table>
-                            <tr class="theader"><td>Fecha</td><td>Importe</td><td>Importe + IVA</td><td>Estado</td></tr>
+                                <tr class="theader"><td>Fecha</td><td>Importe</td><td>Importe + IVA</td><td>Estado</td><td>&nbsp;</td></tr>
                             <% for (Factura fac : facturasSucursal.values()) {
                                     facMes.set(Tools.getMonthDate(fac.getFechaEmision()) - 1, facMes.get(Tools.getMonthDate(fac.getFechaEmision()) - 1).add(fac.getImporteSinIVA()));%>
                             <tr>
@@ -143,6 +143,9 @@
                                 <% } else {%>
                                 <td>Pagada: <%= Tools.printDate(fac.getFechaPago())%></td>
                                 <% }%>
+                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fac.getCodFactura()%>">
+                                        <img src="/images/icons/bill.png" alt="VerFactura"/>
+                                    </a></td>
                             </tr>
                             <% }%>
                         </table>
@@ -174,13 +177,6 @@
                         <% }%>
                         <%@include file="/WEB-INF/include/chartRequired.jsp" %>
                         <p><b>NOTA: </b>La facturación indicada en la gráfica no incluye el IVA</p>
-                    </div>
-
-                    <% } else if (suc != null && !suc.getCodSucursal().equals(emplLogedIn.getCodSucursal()) && !sucActual.isCentral()) {%>
-                    <div class="gradient">
-                        <blockquote class="exclamation">
-                            <p>No tiene permisos para ver los detalles de esta sucursal</p>
-                        </blockquote>
                     </div>
                     <% } else {%>
                     <div class="gradient">
