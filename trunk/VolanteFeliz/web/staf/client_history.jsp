@@ -86,7 +86,7 @@
                             int[] alqMes = new int[12];
                             if (alquileresCliente != null) {%>
                         <table>
-                            <tr class="theader"><td>Marca</td><td>Modelo</td><td>Fechas</td><td>Importe</td></tr>
+                            <tr class="theader"><td>Marca</td><td>Modelo</td><td>Fechas</td><td>Importe</td><td>&nbsp;</td></tr>
                             <% for (Alquiler alq : alquileresCliente.values()) {
                                     alqMes[Tools.getMonthDate(alq.getFechaInicio()) - 1]++;%>
                             <tr>
@@ -99,7 +99,7 @@
                                 <td><%= Tools.printDate(alq.getFechaInicio())%> a <%= Tools.printDate(alq.getFechaFin())%></td>
                                 <td>No finalizado</td>
                                 <% }%>
-
+                                <td><a title="Detalles Alquiler" href="/staf/viewrent.jsp?rent=<%= alq.getCodAlquiler() %>"><img alq="verAlq" src="/images/icons/viewRent.png"/></a></td>
                             </tr>
                             <% }%>
                         </table>
@@ -151,7 +151,7 @@
                             if (facturasCliente != null) {
                         %>
                         <table>
-                            <tr class="theader"><td>Fecha</td><td>Importe</td><td>Importe + IVA</td><td>Estado</td></tr>
+                            <tr class="theader"><td>Fecha</td><td>Importe</td><td>Importe + IVA</td><td>Estado</td><td>&nbsp;</td></tr>
                             <% for (Factura fac : facturasCliente.values()) {
                                     facMes.set(Tools.getMonthDate(fac.getFechaEmision()) - 1, facMes.get(Tools.getMonthDate(fac.getFechaEmision()) - 1).add(fac.getImporteSinIVA()));%>
                             <tr>
@@ -163,6 +163,9 @@
                                 <% } else {%>
                                 <td>Pagada: <%= Tools.printDate(fac.getFechaPago())%></td>
                                 <% }%>
+                                <td><a title="Detalles Factura" href="/staf/viewbill.jsp?bill=<%= fac.getCodFactura()%>">
+                                        <img src="/images/icons/bill.png" alt="VerFactura"/>
+                                    </a></td>
                             </tr>
                             <% }%>
                         </table>

@@ -470,7 +470,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             }else{
                 select = conexion.prepareStatement("SELECT codIncidencia "
                         + "FROM " + nameBD + ".Incidencia inc, " + nameBD + ".Cliente cli "
-                        + "WHERE cli.codCliente=? AND inc.codCliente=cli.codCliente");
+                        + "WHERE cli.codSucursal=? AND inc.codCliente=cli.codCliente");
                 select.setString(1, codSucursal);
             }
             rs = select.executeQuery();
