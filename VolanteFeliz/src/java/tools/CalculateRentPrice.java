@@ -12,18 +12,20 @@ public class CalculateRentPrice {
     private final long MILLSECS_PER_DAY = 24 * 60 * 60 * 1000;
     private Alquiler alq;
     private Date fechaEntrega;
+    private Date fechaFin;
     private int combustibleFin;
 
-    public CalculateRentPrice(Alquiler alq, Date fechaEntrega, int combustibleFin) {
+    public CalculateRentPrice(Alquiler alq, Date fechaFin, Date fechaEntrega, int combustibleFin) {
         this.alq = alq;
+        this.fechaFin = fechaFin;
         this.fechaEntrega = fechaEntrega;
         this.combustibleFin = combustibleFin;
     }
     
     
     public BigDecimal calculateRentPrice() {
-        long diasAlquiler = this.difFechas(alq.getFechaFin(), alq.getFechaInicio());
-        long diasExtra = this.difFechas(fechaEntrega, alq.getFechaFin());
+        long diasAlquiler = this.difFechas(fechaFin, alq.getFechaInicio()) + 1;
+        long diasExtra = this.difFechas(fechaEntrega, fechaFin);
         int combustibleGastado = alq.getVehiculo().getCapacidadCombustible() - combustibleFin;
         
         BigDecimal precioDiasNormal = alq.getTarifa().getPrecioDia().multiply(new BigDecimal(diasAlquiler));

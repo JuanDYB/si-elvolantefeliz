@@ -25,16 +25,18 @@
 
 <html>
     <head>
-        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
+        <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.7.2.custom.css" />
         <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
         
         <script type="text/javascript" src="/scripts/jquery-1.7.2.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
         
         <script type="text/javascript" src="/scripts/tiny_mce/tiny_mce.js"></script>
         <script type="text/javascript" src="/scripts/editor.js"></script>
         
         <script type="text/javascript" src="/scripts/vanadium.js"></script>
-        
+        <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
+        <%@include file="/WEB-INF/include/calendar.jsp" %>
         
         <title>Finalizar Alquiler</title>
     </head>
@@ -58,7 +60,6 @@
                     <%if (alq != null && alq.getFechaEntrega() == null) {%>
                     <div class="gradient">
                         <h1>Finalizar Alquiler</h1>
-                        <% Date today = Tools.getDate(); %>
                         <h2>Información del Alquiler</h2>
                         <ul>
                             <li><b>Código del alquiler: </b><%= alq.getCodAlquiler()%></li>
@@ -74,7 +75,7 @@
                             <li><b>Kilómetros iniciales: </b><%= alq.getKMInicio() %> Kilómetros</li>
                             <li><h3>Estado del alquiler</h3>
                                 <ul>
-                                    <li><b>Fecha de Entrega: </b><%= Tools.printDate(today) %></li>
+                                    <li>Alquiler no finalizado</li>
                                 </ul>
                             </li>
                             <li><h3>Información de la Tarifa</h3>
@@ -90,7 +91,10 @@
                         </ul>
                         <h2>Datos de finalización</h2>
                         <form name="endrent" action="/staf/endrent" method="POST">
-                            <p>La fecha de entrega la puede ver señalada al inicio de la página. Se ha generado automáticamente conforme a la fecha actual</p>
+                            <p>
+                                <label>Seleccione la fecha de entrega (fecha acordada de fin por defecto)</label>
+                                <input type="text" name="date" value="<%= Tools.printDate_numMonth(alq.getFechaFin()) %>" id="fechaentrega" readonly="readonly" size="12" class=":date_au :required :only_on_submit" />
+                            </p>
                             <p>
                                 <label>Introduzca los kilómetros finales</label>
                                 <input type="text" name="KMFin" size="30" maxlength="10" class=":digits :required :only_on_blur" />
@@ -105,7 +109,6 @@
                             </p>
                             <p>
                                 <input type="hidden" name="rent" value="<%= alq.getCodAlquiler() %>" />
-                                <input type="hidden" name="date" value="<%= Tools.printDate_numMonth(today) %>" />
                                 <input type="submit" name="endrent" value="Confirmar fin de alquiler" />
                             </p>
                         </form>
