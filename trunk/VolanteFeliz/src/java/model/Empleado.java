@@ -1,10 +1,12 @@
 package model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Juan Díez-Yanguas Barber
  */
-public class Empleado {
+public class Empleado implements Serializable{
     private String codEmpleado;
     private String userName;
     private String pass;

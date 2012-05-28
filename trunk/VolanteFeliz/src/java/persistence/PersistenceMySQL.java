@@ -35,10 +35,6 @@ public class PersistenceMySQL implements PersistenceInterface {
         return instance;
     }
 
-    public void setDebug(MysqlDataSource pool) {
-        this.pool = pool;
-    }
-
     @Override
     public boolean init(String recurso, String nameBD) {
         this.nameBD = nameBD;
