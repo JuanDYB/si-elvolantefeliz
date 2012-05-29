@@ -15,7 +15,7 @@
         <% } else{ %>
         <li><a href="/login.jsp" title="Login" <%= menuLogin %> >Login</a></li>
         <% } %>
-        <li><a href="/about.jsp" title="Acerca de" <%= menuAbout %> >Ayuda</a></li>
+        <li><a href="/about.jsp" title="Acerca de" <%= menuAbout %> >Acerca de</a></li>
         <li><a href="/contact.jsp" title="Contacta" <%= menuContacto %> >Contacto</a></li>
     </ul>
 </div>

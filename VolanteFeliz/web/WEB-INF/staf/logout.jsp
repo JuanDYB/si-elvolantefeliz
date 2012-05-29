@@ -39,6 +39,7 @@
                     <div class="gradient">
                         <h1>Cerrar Sesi&oacute;n</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
+                        <p><img alt="logout" class="floatRight" src="/images/icons/logoutIcon.png"/></p>
                         <h2>Sesi&oacute;n cerrada correctamente</h2>
                         <p>
                             Sera redirigido en 3 segundos a la p&aacute;gina principal, si no se redirige autom&aacute;ticamente haga click <a href="/index.jsp">aqu&iacute;</a>

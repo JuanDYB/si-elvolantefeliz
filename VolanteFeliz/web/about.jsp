@@ -13,7 +13,7 @@
 <html>
     <head>
         <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
-        <title>Ayuda</title>
+        <title>Acerca de</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -36,7 +36,13 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>El Volante Feliz - Ayuda</h1>
+                        <h1>El Volante Feliz - Acerca de</h1>
+                        <h2>Personas encargadas del desarrollo del proyecto</h2>
+                        <ul>
+                            <li><b>Jefe de Proyecto: </b>Juan Díez-Yanguas Barber</li>
+                            <li><b>Jefe de Proyecto: </b></li>
+                            <li>Juan Díez-Yanguas Barber</li>
+                        </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

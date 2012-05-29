@@ -48,7 +48,7 @@
                     <div class="gradient">
                         <h1>Detalles Incidencia</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        
+                        <p><img alt="incidence" class="floatRight" src="/images/icons/incidenceIcon.png"/></p>
                         <ul>
 
                             <li><h3>Tipo de Incidencia: </h3>

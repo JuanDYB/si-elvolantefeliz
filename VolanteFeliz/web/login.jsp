@@ -44,6 +44,7 @@
                     <div class="gradient">
                         <h1>Acceso al &Aacute;rea de Administraci&oacute;n</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
+                        <p><img alt="login" class="floatRight" src="/images/icons/loginIcon.png"/></p>
                         <h2>Inicio de Sesi&oacute;n</h2>
                         <% WebConfig appConfig = (WebConfig) application.getAttribute("appConfig");
                         int intentosMax = appConfig.getMaxLoginAttempt();

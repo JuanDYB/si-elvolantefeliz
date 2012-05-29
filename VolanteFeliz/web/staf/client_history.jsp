@@ -60,6 +60,7 @@
                         <h1>Detalles Cliente</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Informaci&oacute;n General del Cliente</h2>
+                        <p><img alt="chart" class="floatRight" src="/images/icons/Chart_history.png"/></p>
                         <ul>
 
                             <li><b>Nombre: </b><%= cli.getName()%></li>

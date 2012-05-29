@@ -62,6 +62,7 @@
                             <p>Esta viendo únicamente al cliente porque sus datos son necesarios para el historial de la empresa</p>
                         </blockquote>
                         <% }%>
+                        <p><img alt="rent" class="floatRight" src="/images/icons/rentIcon.png"/></p>
                         <ul>
 
                             <li><b>Nombre: </b><%= cli.getName()%></li>

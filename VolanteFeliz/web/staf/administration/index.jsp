@@ -42,6 +42,7 @@
                         <h1>El Volante Feliz - Zona de administraci&oacute;n</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Informaci&oacute;n General de la sucursal</h2>
+                        <p><img alt="icono suc" class="floatRight" src="/images/icons/iconoSucursal.png"/></p>
                         <ul>
                             <li><b>Sucursal: </b><%= suc.getNombre()%></li>
                             <li><b>Teléfono: </b><%= suc.getTelefono() %></li>
@@ -52,8 +53,10 @@
                             <% }else{ %>
                             <li><b>Sucursal Central: </b>No</li>
                             <% } %>
-                        </ul>           
+                        </ul>
+                        <br /><br />
                         <h2>Informaci&oacute;n General del Empleado</h2>
+                        <p><img alt="icono empl" class="floatRight" src="/images/icons/iconoEmpleado.png"/></p>
                         <ul>
                             <li><b>Nombre: </b><%= emplLogedIn.getName() %></li>
                             <li><b>Nombre de Usuario: </b><%= emplLogedIn.getUserName() %></li>
