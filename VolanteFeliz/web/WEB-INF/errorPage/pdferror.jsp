@@ -43,6 +43,7 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
                             Sentimos las molestias ocacionadas. Haga <a href="/staf/index.jsp">click aquí</a> para volver al inicio
                         </p>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
+                        <p style="text-align: center"><img src="/images/icons/pdfError.png" alt="prohibido" /></p>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

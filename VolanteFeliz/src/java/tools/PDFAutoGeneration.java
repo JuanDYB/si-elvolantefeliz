@@ -27,9 +27,9 @@ public class PDFAutoGeneration {
         Sucursal sucActiva = persistence.getSucursal(empl.getCodSucursal());
         
         Factura factura = persistence.getFactura(codFactura, null);
-        Sucursal sucFactura = this.getSucursalFactura(persistence, sucActiva, factura.getCliente().getCodSucursal());
 
         if (factura != null) {
+            Sucursal sucFactura = this.getSucursalFactura(persistence, sucActiva, factura.getCliente().getCodSucursal());
             if (factura.getCliente().getCodSucursal().equals(empl.getCodSucursal()) || sucActiva.isCentral()) {
                 if (Tools.existeArchivo(request.getServletContext().getRealPath("/staf/billFolder/" + codFactura + ".pdf"))) {
                     return true;

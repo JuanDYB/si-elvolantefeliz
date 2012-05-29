@@ -75,7 +75,7 @@ HashMap <String, TipoIncidencia> tiposIncidencias = persistence.getTiposIncidenc
                                 <textarea name="observaciones" cols="60" rows="15" class=":required :only_on_blur" ></textarea>
                             </p>
                             <p>
-                                <input type="submit" value="Confirmar Datos" name="newinc" />
+                                <input type="submit" value="Continuar >>" name="newinc" />
                             </p>
                         </form>
                     </div>

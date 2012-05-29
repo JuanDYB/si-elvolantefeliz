@@ -38,6 +38,7 @@ Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
                         <p>Ha ocurrido un error interno en el servidor, disculpe las molestias</p>
                         <p>Si lo desea puede <a href="/contact.jsp">contactar</a> con nosotros para comunicarnos el error</p>
                         <p>Puede volver al <a href="/index.jsp">inicio</a> si lo desea</p>
+                        <p style="text-align: center"><img src="/images/icons/serverError.png" alt="prohibido" /></p>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>
