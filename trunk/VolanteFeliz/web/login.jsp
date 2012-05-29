@@ -60,6 +60,7 @@
                                 <blockquote class="exclamation">
                                     <p>Intentos de inicio de sesi&oacute;n agotados. Puede intentarlo de nuevo pasados unos minutos</p>
                                 </blockquote>
+                                <p style="text-align: center"><img src="/images/icons/lock.png" alt="prohibido" /></p>
                         <% } else{ %>
                         <form name="login" method="POST" action="/login">
                             <p>

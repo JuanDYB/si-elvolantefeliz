@@ -68,6 +68,11 @@
                             <li><b>Categoría: </b>Empleado</li>
                             <% }%>
                         </ul>
+                        
+                        <p style="text-align: center;">
+                        <a title="Manual de usuario" href="/staf/ManualUsuario.pdf">
+                            <img src="/images/icons/userManual.png"  alt="manual usuario" /></a>
+                        </p>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

@@ -34,7 +34,7 @@
         <link rel="stylesheet" type="text/css" href="/css/validacion.css" media="screen, tv, projection" />
         <%@include file="/WEB-INF/include/calendar.jsp" %>
         <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
-        <title>Nuevo Cliente</title>
+        <title>Nuevo Alquiler</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->

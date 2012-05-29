@@ -52,7 +52,7 @@
                         <h2>Empleados disponibles</h2>
                         <p><b>NOTA: </b>Si hay una sucursal central aparecerá marcada con un <i>tick</i></p>
                         <table>
-                            <tr class="theader"><td>Nombre</td><td>Teléfono</td><td>Fax</td><td>Dirección</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            <tr class="theader"><td>Nombre</td><td>Teléfono</td><td>Fax</td><td>Dirección</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                             <% for (Sucursal suc: sucursales.values()){ %>
                             <tr>
                                 <td><%= suc.getNombre() %></td>
@@ -65,6 +65,9 @@
                                 <% }else{ %>
                                 <td>&nbsp;</td>
                                 <% } %>
+                                <td><a title="Ver empleados" href="/staf/administration/manage_empl.jsp?suc=<%= suc.getCodSucursal() %>">
+                                        <img src="/images/icons/view_empl.png" alt="ver empleados" /></a>
+                                </td>
                                 
                             </tr>
                             <% } %>

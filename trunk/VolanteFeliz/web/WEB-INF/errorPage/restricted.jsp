@@ -39,6 +39,7 @@
                     <div class="gradient">
                         <h1>Intento de entrada en area restringida</h1>
                         <p>Ser&aacute; redirigido a la <a href="/login.jsp">p&aacute;gina de login</a> autom&aacute;ticamente en 3 segundos</p>
+                        <p style="text-align: center"><img src="/images/icons/lock.png" alt="prohibido" /></p>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

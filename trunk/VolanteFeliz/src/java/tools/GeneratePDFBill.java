@@ -258,7 +258,7 @@ public class GeneratePDFBill {
                 descripcionIncidencia.add(new Phrase("Fecha Incidencia: ", fuenteNormalDestacado));
                 descripcionIncidencia.add(new Phrase(Tools.printDate(inc.getFecha()) + "\n", fuenteNormal));
                 descripcionIncidencia.add(new Phrase("Observaciones: ", fuenteNormalDestacado));
-                descripcionIncidencia.add(new Phrase(inc.getObservaciones() + "\n ", fuenteNormal));
+                descripcionIncidencia.add(new Phrase(inc.getObservaciones().replaceAll("<br />", "\n") + "\n ", fuenteNormal));
                 celdaDescripcionIncidencia.setColspan(2);
                 celdaDescripcionIncidencia.addElement(descripcionIncidencia);
                 Phrase precio = new Phrase(Tools.printBigDecimal(inc.getPrecio()) + " €", fuenteNormal);

@@ -1194,59 +1194,95 @@ public class PersistenceMySQL implements PersistenceInterface {
                         + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
                         + "WHERE ve.codSucursal=? AND ?>? "
                         + "AND(ve.codVehiculo IN (SELECT * FROM " + nameBD + ".VDisponibleNoAlquilado) "
-                        + "OR (ve.codVehiculo=alq.codVehiculo AND alq.codVehiculo IN (SELECT * FROM " + nameBD + ".VDisponibleAlqFinalizado)) "
+                        //Intervalo entre inicio Fin
                         + "OR (ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
                         + "AND ((?>alq.FechaFin AND ?>alq.FechaFin) "
+                        + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio))) "
+                        //Intervalo entre inicio y entrega
+                        + "OR (ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NOT NULL "
+                        + "AND ((?>alq.FechaEntrega AND ?>alq.FechaEntrega) "
                         + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio)))) "
+                        //Quitar a los no validos entre inicio y fin
                         + "AND ve.codVehiculo NOT IN (SELECT ve.codVehiculo FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
                         + "WHERE ve.codSucursal=? AND ve.codVehiculo=alq.codVehiculo "
                         + "AND alq.FechaEntrega IS NULL "
                         + "AND ((? BETWEEN alq.FechaInicio AND alq.FechaFin)OR(? BETWEEN alq.FechaInicio AND alq.FechaFin))) "
+                        //Quitar a los no validos entre inicio y entrega
+                        + "AND ve.codVehiculo NOT IN (SELECT ve.codVehiculo FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
+                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=alq.codVehiculo "
+                        + "AND alq.FechaEntrega IS NOT NULL "
+                        + "AND ((? BETWEEN alq.FechaInicio AND alq.FechaEntrega)OR(? BETWEEN alq.FechaInicio AND alq.FechaEntrega))) "
+                        //Agrupar
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
-
                 select.setDate(2, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(3, new java.sql.Date(fechaInicio.getTime()));
-
+                
                 select.setDate(4, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(5, new java.sql.Date(fechaInicio.getTime()));
-
                 select.setDate(6, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(7, new java.sql.Date(fechaInicio.getTime()));
 
-                select.setString(8, codSucursal);
+                select.setDate(8, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(9, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(10, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(11, new java.sql.Date(fechaInicio.getTime()));
+
+                select.setString(12, codSucursal);
+                select.setDate(13, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(14, new java.sql.Date(fechaFin.getTime()));
+                
+                select.setString(15, codSucursal);
+                select.setDate(16, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(17, new java.sql.Date(fechaFin.getTime()));
 
             } else {
                 select = conexion.prepareStatement("SELECT ve.codVehiculo "
                         + "FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
                         + "WHERE ve.codSucursal=? AND ve.codVehiculo=? AND ?>? "
                         + "AND(ve.codVehiculo IN (SELECT * FROM " + nameBD + ".VDisponibleNoAlquilado) "
-                        + "OR (ve.codVehiculo=alq.codVehiculo AND alq.codVehiculo IN (SELECT * FROM " + nameBD + ".VDisponibleAlqFinalizado)) "
+                        //Intervalo entre inicio Fin
                         + "OR (ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NULL "
                         + "AND ((?>alq.FechaFin AND ?>alq.FechaFin) "
+                        + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio))) "
+                        //Intervalo entre inicio y entrega
+                        + "OR (ve.codVehiculo=alq.codVehiculo AND alq.FechaEntrega IS NOT NULL "
+                        + "AND ((?>alq.FechaEntrega AND ?>alq.FechaEntrega) "
                         + "OR (?<alq.FechaInicio AND ?<alq.FechaInicio)))) "
+                        //Quitar a los no validos entre inicio y fin
                         + "AND ve.codVehiculo NOT IN (SELECT ve.codVehiculo FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
                         + "WHERE ve.codSucursal=? AND ve.codVehiculo=alq.codVehiculo "
                         + "AND alq.FechaEntrega IS NULL "
                         + "AND ((? BETWEEN alq.FechaInicio AND alq.FechaFin)OR(? BETWEEN alq.FechaInicio AND alq.FechaFin))) "
+                        //Quitar a los no validos entre inicio y entrega
+                        + "AND ve.codVehiculo NOT IN (SELECT ve.codVehiculo FROM " + nameBD + ".Alquiler alq, " + nameBD + ".Vehiculo ve "
+                        + "WHERE ve.codSucursal=? AND ve.codVehiculo=alq.codVehiculo "
+                        + "AND alq.FechaEntrega IS NOT NULL "
+                        + "AND ((? BETWEEN alq.FechaInicio AND alq.FechaEntrega)OR(? BETWEEN alq.FechaInicio AND alq.FechaEntrega))) "
+                        //Agrupar
                         + "GROUP BY ve.codVehiculo");
                 select.setString(1, codSucursal);
                 select.setString(2, codVehiculo);
-
                 select.setDate(3, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(4, new java.sql.Date(fechaInicio.getTime()));
-
+                
                 select.setDate(5, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(6, new java.sql.Date(fechaInicio.getTime()));
-
                 select.setDate(7, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(8, new java.sql.Date(fechaInicio.getTime()));
 
-                select.setString(9, codSucursal);
+                select.setDate(9, new java.sql.Date(fechaFin.getTime()));
                 select.setDate(10, new java.sql.Date(fechaInicio.getTime()));
                 select.setDate(11, new java.sql.Date(fechaFin.getTime()));
+                select.setDate(12, new java.sql.Date(fechaInicio.getTime()));
+
+                select.setString(13, codSucursal);
+                select.setDate(14, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(15, new java.sql.Date(fechaFin.getTime()));
+                
+                select.setString(16, codSucursal);
+                select.setDate(17, new java.sql.Date(fechaInicio.getTime()));
+                select.setDate(18, new java.sql.Date(fechaFin.getTime()));
             }
 
             rs = select.executeQuery();
