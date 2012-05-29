@@ -36,12 +36,33 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>El Volante Feliz - Acerca de</h1>
-                        <h2>Personas encargadas del desarrollo del proyecto</h2>
+                        <h1>Acerca de</h1>
+                        <h2>¿Quién ha construido este Sistema de Información?</h2>
+                        <h3>Eiffel &amp; Cibeles Software S.L</h3>
+                        <p><img alt="code" class="floatRight" src="/images/icons/xcode.png"/></p>
                         <ul>
                             <li><b>Jefe de Proyecto: </b>Juan Díez-Yanguas Barber</li>
-                            <li><b>Jefe de Proyecto: </b></li>
-                            <li>Juan Díez-Yanguas Barber</li>
+                            <li><b>Analista y Programador: </b>Juan Díez-Yanguas Barber</li>
+                            <li><b>Equipo de test</b>
+                                <ul>
+                                    <li>Tiphanie Dousset</li>
+                                    <li>Florent Quilichini</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <br />
+                        <h2>¿Cuál es el fin de este Sistema de Información?</h2>
+                        <p>
+                            Este Sistema proporciona todas las facilidades necesarias para la gestión de una empresa de alquiler de vehículos.
+                            <br />
+                            La aplicación será capaz de gestionar los vehículos, sucursales, empleados, facturación, clientes, etc...
+                        </p>
+                        <br />
+                        <h2>Requisitos necesarios</h2>
+                        <ul>
+                            <li>Servidor de bases de datos MySQL</li>
+                            <li>Servidor SMTP de correo</li>
+                            <li>Servidor de aplicaciones GlassFish</li>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
