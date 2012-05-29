@@ -58,6 +58,7 @@
                         <h2>Informaci&oacute;n General del Cliente</h2>
 
                         <% }%>
+                        <p><img alt="client" class="floatRight" src="/images/icons/client.png"/></p>
                         <ul>
 
                             <li><b>Nombre: </b><%= cli.getName()%></li>

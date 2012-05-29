@@ -51,6 +51,7 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                         if (bill != null && (bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) || suc.isCentral())){ %>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Detalles generales</h2>
+                        <p><img alt="bill" class="floatRight" src="/images/icons/iconoFactura.png"/></p>
                         <ul>
                             <li><b>Codigo Factura: </b><%= bill.getCodFactura() %></li>
                             <li><b>Cliente: </b><a title="Ver Detalles del cliente" href="/staf/viewclient.jsp?cli=<%= bill.getCliente().getCodCliente() %>"><%= bill.getCliente().getName() %></a></li>

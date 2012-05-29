@@ -54,7 +54,8 @@
                     <% if (suc != null) {%>
                     <div class="gradient">
                         <h1>Detalles de Sucursal</h1>
-                        <h2>Detalles generales</h2>
+                        <p><img alt="chart" class="floatRight" src="/images/icons/Chart_history.png"/></p>
+                        <h2>Información general</h2>
                         <ul>
                             <li><b>Sucursal: </b><%= suc.getNombre()%></li>
                             <li><b>Teléfono: </b><%= suc.getTelefono()%></li>

@@ -17,7 +17,7 @@
 <html>
     <head>
         <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
-        <title>Ayuda</title>
+        <title>Contacto</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -42,9 +42,16 @@
                     <div class="gradient">
                         <h1>El Volante Feliz - Contacto</h1>
                         <p>
-                            A continuación puede encontrar un listado de las sucursales de la empresa con los datos de las mismas, 
-                            de esta manera podrá ponerse en contacto directamente con la que desee
+                            <img alt="contact" class="floatRight" src="/images/icons/contact.png"/>
+                        Contamos con el mejor servicio de atención al cliente y estamo encantados de atender sus consultas <br /><br />
+                        A continuación le proporcionamos un listado de todas las sucursales que tenemos a su disposición junto con los datos 
+                            de contacto de cada una de ellas. Podrá elegir la que mejor le convenga
                         </p>
+                        <h2>Horario de Atención al cliente</h2>
+                        <ul>
+                            <li><b>Lunes-Viernes: </b>09:30-14:30 y 15:30-20:30</li>
+                            <li><b>Sábado: </b>9:30-14:30</li>
+                        </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                     <% HashMap <String, Sucursal> sucursales = persistence.getSucursales(false);

@@ -49,7 +49,7 @@
                         </ul> --%>
                         <% HashMap <String, Sucursal> sucursales = persistence.getSucursales(false);
                         if (sucursales != null){ %>
-                        <h2>Empleados disponibles</h2>
+                        <h2>Sucursales disponibles</h2>
                         <p><b>NOTA: </b>Si hay una sucursal central aparecerá marcada con un <i>tick</i></p>
                         <table>
                             <tr class="theader"><td>Nombre</td><td>Teléfono</td><td>Fax</td><td>Dirección</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
