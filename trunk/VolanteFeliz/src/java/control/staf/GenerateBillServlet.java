@@ -53,7 +53,7 @@ public class GenerateBillServlet extends HttpServlet {
             PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
             Cliente client = persistence.getClient(request.getParameter("cliente"));
             Empleado emplLogedIn = (Empleado) request.getSession().getAttribute("empleado");
-            Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+            Sucursal suc = (Sucursal) request.getSession().getAttribute("sucursal");
             if (client.getCodSucursal().equals(emplLogedIn.getCodSucursal()) || suc.isCentral()) {
                 try {
                     String[] alquileres = request.getParameterValues("alquiler");

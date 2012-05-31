@@ -58,7 +58,7 @@ public class PayBillServlet extends HttpServlet {
             Factura facturaSinPagar = persistence.getFactura(codFactura, null);
             if (facturaSinPagar != null) {
                 Empleado emplSesion = (Empleado) request.getSession().getAttribute("empleado");
-                Sucursal suc = persistence.getSucursal(emplSesion.getCodSucursal());
+                Sucursal suc = (Sucursal) request.getSession().getAttribute("sucursal");
                 if (emplSesion.getCodSucursal().equals(facturaSinPagar.getCliente().getCodSucursal()) || suc.isCentral()) {
                     Date fechaActual = Tools.getDate();
                     if (persistence.pagarFactura(codFactura, fechaActual, formaPago)) {

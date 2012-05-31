@@ -21,7 +21,7 @@
     }
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
-    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+    Sucursal suc = (Sucursal) session.getAttribute("sucursal");
     boolean continuar = false;
     Cliente cli = null;
     HashMap<String, Factura> facturasSinPagar = null;

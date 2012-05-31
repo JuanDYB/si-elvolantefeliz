@@ -20,7 +20,7 @@ if (!this.validateForm(request)){
 PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
 Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
 Cliente cli = persistence.getClient(request.getParameter("cli"));
-Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+Sucursal suc = (Sucursal) session.getAttribute("sucursal");
 %>
 <html>
     <head>

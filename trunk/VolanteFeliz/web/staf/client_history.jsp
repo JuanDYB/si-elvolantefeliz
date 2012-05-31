@@ -26,7 +26,7 @@
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     Cliente cli = persistence.getClient(request.getParameter("cli"));
-    Sucursal suc = persistence.getSucursal(cli.getCodSucursal());
+    Sucursal suc = (Sucursal) session.getAttribute("sucursal");
     WebConfig webConfig = (WebConfig) application.getAttribute("appConfig");
 %>
 <html>
