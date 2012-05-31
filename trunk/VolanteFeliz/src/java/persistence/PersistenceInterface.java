@@ -88,4 +88,6 @@ public interface PersistenceInterface {
     public HashMap <String, TipoIncidencia> getTiposIncidencia ();
     
     public HashMap <String, Tarifa> getTarifas (String campo, String valor);
+    
+    public HashMap <String, Vehiculo> getVehiculos (String campo, String valor);
 }
