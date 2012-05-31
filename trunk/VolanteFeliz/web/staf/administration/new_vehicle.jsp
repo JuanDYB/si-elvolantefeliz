@@ -54,24 +54,28 @@
                         <h2>Alta nuevo vehículo</h2>
                         <%  if (tiposITV != null && tiposRevisiones != null && tiposVehiculos != null) {%>
                         <p>
-                            Puede usar el formulario que puede ver a continuación para dar de alta un nuevo empleado en el sistema
+                            Puede usar este formulario para dar de alta un nuevo vehículo en el sistema
                         </p>
-                        <form name="newempl" method="POST" action="/staf/administration/newempl">
+                        <form name="newvehicle" method="POST" action="/staf/administration/new_vehicle">
                             <p>
                                 <label>Matricula</label>
-                                <input name="name" type="text" size="70" maxlength="200" class=":matricula :required :only_on_blur" />
+                                <input name="matricula" type="text" size="30" maxlength="20" class=":matricula :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Marca</label>
-                                <input name="userName" type="text" size="70" maxlength="50" class=":name :required :only_on_blur" />
+                                <input name="marca" type="text" size="50" maxlength="45" class=":marca :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Modelo</label>
-                                <input name="dni" type="text" size="10" maxlength="9" class=":name :required :only_on_blur" />
+                                <input name="modelo" type="text" size="50" maxlength="45" class=":modelo :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Número de bastidor</label>
-                                <input id="pass" name="pass" type="password" size="50" maxlength="50" class=":password :required :only_on_blur" />
+                                <input name="nBastidor" type="text" size="25" maxlength="17" class=": :required :only_on_blur" />
+                            </p>
+                            <p>
+                                <label>Capacidad de combustible (Litros)</label>
+                                <input name="combustible" type="text" size="30" maxlength="10" class=":digits :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Tipo de Vehículo</label>
@@ -99,7 +103,7 @@
                             </p>
                             
                             <p>
-                                <input name="send" type="submit" value="Confirmar Datos Vehiculo" />
+                                <input name="send" type="submit" value="Confirmar datos vehículo" />
                             </p>
                         </form>
                         <% } else if (tiposITV == null) {%>

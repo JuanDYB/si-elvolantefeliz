@@ -96,4 +96,6 @@ public interface PersistenceInterface {
     public HashMap <String, TipoITV> getTiposITV ();
     
     public HashMap <String, TipoVehiculo> getTiposVehiculo ();
+    
+    public boolean addVehiculo (Vehiculo ve);
 }

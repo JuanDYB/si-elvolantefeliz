@@ -51,22 +51,18 @@ public class EditClientServlet extends HttpServlet {
             try {
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 String codCliente = request.getParameter("codCliente");
-                Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 Tools.validateUUID(codCliente);
                 Cliente clienteOriginal = persistence.getClient(codCliente);
                 Sucursal suc = (Sucursal) request.getSession().getAttribute("sucursal");
                 if (clienteOriginal == null) {
                     request.setAttribute("resultados", "Cliente no encontrado");
                     Tools.anadirMensaje(request, "El cliente que desea editar no se encuentra dado de alta en el sistema", 'w');
-                    request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                 }else if (!clienteOriginal.isActivo()){
                     request.setAttribute("resultados", "Cliente desactivado");
                     Tools.anadirMensaje(request, "El cliente que desea editar se ha dado de baja del sistema", 'w');
-                    request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                 }else if (clienteOriginal != null && !clienteOriginal.getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()) {
                     request.setAttribute("resultados", "Imposible editar cliente");
                     Tools.anadirMensaje(request, "No se puede editar el cliente seleccionado porque no pertenece a la sucursal actual", 'w');
-                    request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                 } else {
                     String name = Tools.validateName(request.getParameter("name"), 200, "Nombre Cliente", false);
                     String dir = Tools.validateAdress(request.getParameter("address"));
@@ -79,26 +75,24 @@ public class EditClientServlet extends HttpServlet {
                     request.setAttribute("resultados", "Resultados de la operaci&oacute;n");
                     if (ok){
                         Tools.anadirMensaje(request, "El cliente ha sido editado correctamente", 'o');
-                        request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
                     } else{
                         Tools.anadirMensaje(request, "Ha ocurrido un error editando el cliente", 'e');
                         request.getRequestDispatcher("/staf/editclient.jsp?cli=" + codCliente).forward(request, response);
+                        return;
                     }
                 }
             } catch (IntrusionException ex){
                 request.setAttribute("resultados", "Detectada una intrusión");
                 Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
-                request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
             } catch (ValidationException ex) {
                 request.setAttribute("resultados", "Validación del formulario fallida");
                 Tools.anadirMensaje(request, ex.getUserMessage(), 'w');
-                request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
             }
         } else {
             request.setAttribute("resultados", "Formulario no esperado");
             Tools.anadirMensaje(request, "El formulario recibido no se esperaba", 'w');
-            request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
         }
+        request.getRequestDispatcher("/staf/manageclients.jsp").forward(request, response);
     }
 
     /**

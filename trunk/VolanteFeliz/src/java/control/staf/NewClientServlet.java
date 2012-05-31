@@ -56,17 +56,17 @@ public class NewClientServlet extends HttpServlet {
                 String address = Tools.validateAdress(request.getParameter("address"));
                 String tlf = Tools.validatePhone(request.getParameter("phone"));
                 String email = Tools.validateEmail(request.getParameter("email"));
-                String codSucursal = ((Empleado) request.getSession().getAttribute("empleado")).getCodSucursal();
+                Sucursal suc = (Sucursal) request.getSession().getAttribute("sucursal");
                 String codCliente = Tools.generaUUID();
-                Cliente client = new Cliente(codCliente, nombre, email, dni, address, tlf, company, codSucursal, edad, true);
-                PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
-                Sucursal suc = persistence.getSucursal(codSucursal);
+                
+                PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");  
                 request.setAttribute("resultados", "Resultados de la operación");
                 if (suc == null){
                     Tools.anadirMensaje(request, "No se ha encontrado la sucursal que se desea asignar al cliente", 'e');
                     request.getRequestDispatcher("/staf/newclient.jsp").forward(request, response);
                     return;
                 }
+                Cliente client = new Cliente(codCliente, nombre, email, dni, address, tlf, company, suc.getCodSucursal(), edad, true);
                 boolean ok = persistence.addClient(client);
                 if (ok) {
                     Tools.anadirMensaje(request, "El cliente ha sido dado de alta correctamente", 'o');
