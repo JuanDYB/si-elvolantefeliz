@@ -1664,6 +1664,36 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return tiposVehiculos;
     }
+    
+    @Override
+    public boolean addVehiculo (Vehiculo ve){
+        Connection conexion = null;
+        PreparedStatement insert = null;
+        boolean ok = false;
+        try{
+            conexion = pool.getConnection();
+            insert = conexion.prepareStatement("INSERT INTO " +  nameBD + ".Vehiculo VALUES(?,?,?,?,?,?,?,?,?,?)");
+            insert.setString(1, ve.getCodVehiculo());
+            insert.setString(2, ve.getMatricula());
+            insert.setString(3, ve.getMarca());
+            insert.setString(4, ve.getModelo());
+            insert.setString(5, ve.getnBastidor());
+            insert.setInt(6, ve.getCapacidadCombustible());
+            insert.setString(7, ve.getCodSucursal());
+            insert.setString(8, ve.getCodTipoVehiculo());
+            insert.setString(9, ve.getCodRevision());
+            insert.setString(10, ve.getCodITV());
+            if (insert.executeUpdate() == 1){
+                ok = true;
+            }
+            
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error intentando insertar vehiculo en la base de datos", ex);
+        }finally{
+            cerrarConexionesYStatement(conexion, insert);
+        }
+        return ok;
+    }
 
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {

@@ -1054,6 +1054,14 @@ Vanadium.setupValidatorTypes = function() {
             return Vanadium.validators_types['empty'].test(v) || !/[^\d]/.test(v);
         }, 'Introduzca un n&uacute;mero v&aacute;lido, no decimales'],
         //
+        ['modelo', function (v) {
+            return Vanadium.validators_types['empty'].test(v) || /^[A-Za-z0-9\-&]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+        }, 'Introduzca un nombre v&aacute;lido'],
+        //
+        ['marca', function (v) {
+            return Vanadium.validators_types['empty'].test(v) || /^[A-Z][A-Za-z\-&]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+        }, 'Introduzca un nombre v&aacute;lido'],
+        //
         ['name', function (v) {
             return Vanadium.validators_types['empty'].test(v) || /^[A-Z][a-zA-Z \-\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (� - �); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
         }, 'Introduzca un nombre v&aacute;lido'],

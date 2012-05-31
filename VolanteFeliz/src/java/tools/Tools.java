@@ -146,7 +146,22 @@ public class Tools {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("HOST", input, "Host", Integer.MAX_VALUE, false);
     }
-
+    
+    public static String validateMarca(String input) throws IntrusionException, ValidationException {
+        Validator validador = ESAPI.validator();
+        return validador.getValidInput("Marca Vehículo", input, "Marca", 45, false);
+    }
+    
+    public static String validateModelo(String input) throws IntrusionException, ValidationException {
+        Validator validador = ESAPI.validator();
+        return validador.getValidInput("Modelo Vehículo", input, "Modelo", 45, false);
+    }
+    
+    public static String validateNBastidor(String input) throws IntrusionException, ValidationException {
+        Validator validador = ESAPI.validator();
+        return validador.getValidInput("Número de bastidor", input, "NBastidor", 17, false);
+    }
+    
     public static String validateBool(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Booleano", input, "Bool", 5, false);

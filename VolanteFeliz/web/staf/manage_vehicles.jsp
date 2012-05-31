@@ -46,6 +46,7 @@
                 <div class="width75 floatRight">
                     <div class="gradient">
                         <h1>Acciones disponibles</h1>
+                        <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <ul>
                             <% if (suc.isCentral()){ %>
                             <li><a href="/staf/manage_vehicles.jsp?all=1">Ver todos los vehículos</a></li>
