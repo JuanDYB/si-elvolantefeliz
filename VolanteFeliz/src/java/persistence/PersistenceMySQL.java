@@ -282,7 +282,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             select.setString(1, valor);
             rs = select.executeQuery();
             while (rs.next()) {
-                vehicle = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codType"), rs.getString("codRevision"), rs.getString("codITV"));
+                vehicle = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codTipoVehiculo"), rs.getString("codTipoRevision"), rs.getString("codTipoITV"));
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un vehiculo de la base de datos", ex);
@@ -1571,8 +1571,8 @@ public class PersistenceMySQL implements PersistenceInterface {
             while (rs.next()){
                 Vehiculo ve = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), 
                         rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), 
-                        rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codType"), 
-                        rs.getString("codRevision"), rs.getString("codITV"));
+                        rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codTipoVehiculo"), 
+                        rs.getString("codTipoRevision"), rs.getString("codTipoITV"));
                 vehiculos.put(ve.getCodVehiculo(), ve);
             }
         }catch (SQLException ex){
@@ -1584,6 +1584,85 @@ public class PersistenceMySQL implements PersistenceInterface {
         if (vehiculos.isEmpty()){
             return null;
         }return vehiculos;
+    }
+    
+    @Override
+    public HashMap <String, TipoRevision> getTiposRevision (){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, TipoRevision> tiposRevisiones = new HashMap<String, TipoRevision>();
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".TipoRevision");
+            rs = select.executeQuery();
+            while(rs.next()){
+                TipoRevision tipoRev = new TipoRevision(rs.getString("codTipoRevision"), rs.getInt("Intervalo"), rs.getString("Nombre"));
+                tiposRevisiones.put(tipoRev.getCodTipoRevision(), tipoRev);
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo los tipos de revision de la base de datos", ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (tiposRevisiones.isEmpty()){
+            return null;
+        }
+        return tiposRevisiones;
+    }
+    
+    @Override
+    public HashMap <String, TipoITV> getTiposITV (){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, TipoITV> tiposITV = new HashMap<String, TipoITV>();
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".ITVType");
+            rs = select.executeQuery();
+            while(rs.next()){
+                TipoITV tipoITV = new TipoITV(rs.getString("codTipoITV"), rs.getString("Nombre"), rs.getInt("Interval"), rs.getString("Observaciones"));
+                tiposITV.put(tipoITV.getCodTipoITV(), tipoITV);
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo los tipos de ITV de la base de datos", ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (tiposITV.isEmpty()){
+            return null;
+        }
+        return tiposITV;
+    }
+    
+    @Override
+    public HashMap <String, TipoVehiculo> getTiposVehiculo (){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, TipoVehiculo> tiposVehiculos = new HashMap<String, TipoVehiculo>();
+        try{
+            conexion = pool.getConnection();
+            select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".TipoVehiculo");
+            rs = select.executeQuery();
+            while(rs.next()){
+                TipoVehiculo tipoVehiculo = new TipoVehiculo(rs.getString("codTipoVehiculo"), 
+                        rs.getString("Nombre"), rs.getString("Fines"), rs.getInt("Ocupantes"));
+                tiposVehiculos.put(tipoVehiculo.getCodTipoVehiculo(), tipoVehiculo);
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo los tipos de vehículo de la base de datos", ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (tiposVehiculos.isEmpty()){
+            return null;
+        }
+        return tiposVehiculos;
     }
 
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {

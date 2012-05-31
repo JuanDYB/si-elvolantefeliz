@@ -48,7 +48,7 @@
                         <h2>Inicio de Sesi&oacute;n</h2>
                         <% WebConfig appConfig = (WebConfig) application.getAttribute("appConfig");
                         int intentosMax = appConfig.getMaxLoginAttempt();
-                        if (session.getAttribute("login") != null && session.getAttribute("empleado") != null 
+                        if (session.getAttribute("login") != null && emplLogedIn != null 
                         && (Boolean) session.getAttribute("login")){ %>
                         <blockquote class="exclamation">
                             <ul>
