@@ -4,6 +4,10 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="model.TipoITV"%>
+<%@page import="model.TipoRevision"%>
+<%@page import="model.TipoVehiculo"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="model.Empleado"%>
 <%@page import="persistence.PersistenceInterface"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -11,6 +15,9 @@
 <%
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
+    HashMap <String, TipoVehiculo> tiposVehiculos = persistence.getTiposVehiculo();
+    HashMap <String, TipoRevision> tiposRevisiones = persistence.getTiposRevision();
+    HashMap <String, TipoITV> tiposITV = persistence.getTiposITV();
 %>
 <html>
     <head>
@@ -45,38 +52,69 @@
                         <h1>Gestión de vehículos</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Alta nuevo vehículo</h2>
-                        <% HashMap<String, Sucursal> sucursales = persistence.getSucursales(false);
-                            if (sucursales != null) {%>
+                        <%  if (tiposITV != null && tiposRevisiones != null && tiposVehiculos != null) {%>
                         <p>
                             Puede usar el formulario que puede ver a continuación para dar de alta un nuevo empleado en el sistema
                         </p>
                         <form name="newempl" method="POST" action="/staf/administration/newempl">
                             <p>
                                 <label>Matricula</label>
-                                <input name="name" type="text" size="70" maxlength="200" class=":name :required :only_on_blur" />
+                                <input name="name" type="text" size="70" maxlength="200" class=":matricula :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Marca</label>
-                                <input name="userName" type="text" size="70" maxlength="50" class=":user_name :required :only_on_blur" />
+                                <input name="userName" type="text" size="70" maxlength="50" class=":name :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Modelo</label>
-                                <input name="dni" type="text" size="10" maxlength="9" class=":DNI :required :only_on_blur" />
+                                <input name="dni" type="text" size="10" maxlength="9" class=":name :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Número de bastidor</label>
                                 <input id="pass" name="pass" type="password" size="50" maxlength="50" class=":password :required :only_on_blur" />
                             </p>
+                            <p>
+                                <label>Tipo de Vehículo</label>
+                                <select name="tipoVehiculo" class=":required">
+                                    <% for (TipoVehiculo tipoVehiculo : tiposVehiculos.values()){ %>
+                                    <option value="<%= tipoVehiculo.getCodTipoVehiculo() %>"><%= tipoVehiculo.getNombre() %></option>
+                                    <% } %>
+                                </select>
+                            </p>
+                            <p>
+                                <label>Tipo de ITV</label>
+                                <select name="tipoITV" class=":required">
+                                    <% for (TipoITV tipoITV : tiposITV.values()){ %>
+                                    <option value="<%= tipoITV.getCodTipoITV() %>"><%= tipoITV.getNombre() %></option>
+                                    <% } %>
+                                </select>
+                            </p>
+                            <p>
+                                <label>Tipo de Revisión</label>
+                                <select name="tipoRev" class=":required">
+                                    <% for (TipoRevision tipoRev : tiposRevisiones.values()){ %>
+                                    <option value="<%= tipoRev.getCodTipoRevision() %>"><%= tipoRev.getNombre() %></option>
+                                    <% } %>
+                                </select>
+                            </p>
                             
                             <p>
-                                <input name="send" type="submit" value="Confirmar Alta Empleado" />
+                                <input name="send" type="submit" value="Confirmar Datos Vehiculo" />
                             </p>
                         </form>
-                        <% } else {%>
+                        <% } else if (tiposITV == null) {%>
                         <blockquote class="exclamation">
-                            <p></p>
+                            <p>No se puede dar de alta un vehículo, no existen tipos de ITV</p>
                         </blockquote>
-                        <% }%>
+                        <% } else if (tiposRevisiones == null) { %>
+                        <blockquote class="exclamation">
+                            <p>No se puede dar de alta un vehículo, no existen tipos de revisiones</p>
+                        </blockquote>
+                        <% } else { %>
+                        <blockquote class="exclamation">
+                            <p>No se puede dar de alta un vehículo, no existen tipos de vehículos</p>
+                        </blockquote>
+                        <% } %>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->
                 </div>

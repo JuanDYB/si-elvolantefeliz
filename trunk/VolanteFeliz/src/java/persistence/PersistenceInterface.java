@@ -90,4 +90,10 @@ public interface PersistenceInterface {
     public HashMap <String, Tarifa> getTarifas (String campo, String valor);
     
     public HashMap <String, Vehiculo> getVehiculos (String campo, String valor);
+    
+    public HashMap <String, TipoRevision> getTiposRevision ();
+    
+    public HashMap <String, TipoITV> getTiposITV ();
+    
+    public HashMap <String, TipoVehiculo> getTiposVehiculo ();
 }

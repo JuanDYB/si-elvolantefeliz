@@ -10,6 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import model.Empleado;
+import model.Sucursal;
 import persistence.PersistenceInterface;
 
 /**
@@ -31,7 +32,7 @@ public class StafFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest requestMod = (HttpServletRequest) request;
         PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
-        if (isPermited(requestMod.getSession(), persistence)){
+        if (isPermited(requestMod, requestMod.getSession(), persistence)){
             chain.doFilter(request, response);
         }else{
             requestMod.getSession().setAttribute("requestedPage", requestMod.getRequestURL().toString());
@@ -42,11 +43,13 @@ public class StafFilter implements Filter {
 
     }
 
-    private boolean isPermited(HttpSession sesion, PersistenceInterface persistence) {
-        if (sesion.getAttribute("login") != null && sesion.getAttribute("empleado") != null && (Boolean) sesion.getAttribute("login")) {
+    private boolean isPermited(HttpServletRequest request, HttpSession sesion, PersistenceInterface persistence) {
+        if (sesion.getAttribute("login") != null && sesion.getAttribute("empleado") != null && (Boolean) sesion.getAttribute("login") 
+                && sesion.getAttribute("sucursal") != null) {
             Empleado empl = persistence.getEmployee("codEmpleado", ((Empleado) sesion.getAttribute("empleado")).getCodEmpleado());
             if (empl != null && (empl.getPermisos() == 'a' || empl.getPermisos() == 'e')) {
-                if (persistence.getSucursal(empl.getCodSucursal()) != null){
+                Sucursal suc = persistence.getSucursal(empl.getCodSucursal());
+                if (suc != null){
                     return true;
                 }
             }

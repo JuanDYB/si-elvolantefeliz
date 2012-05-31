@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Empleado;
+import model.Sucursal;
 import org.owasp.esapi.errors.IntrusionException;
 import org.owasp.esapi.errors.ValidationException;
 import persistence.PersistenceInterface;
@@ -71,9 +72,17 @@ public class LoginServlet extends HttpServlet {
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
                 Empleado empl = persistence.getEmployee("UserName", userName);
                 if (empl != null) {
+                    Sucursal suc = persistence.getSucursal(empl.getCodSucursal());
+                    if (suc == null){
+                        request.setAttribute("resultados", "Sucursal desconocida");
+                        Tools.anadirMensaje(request, "No se ha encontrado la sucursal asignada al empleado", 'e');
+                        request.getRequestDispatcher("/login.jsp").forward(request, response);
+                        return;
+                    }
                     if (md5PassIntroducida.equals(empl.getPass())) {
                         request.getSession().setAttribute("login", true);
                         request.getSession().setAttribute("empleado", empl);
+                        request.getSession().setAttribute("sucursal", suc);
                         
                         request.getSession().removeAttribute("intentosLogin");
                         if (request.getSession().getAttribute("requestedPage") != null){

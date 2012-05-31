@@ -73,8 +73,8 @@ Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
                                 clientes1 = persistence.getClientsToFactureRent(null);
                                 clientes2 = persistence.getClientsToFactureIncidence(null);
                             }else{
-                                clientes1 = persistence.getClientsToFactureRent(((Empleado) session.getAttribute("empleado")).getCodSucursal());
-                                clientes2 = persistence.getClientsToFactureIncidence(((Empleado) session.getAttribute("empleado")).getCodSucursal());
+                                clientes1 = persistence.getClientsToFactureRent(emplLogedIn.getCodSucursal());
+                                clientes2 = persistence.getClientsToFactureIncidence(emplLogedIn.getCodSucursal());
                             }
                             
                             String type = "alq";
