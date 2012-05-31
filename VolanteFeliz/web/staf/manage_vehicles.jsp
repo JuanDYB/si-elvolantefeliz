@@ -14,7 +14,7 @@
 <%
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+    Sucursal suc = (Sucursal) session.getAttribute("sucursal");
     HashMap <String, Vehiculo> vehiculos = null;
     if (request.getParameter("all") != null && request.getParameter("all").equals("1") && suc.isCentral()){
         vehiculos = persistence.getVehiculos(null, null);

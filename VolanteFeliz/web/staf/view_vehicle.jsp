@@ -20,7 +20,7 @@
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
     Vehiculo ve = persistence.getVehiculo("codVehiculo", request.getParameter("v"), null);
-    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+    Sucursal suc = (Sucursal) session.getAttribute("sucursal");
 %>
 <html>
     <head>

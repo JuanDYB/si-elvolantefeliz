@@ -23,7 +23,7 @@
     Cliente cliente = persistence.getClient(request.getParameter("cli"));
     String type = request.getParameter("type");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-    Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
+    Sucursal suc = (Sucursal) session.getAttribute("sucursal");
 %>
 
 <!DOCTYPE html>

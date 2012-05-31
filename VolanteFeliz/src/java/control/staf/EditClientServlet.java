@@ -54,7 +54,7 @@ public class EditClientServlet extends HttpServlet {
                 Empleado empl = (Empleado) request.getSession().getAttribute("empleado");
                 Tools.validateUUID(codCliente);
                 Cliente clienteOriginal = persistence.getClient(codCliente);
-                Sucursal suc = persistence.getSucursal(empl.getCodSucursal());
+                Sucursal suc = (Sucursal) request.getSession().getAttribute("sucursal");
                 if (clienteOriginal == null) {
                     request.setAttribute("resultados", "Cliente no encontrado");
                     Tools.anadirMensaje(request, "El cliente que desea editar no se encuentra dado de alta en el sistema", 'w');
