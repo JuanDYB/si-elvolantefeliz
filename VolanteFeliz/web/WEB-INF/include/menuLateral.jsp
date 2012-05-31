@@ -38,6 +38,7 @@
                 <li><a href="/staf/manage_rent.jsp" title="Gestionar alquileres">Gestión Alquileres</a></li>
                 <li><a href="/staf/newincidence.jsp" title="Nueva Incidencia">Nueva Incidencia</a></li>
                 <li><a href="/staf/manage_incidence.jsp" title="Gestión Incidencias">Gestión Incidencias</a></li>
+                <li><a href="/staf/manage_vehicles.jsp" title="Gestión Incidencias">Gestión Vehículos</a></li>
             </ul>
         </li>
         <% if(emplLogedIn.getPermisos() == 'a'){ %>

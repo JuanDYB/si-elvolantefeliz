@@ -1,15 +1,15 @@
 <%-- 
-    Document   : viewclient
-    Created on : 16-abr-2012, 19:02:32
+    Document   : view_vehicle
+    Created on : 30-may-2012, 20:09:28
     Author     : Juan Díez-Yanguas Barber
 --%>
 
-<%@page import="model.Sucursal"%>
-<%@page import="persistence.PersistenceInterface"%>
-<%@page import="tools.Tools"%>
+<%@page import="model.Vehiculo"%>
 <%@page import="org.owasp.esapi.errors.ValidationException"%>
+<%@page import="tools.Tools"%>
+<%@page import="model.Sucursal"%>
 <%@page import="model.Empleado"%>
-<%@page import="model.Cliente"%>
+<%@page import="persistence.PersistenceInterface"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
@@ -19,13 +19,13 @@
     }
     PersistenceInterface persistence = (PersistenceInterface) application.getAttribute("persistence");
     Empleado emplLogedIn = (Empleado) session.getAttribute("empleado");
-    Cliente cli = persistence.getClient(request.getParameter("cli"));
+    Vehiculo ve = persistence.getVehiculo("codVehiculo", request.getParameter("v"), null);
     Sucursal suc = persistence.getSucursal(emplLogedIn.getCodSucursal());
 %>
 <html>
     <head>
         <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
-        <title>Detalles cliente</title>
+        <title>Detalles del vehículo</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->
@@ -45,50 +45,27 @@
                 <!-- Columna principal -->
                 <div class="width75 floatRight">
 
-                    <% if (cli != null && (suc.getCodSucursal().equals(cli.getCodSucursal()) || suc.isCentral())) {%>
+                    <% if (ve != null && (suc.getCodSucursal().equals(ve.getCodSucursal()) || suc.isCentral())) {%>
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>Detalles Cliente</h1>
+                        <h1>Detalles del vehículo</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        <% if (!cli.isActivo()) {%>
-                        <blockquote class="exclamation">
-                            <p><b>ATENCIÓN: </b>Este cliente se ha dado de baja de la empresa</p>
-                            <p>Esta viendo únicamente al cliente porque sus datos son necesarios para el historial de la empresa</p>
-                        </blockquote>
-                        <h2>Informaci&oacute;n General del Cliente</h2>
-
-                        <% }%>
-                        <p><img alt="client" class="floatRight" src="/images/icons/client.png"/></p>
+                        <p><img alt="client" class="floatRight" src="/images/icons/carIcon.png"/></p>
                         <ul>
-
-                            <li><b>Nombre: </b><%= cli.getName()%></li>
-                            <li><b>Email: </b><%= cli.getEmail()%></li>
-                            <li><b>DNI: </b><%= cli.getDni()%></li>
-                            <li><b>Dirección: </b><%= cli.getAddress()%></li>
-                            <li><b>Tel&eacute;fono: </b><%= cli.getTelephone()%></li>
-                            <% if (cli.getCompany() == null) {%>
-                            <li><b>Empresa: </b>Cliente Particular</li>
-                            <% } else {%>
-                            <li><b>Empresa: </b><%= cli.getCompany()%></li>
-                            <% }%>
-                            <li><b>Edad: </b><%= cli.getAge()%></li>
-
+                            <li><b>Marca: </b><%= ve.getMarca() %></li>
+                            <li><b>Modelo: </b><%= ve.getModelo() %></li>
+                            <li><b>Matrícula: </b><%= ve.getMatricula() %></li>
+                            <li><b>Número de Bastidor: </b><%= ve.getnBastidor() %></li>
+                            <li><b>Capacidad de Combustible: </b><%= ve.getCapacidadCombustible() %> Litros</li>
                         </ul>
                     </div>
-                    <div class="gradient">
-                        <h1>Acciones disponibles</h1>
-                        <ul>
-                            <li><a href="/staf/client-facturepending.jsp?type=all&cli=<%= cli.getCodCliente()%>">Elementos pendientes de facturar</a></li>
-                            <li><a href="/staf/pending_paybill.jsp?cli=<%= cli.getCodCliente()%>">Facturas pendientes de pago</a></li>
-                            <li><a href="/staf/client_history.jsp?cli=<%= cli.getCodCliente()%>" >Historial completo del cliente</a></li>
-                        </ul>
-                    </div>
-                    <% } else if (cli != null && !suc.getCodSucursal().equals(cli.getCodSucursal()) && !suc.isCentral()) {%>
+
+                    <% } else if (ve != null && !suc.getCodSucursal().equals(ve.getCodSucursal()) && !suc.isCentral()) {%>
                     <div class="gradient">
                         <h1>Detalles Cliente</h1>
                         <blockquote class="exclamation">
                             <p>
-                                No tiene permisos de ver los derechos de este cliente porque no pertenece a esta sucursal
+                                No puede ver este vehículo porque no pertence a este sucursal y tampoco está en la sucursal central
                             </p>
                         </blockquote>
                     </div>
@@ -97,7 +74,7 @@
                         <h1>Detalles Cliente</h1>
                         <blockquote class="exclamation">
                             <p>
-                                No se ha encontrado el cliente seleccionado
+                                No se ha encontrado el vehículo seleccionado
                             </p>
                         </blockquote>
                     </div>
@@ -118,9 +95,9 @@
 </html>
 
 <%! private boolean validateForm(HttpServletRequest request) {
-        if (request.getParameterMap().size() >= 1 && request.getParameter("cli") != null) {
+        if (request.getParameterMap().size() >= 1 && request.getParameter("v") != null) {
             try {
-                Tools.validateUUID(request.getParameter("cli"));
+                Tools.validateUUID(request.getParameter("v"));
                 return true;
             } catch (ValidationException ex) {
                 return false;

@@ -1550,6 +1550,41 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return tarifas;
     }
+    
+    @Override
+    public HashMap <String, Vehiculo> getVehiculos (String campo, String valor){
+        Connection conexion = null;
+        PreparedStatement select = null;
+        ResultSet rs = null;
+        HashMap<String, Vehiculo> vehiculos = new HashMap<String, Vehiculo>();
+        try{
+            conexion = pool.getConnection();
+            if (campo != null && valor != null){
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Vehiculo "
+                        + "WHERE " + campo + "=?");
+                select.setString(1, valor);
+            }else{
+                select = conexion.prepareStatement("SELECT* FROM " + nameBD + ".Vehiculo");
+            }
+            
+            rs = select.executeQuery();
+            while (rs.next()){
+                Vehiculo ve = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), 
+                        rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), 
+                        rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codType"), 
+                        rs.getString("codRevision"), rs.getString("codITV"));
+                vehiculos.put(ve.getCodVehiculo(), ve);
+            }
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error obteniendo vehiculos de la base de datos", ex);
+        }finally{
+            cerrarResultSets(rs);
+            cerrarConexionesYStatement(conexion, select);
+        }
+        if (vehiculos.isEmpty()){
+            return null;
+        }return vehiculos;
+    }
 
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {
