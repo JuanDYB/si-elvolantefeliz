@@ -56,11 +56,11 @@ public class NewVehicleServlet extends HttpServlet {
                 int capCombustible = Tools.validateNumber(request.getParameter("combustible"), "Capacidad de combustible", Integer.MAX_VALUE);
                 Tools.validateUUID(request.getParameter("tipoVehiculo"));
                 Tools.validateUUID(request.getParameter("tipoITV"));
-                Tools.validateUUID(request.getParameter("tipoRevision"));
+                Tools.validateUUID(request.getParameter("tipoRev"));
                 
                 String tipoVehiculo = request.getParameter("tipoVehiculo");
                 String tipoITV = request.getParameter("tipoITV");
-                String tipoRevision = request.getParameter("tipoRevision");
+                String tipoRevision = request.getParameter("tipoRev");
                 
                 Empleado emplActivo = (Empleado)request.getSession().getAttribute("empleado");
                 String codVehiculo = Tools.generaUUID();

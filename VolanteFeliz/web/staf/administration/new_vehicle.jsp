@@ -71,7 +71,7 @@
                             </p>
                             <p>
                                 <label>Número de bastidor</label>
-                                <input name="nBastidor" type="text" size="25" maxlength="17" class=": :required :only_on_blur" />
+                                <input name="nBastidor" type="text" size="25" maxlength="17" class=":n_bastidor :required :only_on_blur" />
                             </p>
                             <p>
                                 <label>Capacidad de combustible (Litros)</label>

@@ -1,7 +1,6 @@
 package control;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,7 @@ public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (request.getSession().getAttribute("login") != null && request.getSession().getAttribute("empleado") != null 
-                && (Boolean)request.getSession().getAttribute("login")){
+                && (Boolean)request.getSession().getAttribute("login") && request.getSession().getAttribute("sucursal") != null){
             request.getSession().invalidate();
             request.getRequestDispatcher("/WEB-INF/staf/logout.jsp").forward(request, response); 
         }else{
