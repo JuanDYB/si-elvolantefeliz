@@ -49,7 +49,7 @@
                         <% WebConfig appConfig = (WebConfig) application.getAttribute("appConfig");
                         int intentosMax = appConfig.getMaxLoginAttempt();
                         if (session.getAttribute("login") != null && emplLogedIn != null 
-                        && (Boolean) session.getAttribute("login")){ %>
+                        && (Boolean) session.getAttribute("login") && session.getAttribute("sucursal") != null){ %>
                         <blockquote class="exclamation">
                             <ul>
                                 <li>No puede inciar sesión porque ya tiene una sesión iniciada</li>
