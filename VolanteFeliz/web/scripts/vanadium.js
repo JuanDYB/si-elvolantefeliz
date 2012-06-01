@@ -1145,7 +1145,7 @@ Vanadium.setupValidatorTypes = function() {
         //
         ['selection', function(v, elm) {
             return elm.options ? elm.selectedIndex > 0 : !Vanadium.validators_types['empty'].test(v);
-        }, 'Please make a selection'],
+        }, 'Seleccione una opción'],
         //
         ['one_required',
         function (v, elm) {
