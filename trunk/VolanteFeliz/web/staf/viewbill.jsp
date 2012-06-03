@@ -69,7 +69,7 @@ Sucursal suc = (Sucursal) session.getAttribute("sucursal");
                             <li><b>Fecha Emisión: </b><%= Tools.printDate (bill.getFechaEmision()) %></li>
                             <% if (!bill.isPagado()){ %>
                             <li><b>Pagado: </b>Factura pendiente de pago</li>
-                            <img src="/images/icons/pay.png" alt="Pagar Factura"><a title="Haga click para pagar la factura" href="/staf/paybill.jsp?bill=<%= bill.getCodFactura() %>">Pagar Factura</a>
+                            <img style="vertical-align: middle" src="/images/icons/pay.png" alt="Pagar Factura"><a title="Haga click para pagar la factura" href="/staf/paybill.jsp?bill=<%= bill.getCodFactura() %>">Pagar Factura</a>
                             <% }else{ %>
                             <li><b>Pagado: </b>Factura pagada</li>
                             <li><b>Fecha de pago: </b><%= Tools.printDate(bill.getFechaPago()) %></li>
@@ -78,7 +78,7 @@ Sucursal suc = (Sucursal) session.getAttribute("sucursal");
                         </ul>
                         <h2>Detalles de la factura completa</h2>
                         <p>
-                            <img class="floatLeft" src="/images/icons/pdf.png" alt="pdf"/>
+                            <img style="vertical-align: middle" src="/images/icons/pdf.png" alt="pdf"/>
                             <a title="Ver factura completa" href="/staf/billFolder/<%= bill.getCodFactura() %>.pdf">Ver Factura completa en PDF</a>
                         </p>
                         <% }else if(bill != null && !bill.getCliente().getCodSucursal().equals(suc.getCodSucursal()) && !suc.isCentral()){ %>
