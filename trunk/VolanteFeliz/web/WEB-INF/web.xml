@@ -119,6 +119,10 @@
         <servlet-name>NewVehicleServlet</servlet-name>
         <servlet-class>control.administration.NewVehicleServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NewRateServlet</servlet-name>
+        <servlet-class>control.administration.NewRateServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -174,6 +178,10 @@
     <servlet-mapping>
         <servlet-name>NewVehicleServlet</servlet-name>
         <url-pattern>/staf/administration/new_vehicle</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewRateServlet</servlet-name>
+        <url-pattern>/staf/administration/new_rate</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
