@@ -67,16 +67,16 @@ public class NewVehicleServlet extends HttpServlet {
                 Tools.validateUUID(tipoITV);
                 Tools.validateUUID(tipoRevision);
                 
-                String rutaImagen = "";
+                String imageName = "";
                 ////----Guardar Imagen si hay, si hay error guardando se aborta y notifica
                 Part file = request.getPart("image_file");
                 if (file != null && file.getSize() > 0){
-                    rutaImagen = Tools.validateFileName(MultipartFormManage.getFileNamePart(file.getHeader("content-disposition")));
-                    if (!MultipartFormManage.recuperarYGuardarImagenFormulario(file, request, response, rutaImagen)){
+                    imageName = Tools.validateFileName(MultipartFormManage.getFileNamePart(file.getHeader("content-disposition")));
+                    if (!this.recuperarYGuardarImagenFormulario(file, request, imageName)){
                         return;
                     }
                 }else if (request.getPart("image") != null){
-                    rutaImagen = Tools.validateFileName(MultipartFormManage.getcontentPartText(request.getPart("image")));
+                    imageName = Tools.validateFileName(MultipartFormManage.getcontentPartText(request.getPart("image")));
                 }else{
                     request.setAttribute("resultados", "Imagen no seleccionada");
                     Tools.anadirMensaje(request, "Debe seleccionar o subir una imagen para el nuevo vehículo", 'w');
@@ -89,13 +89,13 @@ public class NewVehicleServlet extends HttpServlet {
                 
                 Empleado emplActivo = (Empleado)request.getSession().getAttribute("empleado");
                 String codVehiculo = Tools.generaUUID();
-                Vehiculo vechicle = new Vehiculo(codVehiculo, matricula, marca, modelo, nBastidor, rutaImagen, 
+                Vehiculo vechicle = new Vehiculo(codVehiculo, matricula, marca, modelo, nBastidor, imageName, 
                         capCombustible, emplActivo.getCodSucursal(), tipoVehiculo, tipoRevision, tipoITV);
                 boolean ok = persistence.addVehiculo(vechicle);
                 if (ok){
                     request.setAttribute("resultados", "Vehículo añadido correctamente");
                     Tools.anadirMensaje(request, "El vehículo ha sido dado de alta correctamente en el sistema", 'o');
-                    request.getRequestDispatcher("/staf/manage_vehicles.jsp").forward(request, response);
+                    request.getRequestDispatcher("/staf/view_vehicle.jsp?v=" + codVehiculo).forward(request, response);
                     return;
                 }else{
                     request.setAttribute("resultados", "Ocurrio un error al añadir el vehículo");
@@ -125,6 +125,24 @@ public class NewVehicleServlet extends HttpServlet {
             return true;
         }
         return false;
+    }
+    
+    private boolean recuperarYGuardarImagenFormulario (Part file, HttpServletRequest request, String nombre) throws IOException, ServletException{
+        if (file.getContentType().contains("image") == false || file.getSize() > 8388608) {
+            request.setAttribute("resultados", "Archivo no válido");
+            Tools.anadirMensaje(request, "Solo se admiten archivos de tipo imagen", 'w');
+            Tools.anadirMensaje(request, "El tamaño máximo de archivo son 8 Mb", 'w');
+            return false;
+        } else {
+            String fileName = request.getServletContext().getRealPath("/staf/vehicle_images/" + nombre);
+            boolean ok = MultipartFormManage.guardarImagenEnElSistemaDeFicheros(file.getInputStream(), fileName);
+            if (ok == false) {
+                request.setAttribute("resultados", "Fallo al guardar archivo");
+                Tools.anadirMensaje(request, "Ocurrio un error guardando la imagen", 'e');
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

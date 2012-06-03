@@ -37,27 +37,7 @@ public class MultipartFormManage {
         return content;
     }
     
-    public static boolean recuperarYGuardarImagenFormulario (Part file, HttpServletRequest request, HttpServletResponse response, String nombre) throws IOException, ServletException{
-        if (file.getContentType().contains("image") == false || file.getSize() > 8388608) {
-            request.setAttribute("resultados", "Archivo no válido");
-            Tools.anadirMensaje(request, "Solo se admiten archivos de tipo imagen", 'w');
-            Tools.anadirMensaje(request, "El tamaño máximo de archivo son 8 Mb", 'w');
-            request.getRequestDispatcher("/staf/administration/new_vehicle.jsp").forward(request, response);
-            return false;
-        } else {
-            String fileName = request.getServletContext().getRealPath("/staf/vehicle_images/" + nombre);
-            boolean ok = MultipartFormManage.guardarImagenDeProdructoEnElSistemaDeFicheros(file.getInputStream(), fileName);
-            if (ok == false) {
-                request.setAttribute("resultados", "Fallo al guardar archivo");
-                Tools.anadirMensaje(request, "Ocurrio un error guardando la imagen", 'e');
-                request.getRequestDispatcher("/staf/administration/new_vehicle.jsp").forward(request, response);
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    public static boolean guardarImagenDeProdructoEnElSistemaDeFicheros(InputStream input, String fileName)
+    public static boolean guardarImagenEnElSistemaDeFicheros(InputStream input, String fileName)
             throws ServletException {
         FileOutputStream output = null;
         boolean ok = false;
