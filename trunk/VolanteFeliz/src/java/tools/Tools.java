@@ -350,4 +350,11 @@ public class Tools {
         SimpleDateFormat formatedor = new SimpleDateFormat("dd'-'MM'-'yyyy", Tools.getLocale());
         return validador.getValidDate(context, input, formatedor, false);
     }
+    
+    public static void findAndCreateFolder (String ruta){
+        File folder = new File (ruta);
+        if (!folder.exists()){
+            folder.mkdir();
+        }
+    }
 }
