@@ -40,6 +40,8 @@ public class StartListener implements ServletContextListener {
         String persistenceMethod = context.getInitParameter("persistenceMethod");
         String recurso = context.getInitParameter("resourceName");
         String nameBD = context.getInitParameter("nameBD");
+        Tools.findAndCreateFolder(context.getRealPath("/staf/billFolder/"));
+        Tools.findAndCreateFolder(context.getRealPath("/staf/vehicle_images/"));
         
         persistence = PersistenceFactory.getInstance(persistenceMethod);
         boolean exito = persistence.init (recurso, nameBD);

@@ -53,6 +53,7 @@
                         <h1>Detalles de la factura</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Detalles generales</h2>
+                        <p><img alt="bill" class="floatRight" src="/images/icons/iconoFactura.png"/></p>
                         <ul>
                             <li><b>Codigo Factura: </b><%= bill.getCodFactura()%></li>
                             <li><b>Cliente: </b><a title="Ver Detalles del cliente" href="/staf/viewclient.jsp?cli=<%= bill.getCliente().getCodCliente()%>"><%= bill.getCliente().getName()%></a></li>
@@ -76,6 +77,7 @@
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
                         <h1>Formulario de pago</h1>
+                        <p><img alt="pay_bill" class="floatRight" src="/images/icons/checkIcon.png"/></p>
                         <form title="payBill" method="POST" action="/staf/paybill">
                             <p><label>Forma de pago</label>
                             <select name="formaPago">
