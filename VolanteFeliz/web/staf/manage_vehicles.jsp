@@ -25,7 +25,7 @@
 <html>
     <head>
         <%@include file="/WEB-INF/include/HTML_Header.jsp" %>
-        <title>Detalles Incidencia</title>
+        <title>Gestión vehículos</title>
     </head>
     <body>
         <!-- Contenido completo menos footer -->

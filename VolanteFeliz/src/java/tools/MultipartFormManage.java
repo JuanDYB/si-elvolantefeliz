@@ -37,20 +37,20 @@ public class MultipartFormManage {
         return content;
     }
     
-    public static boolean recuperarYGuardarImagenFormulario (HttpServletRequest request, HttpServletResponse response, String codigo) throws IOException, ServletException{
-        if (request.getPart("foto").getContentType().contains("image") == false || request.getPart("foto").getSize() > 8388608) {
+    public static boolean recuperarYGuardarImagenFormulario (Part file, HttpServletRequest request, HttpServletResponse response, String nombre) throws IOException, ServletException{
+        if (file.getContentType().contains("image") == false || file.getSize() > 8388608) {
             request.setAttribute("resultados", "Archivo no válido");
             Tools.anadirMensaje(request, "Solo se admiten archivos de tipo imagen", 'w');
             Tools.anadirMensaje(request, "El tamaño máximo de archivo son 8 Mb", 'w');
-            request.getRequestDispatcher("/admin/administration/products_administration.jsp").forward(request, response);
+            request.getRequestDispatcher("/staf/administration/new_vehicle.jsp").forward(request, response);
             return false;
         } else {
-            String fileName = request.getServletContext().getRealPath("/images/products/" + codigo);
-            boolean ok = MultipartFormManage.guardarImagenDeProdructoEnElSistemaDeFicheros(request.getPart("foto").getInputStream(), fileName);
+            String fileName = request.getServletContext().getRealPath("/staf/vehicle_images/" + nombre);
+            boolean ok = MultipartFormManage.guardarImagenDeProdructoEnElSistemaDeFicheros(file.getInputStream(), fileName);
             if (ok == false) {
                 request.setAttribute("resultados", "Fallo al guardar archivo");
                 Tools.anadirMensaje(request, "Ocurrio un error guardando la imagen", 'e');
-                request.getRequestDispatcher("/admin/administration/products_administration.jsp").forward(request, response);
+                request.getRequestDispatcher("/staf/administration/new_vehicle.jsp").forward(request, response);
                 return false;
             }
         }
@@ -84,5 +84,17 @@ public class MultipartFormManage {
             }
         }
         return ok;
+    }
+    
+    public static String getFileNamePart (String contentDisposition){
+        String [] partes = contentDisposition.split(";");
+        String partSinEspacio = null;
+        for (String part : partes){
+            partSinEspacio = part.trim();
+            if (partSinEspacio.startsWith("filename=\"")){
+                return partSinEspacio.substring(partSinEspacio.indexOf("\"") + 1, partSinEspacio.lastIndexOf("\""));
+            }
+        }
+        return "";
     }
 }

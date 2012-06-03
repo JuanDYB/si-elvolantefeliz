@@ -59,6 +59,12 @@
                             <li><b>Capacidad de Combustible: </b><%= ve.getCapacidadCombustible() %> Litros</li>
                         </ul>
                     </div>
+                            <% if (Tools.existeArchivo(application.getRealPath("/staf/vehicle_images/" + ve.getRutaImagen()))){ %>
+                        <div class="gradient">
+                            <h1>Imagen del Vehículo</h1>
+                            <p><img class="floatLeft" width="98%" src ="/staf/vehicle_images/<%= ve.getRutaImagen() %>" alt="<%= ve.getRutaImagen() %>"></p>
+                        </div>
+                        <% } %>
 
                     <% } else if (ve != null && !suc.getCodSucursal().equals(ve.getCodSucursal()) && !suc.isCentral()) {%>
                     <div class="gradient">

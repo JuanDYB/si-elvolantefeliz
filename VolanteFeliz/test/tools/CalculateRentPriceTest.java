@@ -22,7 +22,7 @@ public class CalculateRentPriceTest {
         Date fInicio = Tools.stringToDate_ES("01-05-2012");
         Date fFin = Tools.stringToDate_ES("10-05-2012");
         Date fEntrega = Tools.stringToDate_ES("14-05-2012");
-        Vehiculo ve = new Vehiculo(null, null, null, null, null, 90, null, null, null, null);
+        Vehiculo ve = new Vehiculo(null, null, null, null, null, null, 90, null, null, null, null);
         Alquiler alq = new Alquiler(null, null, ve, tarif, fInicio, fFin, fEntrega, BigDecimal.ZERO, 0, 0, 0, null);
         
         //--------------TEST---------------//

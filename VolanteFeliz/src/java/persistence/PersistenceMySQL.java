@@ -281,7 +281,10 @@ public class PersistenceMySQL implements PersistenceInterface {
             select.setString(1, valor);
             rs = select.executeQuery();
             while (rs.next()) {
-                vehicle = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codTipoVehiculo"), rs.getString("codTipoRevision"), rs.getString("codTipoITV"));
+                vehicle = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), rs.getString("Marca"), 
+                        rs.getString("Modelo"), rs.getString("nBastidor"), rs.getString("RutaImagen"), rs.getInt("CapCombustible"), 
+                        rs.getString("codSucursal"), rs.getString("codTipoVehiculo"), rs.getString("codTipoRevision"), 
+                        rs.getString("codTipoITV"));
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error obteniendo un vehiculo de la base de datos", ex);
@@ -1569,7 +1572,7 @@ public class PersistenceMySQL implements PersistenceInterface {
             rs = select.executeQuery();
             while (rs.next()){
                 Vehiculo ve = new Vehiculo(rs.getString("codVehiculo"), rs.getString("Matricula"), 
-                        rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), 
+                        rs.getString("Marca"), rs.getString("Modelo"), rs.getString("nBastidor"), rs.getString("RutaImagen"), 
                         rs.getInt("CapCombustible"), rs.getString("codSucursal"), rs.getString("codTipoVehiculo"), 
                         rs.getString("codTipoRevision"), rs.getString("codTipoITV"));
                 vehiculos.put(ve.getCodVehiculo(), ve);
@@ -1671,17 +1674,18 @@ public class PersistenceMySQL implements PersistenceInterface {
         boolean ok = false;
         try{
             conexion = pool.getConnection();
-            insert = conexion.prepareStatement("INSERT INTO " +  nameBD + ".Vehiculo VALUES(?,?,?,?,?,?,?,?,?,?)");
+            insert = conexion.prepareStatement("INSERT INTO " +  nameBD + ".Vehiculo VALUES(?,?,?,?,?,?,?,?,?,?,?)");
             insert.setString(1, ve.getCodVehiculo());
             insert.setString(2, ve.getMatricula());
             insert.setString(3, ve.getMarca());
             insert.setString(4, ve.getModelo());
             insert.setString(5, ve.getnBastidor());
             insert.setInt(6, ve.getCapacidadCombustible());
-            insert.setString(7, ve.getCodSucursal());
-            insert.setString(8, ve.getCodTipoVehiculo());
-            insert.setString(9, ve.getCodRevision());
-            insert.setString(10, ve.getCodITV());
+            insert.setString(7, ve.getRutaImagen());
+            insert.setString(8, ve.getCodSucursal());
+            insert.setString(9, ve.getCodTipoVehiculo());
+            insert.setString(10, ve.getCodRevision());
+            insert.setString(11, ve.getCodITV());
             if (insert.executeUpdate() == 1){
                 ok = true;
             }

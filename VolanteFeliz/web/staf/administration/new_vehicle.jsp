@@ -4,6 +4,7 @@
     Author     : Juan Díez-Yanguas Barber
 --%>
 
+<%@page import="java.io.File"%>
 <%@page import="model.TipoITV"%>
 <%@page import="model.TipoRevision"%>
 <%@page import="model.TipoVehiculo"%>
@@ -56,7 +57,7 @@
                         <p>
                             Puede usar este formulario para dar de alta un nuevo vehículo en el sistema
                         </p>
-                        <form name="newvehicle" method="POST" action="/staf/administration/new_vehicle">
+                        <form enctype="multipart/form-data" name="newvehicle" method="POST" action="/staf/administration/new_vehicle">
                             <p>
                                 <label>Matricula</label>
                                 <input name="matricula" type="text" size="30" maxlength="20" class=":matricula :required :only_on_blur" />
@@ -76,6 +77,44 @@
                             <p>
                                 <label>Capacidad de combustible (Litros)</label>
                                 <input name="combustible" type="text" size="30" maxlength="10" class=":digits :required :only_on_blur" />
+                            </p>
+                            <p>
+                                <label>Elige una imagen o suba una nueva al servidor <br />
+                                    <b>Si sube un archivo tendrá prioridad sobre la imagen seleccionada</b></label>
+                            <p>
+                                <input name="image_file" type="file"  />
+                            </p>
+                                <% File folder = new File (application.getRealPath("/staf/vehicle_images/") );
+                                String [] files = folder.list();
+                                if (files!= null && files.length != 0){
+                                    int filas = 0;
+                                    if (files.length%3 == 0){
+                                        filas = files.length / 3;
+                                    }else{
+                                        filas = (files.length / 3) + 1;
+                                    }
+                                    int contadorArchivos = 0;
+                                    int contadorFilas = 0; %>
+                            <p>
+                            <table class="chvehicle">
+                                    <% for (;contadorFilas < filas; contadorFilas++){ %>
+                            <tr>
+                                <% for (int contadorColumnas = 0; contadorColumnas < 3; contadorColumnas++){ 
+                                    if (contadorArchivos < files.length){ %>
+                                <td>
+                                    <label><input type="Radio" name="image" value="<%= files[contadorArchivos]%>" />
+                                        <img style="vertical-align: middle" title="<%= files[contadorArchivos] %>" src="<%= "/staf/vehicle_images/" + files[contadorArchivos] %>" alt="vehicle_img" /></label>
+                                </td>
+                                <% contadorArchivos++;}
+                                } %>
+                            </tr>
+                                
+                                <% } %>
+                            </table>
+                        </p>
+                                <% }else{ %>
+                                <p><b>No se han encontrado imágenes en el servidor, tiene que subir una</b></p>
+                                <% } %>
                             </p>
                             <p>
                                 <label>Tipo de Vehículo</label>

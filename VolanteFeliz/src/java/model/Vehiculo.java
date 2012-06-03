@@ -10,18 +10,20 @@ public class Vehiculo {
     private String marca;
     private String modelo;
     private String nBastidor;
+    private String rutaImagen;
     private int CapacidadCombustible;
     private String codSucursal;
     private String codTipoVehiculo;
     private String codRevision;
     private String codITV;
 
-    public Vehiculo(String codVehiculo, String matricula, String marca, String modelo, String nBastidor, int CapacidadCombustible, String codSucursal, String codTipoVehiculo, String codRevision, String codITV) {
+    public Vehiculo(String codVehiculo, String matricula, String marca, String modelo, String nBastidor, String rutaImagen, int CapacidadCombustible, String codSucursal, String codTipoVehiculo, String codRevision, String codITV) {
         this.codVehiculo = codVehiculo;
         this.matricula = matricula;
         this.marca = marca;
         this.modelo = modelo;
         this.nBastidor = nBastidor;
+        this.rutaImagen = rutaImagen;
         this.CapacidadCombustible = CapacidadCombustible;
         this.codSucursal = codSucursal;
         this.codTipoVehiculo = codTipoVehiculo;
@@ -67,5 +69,9 @@ public class Vehiculo {
 
     public String getnBastidor() {
         return nBastidor;
+    }
+    
+    public String getRutaImagen() {
+        return rutaImagen;
     }
 }
