@@ -39,7 +39,7 @@
 
                     <!-- Gradiente color dentro de la columna principal -->
                     <div class="gradient">
-                        <h1>El Volante Feliz - Zona de administraci&oacute;n</h1>
+                        <h1>Zona de administraci&oacute;n</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
                         <h2>Informaci&oacute;n General de la sucursal</h2>
                         <p><img alt="icono suc" class="floatRight" src="/images/icons/iconoSucursal.png"/></p>

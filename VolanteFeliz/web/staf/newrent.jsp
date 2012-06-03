@@ -117,6 +117,18 @@
                                     <option value="<%= vehicle.getCodVehiculo()%>"><%= vehicle.getMarca()%>: <%= vehicle.getModelo()%></option>
                                     <% }%>
                                 </select>
+                            <table class="chvehicle">
+                                    <% for (Vehiculo vehicle : vehiculos.values()) {%>
+                                    <tr><td><a href="/staf/view_vehicle.jsp?v=<%= vehicle.getCodVehiculo() %>"><img width="100" src="/staf/vehicle_images/<%= vehicle.getRutaImagen() %>" alt="vehicle_image" /></a></td>
+                                        <td><ul>
+                                            <li><b>Marca: </b><%= vehicle.getMarca() %></li>
+                                            <li><b>Modelo: </b><%= vehicle.getModelo() %></li>
+                                            <li><b>Matrícula: </b><%= vehicle.getMatricula() %></li>
+                                        </ul></td>
+                                    </tr>
+                                    <% } %>
+                            </table>
+                                    
                             </p>
                             <p>
                                 <label>Seleccione una tarifa</label>
