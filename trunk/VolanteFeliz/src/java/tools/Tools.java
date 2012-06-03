@@ -161,6 +161,16 @@ public class Tools {
         Validator validador = ESAPI.validator();
         return validador.getValidInput("Número de bastidor", input, "NBastidor", 17, false);
     }
+    public static String validateFileName (String ruta) throws IntrusionException, ValidationException{
+        List <String> permitedExtensions = new LinkedList<String>();
+        permitedExtensions.add(".jpeg");
+        permitedExtensions.add(".jpg");
+        permitedExtensions.add(".png");
+        permitedExtensions.add(".gif");
+        permitedExtensions.add(".bmp");
+        Validator validador = ESAPI.validator();
+        return validador.getValidFileName("Nombre de archivo", ruta, permitedExtensions, false);
+    }
     
     public static String validateBool(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();

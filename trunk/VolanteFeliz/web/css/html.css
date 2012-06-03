@@ -295,3 +295,21 @@ table .theader{
 table .theader:hover{
     background-color: #F19901;
 }
+
+/*********************************************
+        table elegir vehiculos
+*********************************************/
+table.chvehicle {
+    border:0px solid white; 
+    width:99% ;
+    margin:auto;
+}
+
+table.chvehicle img{
+    border:0px;
+    width: 150px;
+}
+
+table.chvehicle tr:hover{
+     background-color: transparent;
+}
