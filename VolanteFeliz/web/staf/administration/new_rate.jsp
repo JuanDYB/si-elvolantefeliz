@@ -49,7 +49,7 @@
                         <p>
                             Puede usar este formulario para dar de alta una tarifa en el sistema
                         </p>
-                        <form enctype="multipart/form-data" name="newvehicle" method="POST" action="/staf/administration/new_vehicle">
+                        <form name="newrate" method="POST" action="/staf/administration/new_rate">
                             <p>
                                 <label>Nombre</label>
                                 <input name="matricula" type="text" size="30" maxlength="20" class=":required :only_on_blur" />
