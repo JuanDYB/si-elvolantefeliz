@@ -1697,6 +1697,23 @@ public class PersistenceMySQL implements PersistenceInterface {
         }
         return ok;
     }
+    
+    @Override
+    public boolean addTarifa (Tarifa tarifa){
+        Connection conexion = null;
+        PreparedStatement insert = null;
+        boolean ok = false;
+        try{
+            conexion = pool.getConnection();
+            insert = conexion.prepareStatement("INSERT INTO " +  nameBD + ".Tarifa VALUES()");
+            
+        }catch (SQLException ex){
+            logger.log(Level.SEVERE, "Error intentando insertar vehiculo en la base de datos", ex);
+        }finally{
+            cerrarConexionesYStatement(conexion, insert);
+        }
+        return ok;
+    }
 
     private void cerrarConexionesYStatement(Connection conexion, Statement... st) {
         for (Statement statement : st) {
