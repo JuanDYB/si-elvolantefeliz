@@ -104,9 +104,12 @@ public class Tools {
         return validador.getValidInteger(context, input, 0, max, false);
     }
 
-    public static double validatePrice(String input) throws IntrusionException, ValidationException {
+    public static String validatePrice(String input) throws IntrusionException, ValidationException {
         Validator validador = ESAPI.validator();
-        return validador.getValidDouble("Precio", input, 0, Double.MAX_VALUE, false);
+        if (validador.isValidDouble("Precio", input, 0, Double.MAX_VALUE, false)){
+            return input;
+        }
+        throw new ValidationException ("El precio introducido no es válido", "El precio introducido no es válido");
     }
 
     public static String validateText(String input, int length, String context) throws IntrusionException, ValidationException {

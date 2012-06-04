@@ -48,6 +48,9 @@
                         <h2>Acciones disponibles</h2>
                         <ul>
                             <li><a href="/staf/newrent.jsp?st=1">Nuevo Alquiler</a></li>
+                            <% if (emplLogedIn.getPermisos() == 'a'){ %>
+                            <li><a href="/staf/administration/new_rate.jsp">Nueva tarifa</a></li>
+                            <% } %>
                         </ul>
                     </div>
                     <!-- FIN BLOQUE GRADIENTE -->

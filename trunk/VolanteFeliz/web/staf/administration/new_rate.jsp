@@ -45,14 +45,37 @@
                     <div class="gradient">
                         <h1>Nueva Tarifa</h1>
                         <%@include file="/WEB-INF/include/warningBox.jsp" %>
-                        <h2>Alta nuevo vehículo</h2>
                         <p>
                             Puede usar este formulario para dar de alta una tarifa en el sistema
                         </p>
                         <form name="newrate" method="POST" action="/staf/administration/new_rate">
                             <p>
                                 <label>Nombre</label>
-                                <input name="matricula" type="text" size="30" maxlength="20" class=":required :only_on_blur" />
+                                <input name="nombre" type="text" size="40" maxlength="100" class=":name :required :only_on_blur" />                                
+                            </p>
+                            <p>
+                                <label>Descripción</label>
+                                <textarea name="descripcion" class=":required :only_on_blur" ></textarea>
+                            </p>
+                            <p>
+                                <label>Precio Base</label>
+                                <input name="p_base" type="text" class=":required :number :only_on_blur" />
+                            </p>
+                            <p>
+                                <label>Precio por día</label>
+                                <input name="p_dia" type="text" class=":required :number :only_on_blur" />
+                            </p>
+                            <p>
+                                <label>Precio por día de exceso</label>
+                                <input name="p_extra" type="text" class=":required :number :only_on_blur" />
+                            </p>
+                            <p>
+                                <label>Precio por litro de combustible 
+                                    <br />Se cobrarán los litros de combustible que falten del depósito a la entrega del vehículo</label>
+                                <input name="p_combustible" type="text" class=":required :number :only_on_blur" />
+                            </p>
+                            <p>
+                                <input type="submit" name="send" value="Confirmar nueva tarifa" />
                             </p>
                         </form>
                     </div>
