@@ -50,7 +50,7 @@
                 <li><a href="/staf/administration/manage_suc.jsp" title="Gestión sucursales">Gestión Sucursales</a></li>
                 <li><a href="/staf/administration/new_employee.jsp" title="Nuevo empleado">Nuevo Empleado</a></li>
                 <li><a href="/staf/administration/manage_empl.jsp" title="Gestion empleados">Gestión de empleados</a></li>
-                <li><a href="/staf/administration/new_vehicle.jsp" title="Nuevo vehículo">Nuevo vehículo</a>
+                <li><a href="/staf/administration/new_vehicle.jsp" title="Nuevo vehículo">Nuevo vehículo</a></li>
             </ul>
         </li>
         <% } %>

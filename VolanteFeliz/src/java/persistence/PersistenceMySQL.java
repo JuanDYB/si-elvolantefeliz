@@ -1705,8 +1705,17 @@ public class PersistenceMySQL implements PersistenceInterface {
         boolean ok = false;
         try{
             conexion = pool.getConnection();
-            insert = conexion.prepareStatement("INSERT INTO " +  nameBD + ".Tarifa VALUES()");
-            
+            insert = conexion.prepareStatement("INSERT INTO " +  nameBD + ".Tarifa VALUES(?,?,?,?,?,?,?)");
+            insert.setString(1, tarifa.getCodTarifa());
+            insert.setString(2, tarifa.getNombre());
+            insert.setString(3, tarifa.getDescripcion());
+            insert.setBigDecimal(4, tarifa.getPrecioBase());
+            insert.setBigDecimal(5, tarifa.getPrecioDia());
+            insert.setBigDecimal(6, tarifa.getPrecioDiaExtra());
+            insert.setBigDecimal(7, tarifa.getPrecioCombustible());
+            if (insert.executeUpdate() == 1){
+                ok = true;
+            }
         }catch (SQLException ex){
             logger.log(Level.SEVERE, "Error intentando insertar vehiculo en la base de datos", ex);
         }finally{
