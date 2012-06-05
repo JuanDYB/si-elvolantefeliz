@@ -49,9 +49,9 @@ public class NewRateServlet extends HttpServlet {
         if (this.validateForm(request)){
             try{
                 PersistenceInterface persistence = (PersistenceInterface) request.getServletContext().getAttribute("persistence");
-                String nombre = Tools.validateName(request.getParameter("name"), 200, "Nombre de la tarifa", false);
-                String descripcion = request.getParameter("marca");
-                BigDecimal p_base = new BigDecimal (Tools.validatePrice(request.getParameter("modelo")));
+                String nombre = Tools.validateName(request.getParameter("nombre"), 100, "Nombre de la tarifa", false);
+                String descripcion = request.getParameter("descripcion");
+                BigDecimal p_base = new BigDecimal (Tools.validatePrice(request.getParameter("p_base")));
                 BigDecimal p_dia = new BigDecimal (Tools.validatePrice(request.getParameter("p_dia")));
                 BigDecimal p_extra = new BigDecimal (Tools.validatePrice(request.getParameter("p_extra")));
                 BigDecimal p_combustible = new BigDecimal (Tools.validatePrice(request.getParameter("p_combustible")));
